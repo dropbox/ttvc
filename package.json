@@ -8,6 +8,7 @@
     "node": ">=16.0.0"
   },
   "devDependencies": {
+    "express": "^4.17.3",
     "prettier": "^2.5.1"
   }
 }
