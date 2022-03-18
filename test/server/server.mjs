@@ -15,9 +15,9 @@ app.use((req, res, next) => {
 
 // Pass a query parameter to artificially delay request handling
 // e.g. localhost:3000/api/hello?delay=1000
-app.use((req, res, next) => {
-  if (req.query && req.query.delay) {
-    setTimeout(next, req.query.delay);
+app.use(({query}, res, next) => {
+  if (query?.delay) {
+    setTimeout(next, query.delay);
   } else {
     next();
   }
@@ -34,7 +34,7 @@ app.get('/api/hello', (req, res) => {
   res.send('world');
 });
 
-app.get('/test/:view', ({query, params}, res) => {
+app.get('/test/:view', ({params}, res) => {
   const view = params.view;
   res.sendFile(`public/${view}.html`, {root: __dirname});
 });
