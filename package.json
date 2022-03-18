@@ -5,6 +5,7 @@
   "repository": "git@github.com:dropbox/ttvc.git",
   "license": "MIT",
   "scripts": {
+    "build": "tsc --project src/tsconfig.json --outDir dist",
     "test:server": "node test/server/server.mjs"
   },
   "engines": {
@@ -12,6 +13,7 @@
   },
   "devDependencies": {
     "express": "^4.17.3",
-    "prettier": "^2.5.1"
+    "prettier": "^2.5.1",
+    "typescript": "^4.6.2"
   }
 }
