@@ -1,6 +1,8 @@
-import {getTTVC} from '/dist/index.mjs';
+import {getTTVC} from '/dist/index.js';
+
+// use window.entries to communicate between browser and test runner processes
+window.entries = [];
 
 getTTVC((ms) => {
-  performance.mark('TTVC', {startTime: ms});
-  console.log('TTVC:', ms);
+  window.entries.push(ms);
 });
