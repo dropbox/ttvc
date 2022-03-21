@@ -2,5 +2,5 @@
 export function getTTVC(callback: (ms: number) => void) {
   window.setTimeout(() => {
     callback(123);
-  }, 2000);
+  }, 200);
 }
