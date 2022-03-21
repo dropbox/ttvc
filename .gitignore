@@ -105,3 +105,7 @@ dist
 
 # VS Code settings
 .vscode
+
+# Playwright
+test-results/
+playwright-report/
