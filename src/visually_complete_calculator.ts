@@ -1,6 +1,6 @@
-import {InViewportMutationObserver, Mutation} from './in_viewport_mutation_observer';
-import {AddAnnotationType, AnnotationNameEnum} from './annotations';
-import {waitForPageLoad} from './utils';
+import {InViewportMutationObserver, Mutation} from './in_viewport_mutation_observer.js';
+import {AddAnnotationType, AnnotationNameEnum} from './annotations.js';
+import {waitForPageLoad} from './utils.js';
 
 declare const process: NodeJS.Process;
 
@@ -83,6 +83,7 @@ export class VisuallyCompleteCalculator {
    */
   async attemptMeasurement(): Promise<number | null> {
     if (!this.isSupportedEnvironment) {
+      console.warn('Environment is not supported');
       return null;
     }
 
@@ -93,6 +94,7 @@ export class VisuallyCompleteCalculator {
     this.stopObserving();
 
     if (!this.mutations.length) {
+      console.warn('No mutations detected');
       return null;
     }
 
