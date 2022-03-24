@@ -5,11 +5,10 @@
   "repository": "git@github.com:dropbox/ttvc.git",
   "license": "MIT",
   "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
-  "types": "src/index.ts",
   "publishConfig": {
     "access": "public"
   },
