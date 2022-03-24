@@ -12,7 +12,8 @@
     "test": "npm-run-all build test:unit --parallel --race test:server test:e2e",
     "test:unit": "jest",
     "test:server": "node test/server/server.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "release": "np"
   },
   "engines": {
     "node": ">=16.0.0"
