@@ -1,9 +1,12 @@
 {
-  "name": "ttvc",
-  "version": "0.0.1-alpha",
+  "name": "@dropbox-performance/ttvc",
+  "version": "0.0.0",
   "description": "Measure Visually Complete metrics in real time",
   "repository": "git@github.com:dropbox/ttvc.git",
   "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "test": "npm-run-all build test:unit --parallel --race test:server test:e2e",
