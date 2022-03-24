@@ -1,4 +1,4 @@
-import {AddAnnotationType, AnnotationNameEnum} from './annotations';
+import {AddAnnotationType, AnnotationNameEnum} from './annotations.js';
 
 export const enum MutationReason {
   STYLE_ATTRIBUTE_MODIFIED = 'STYLE_ATTRIBUTE_MODIFIED',
