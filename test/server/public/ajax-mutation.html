@@ -1,0 +1,21 @@
+<head>
+  <script type="module" src="/analytics.mjs"></script>
+</head>
+
+<body>
+  <h1 id="h1">Hello</h1>
+
+  <script type="module">
+    fetch('/api/hello?delay=500')
+      .then((res) => res.text())
+      .then((text) => {
+        // append a new node
+        const h2 = document.createElement('h2');
+        h2.textContent = `Hello world!`;
+        document.body.appendChild(h2);
+      });
+  </script>
+
+  <!-- this script just delays the window "load" event -->
+  <script type="module" src="/stub.mjs?delay=1000"></script>
+</body>
