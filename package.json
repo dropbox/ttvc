@@ -11,7 +11,8 @@
     "build": "tsc --project src/tsconfig.json --outDir dist",
     "test": "npm-run-all build --parallel --race test:*",
     "test:server": "node test/server/server.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "release": "np"
   },
   "engines": {
     "node": ">=16.0.0"
