@@ -6,8 +6,10 @@
   "license": "Apache-2.0",
   "module": "dist/index.js",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
+  "types": "src/index.ts",
   "publishConfig": {
     "access": "public"
   },
