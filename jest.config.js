@@ -6,5 +6,4 @@ module.exports = {
   setupFilesAfterEnv: ['./test/jest.setup.js'],
   // ignore .js extensions in import statements
   moduleNameMapper: {'(.+)\\.js': '$1'},
-  extensionsToTreatAsEsm: ['.ts'],
 };
