@@ -1,12 +1,14 @@
 {
   "compilerOptions": {
-    "outDir": "dist",
+    "outDir": "/dev/null",
+    "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
-    "target": "es2015",
-    "module": "es2015",
-    "declaration": true
-  },
-  "include": [
-    "src/**/*.ts",
-  ]
+    "target": "es2016",
+    "module": "es2020",
+    "declaration": true,
+    "checkJs": true,
+    "paths": {
+      "/dist/*": ["./dist/*"]
+    }
+  }
 }

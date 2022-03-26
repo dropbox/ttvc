@@ -16,8 +16,8 @@ app.use((req, res, next) => {
 // Pass a query parameter to artificially delay request handling
 // e.g. localhost:3000/api/hello?delay=1000
 app.use(({query}, res, next) => {
-  if (query?.delay) {
-    setTimeout(next, query.delay);
+  if (typeof query?.delay === 'string') {
+    setTimeout(next, Number.parseInt(query.delay));
   } else {
     next();
   }
