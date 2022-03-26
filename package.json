@@ -17,6 +17,8 @@
     "test": "npm-run-all build --parallel --race test:*",
     "test:server": "node test/server/server.mjs",
     "test:e2e": "playwright test",
+    "ci:unit": "jest",
+    "ci:e2e": "npm-run-all build --parallel --race test:server test:e2e",
     "release": "np"
   },
   "engines": {
