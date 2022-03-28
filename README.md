@@ -50,3 +50,58 @@ TBC
 # Browser Support
 
 TBC
+
+# Developing
+
+This package expects node version 16 or greater, and the `yarn` package manager.  Once you have these prerequisites, install project dependencies with:
+
+```
+yarn install
+```
+
+## Building
+
+This project is developed with TypeScript.  You can compile the TypeScript source files to JavaScript with:
+
+```
+$ yarn build
+```
+
+## Testing
+
+You can run all tests together with:
+
+```
+$ yarn test
+```
+
+### Testing with Jest
+
+To run only jest unit tests:
+
+```
+$ yarn test:unit
+```
+
+
+### Testing with Playwright
+
+Before running any playwright tests, you will need to install the default set of browsers:
+
+```
+$ npx playwright install
+```
+
+Run test suite:
+
+```
+$ yarn test:e2e
+```
+
+To manually test pages, start the test server.
+
+```
+$ yarn test:server
+```
+
+Then navigate to a test case in your favorite browser.  e.g. http://localhost:3000/test/ajax-mutation/
