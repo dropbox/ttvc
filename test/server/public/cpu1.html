@@ -1,0 +1,17 @@
+<head>
+  <script type="module" src="/analytics.mjs"></script>
+</head>
+
+<body>
+  <h1 id="h1">Hello world!</h1>
+
+  <script src="/busy.js"></script>
+  <script type="module">
+    window.addEventListener('load', () => {
+      busy(500);
+      const p = document.createElement('p');
+      p.innerText = 'This is a paragraph.';
+      document.body.appendChild(p);
+    });
+  </script>
+</body>
