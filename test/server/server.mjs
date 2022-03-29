@@ -23,15 +23,25 @@ app.use(({query}, res, next) => {
   }
 });
 
+// allow loading static assets from the server's /public directory
 app.use(express.static(path.join(__dirname, 'public')));
+// allow loading compiled library code from /dist
 app.use('/dist', express.static(path.join(__dirname, '../../dist')));
 
 // app.get('/', (req, res) => {
 //   // TODO: show something useful?
 // });
 
-app.get('/api/hello', (req, res) => {
-  res.send('world');
+// For parsing application/json
+app.use(express.json());
+
+// respond to API requests
+app.get('/api', (req, res) => {
+  res.send('hello world!');
+});
+// if a request is made with the POST method, return the request body in the response
+app.post('/api', (req, res) => {
+  res.json(req.body);
 });
 
 app.get('/test/:view', ({params}, res) => {

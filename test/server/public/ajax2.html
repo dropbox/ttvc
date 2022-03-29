@@ -7,12 +7,12 @@
   <h1 id="h1">Hello!</h1>
 
   <script>
-    fetch('/api/hello?delay=500')
+    fetch('/api?delay=500')
       .then((res) => res.text())
       .then(
         (text) =>
           // mutate some text
-          (document.getElementById('h1').textContent = `Hello ${text}!`)
+          (document.getElementById('h1').textContent = text)
       );
   </script>
 </body>

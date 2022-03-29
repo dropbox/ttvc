@@ -1,0 +1,19 @@
+<head>
+  <script type="module" src="/analytics.mjs"></script>
+</head>
+
+<body>
+  <h1 id="h1">Hello</h1>
+
+  <script type="module">
+    fetch('/api?delay=500', {
+      headers: {'content-type': 'application/json'},
+      method: 'POST',
+      body: JSON.stringify({name: 'jack'}),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        h1.textContent = `Hello ${json.name}!`;
+      });
+  </script>
+</body>
