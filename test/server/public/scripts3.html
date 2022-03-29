@@ -1,0 +1,18 @@
+<head>
+  <script type="module" src="/analytics.mjs"></script>
+</head>
+
+<body>
+  <h1 id="h1">Hello world!</h1>
+
+  <script type="module">
+    function appendScript(src) {
+      const script = document.createElement('script');
+      script.src = src;
+      document.body.appendChild(script);
+    }
+
+    appendScript("/mutation.js?delay=500")
+    appendScript("/stub.js?delay=750")
+  </script>
+</body>
