@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "outDir": "/dev/null",
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
+    "target": "es2016",
+    "module": "es2020",
+    "declaration": true,
+    "checkJs": true,
+    "paths": {
+      "/dist/*": ["./dist/*"]
+    }
+  }
+}
