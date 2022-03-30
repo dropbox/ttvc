@@ -14,10 +14,10 @@
   },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
-    "test": "npm-run-all build --parallel --race test:*",
+    "test": "npm-run-all build jest --parallel --race test:server test:e2e",
+    "test:unit": "jest",
     "test:server": "node test/server/server.mjs",
     "test:e2e": "playwright test",
-    "ci:unit": "jest",
     "ci:e2e": "npm-run-all build --parallel --race test:server test:e2e",
     "release": "np"
   },
