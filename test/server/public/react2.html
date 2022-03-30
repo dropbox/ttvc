@@ -1,0 +1,20 @@
+<head>
+  <script type="module" src="/analytics.mjs"></script>
+  <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+</head>
+
+<body>
+  <div id="app"></div>
+
+  <!-- <script src="/react.mjs"></script> -->
+  <script>
+    const App = () =>
+      React.createElement('div', null, [
+        React.createElement('h1', null, 'Hello world!'),
+        React.createElement('img', {src: '/150.png?delay=500'}),
+      ]);
+
+    ReactDOM.render(React.createElement(App), document.getElementById('app'));
+  </script>
+</body>
