@@ -7,7 +7,6 @@ const PAGELOAD_DELAY = 1000;
 const LONGEST_IMAGE_DELAY = 400;
 
 test.describe('TTVC', () => {
-  // TODO(PERF-650): This test does not pass!
   test('four loading images with a concurrent mutation and a script tag', async ({page}) => {
     test.fail(); // FIXME: investigate why loading script moves TTVC
     await page.goto(`http://localhost:3000/test/images4?delay=${PAGELOAD_DELAY}`, {
