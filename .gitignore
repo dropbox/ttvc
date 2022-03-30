@@ -103,6 +103,9 @@ dist
 # TernJS port file
 .tern-port
 
+# Compiled ES module output
+lib
+
 # VS Code settings
 .vscode
 

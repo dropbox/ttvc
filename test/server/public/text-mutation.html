@@ -1,11 +1,12 @@
 <head>
-  <script type="module" src="/analytics.mjs"></script>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
 </head>
 
 <body>
   <h1 id="h1">Hello!</h1>
 
-  <script type="module">
+  <script>
     fetch('/api/hello?delay=500')
       .then((res) => res.text())
       .then(
