@@ -1,6 +1,7 @@
-// TODO: Replace this stub with real implementation
-export function getTTVC(callback: (ms: number) => void) {
-  window.setTimeout(() => {
-    callback(123);
-  }, 200);
-}
+// type definitions
+export type {AnnotationNameEnum} from './annotations.js';
+
+export {
+  VisuallyCompleteCalculator,
+  PageLoadVisuallyCompleteCalculator,
+} from './visually_complete_calculator.js';
