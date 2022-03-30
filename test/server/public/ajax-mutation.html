@@ -1,11 +1,12 @@
 <head>
-  <script type="module" src="/analytics.mjs"></script>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
 </head>
 
 <body>
   <h1 id="h1">Hello</h1>
 
-  <script type="module">
+  <script>
     fetch('/api/hello?delay=500')
       .then((res) => res.text())
       .then((text) => {
@@ -17,5 +18,5 @@
   </script>
 
   <!-- this script just delays the window "load" event -->
-  <script type="module" src="/stub.mjs?delay=1000"></script>
+  <script src="/stub.js?delay=1000"></script>
 </body>
