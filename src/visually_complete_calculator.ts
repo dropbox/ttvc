@@ -43,7 +43,7 @@ export class VisuallyCompleteCalculator {
       'MutationObserver' in window &&
       'IntersectionObserver' in window &&
       typeof document.querySelectorAll === 'function' &&
-      window.performance?.timing
+      window.performance?.timing != null // use != to check against null AND undefined
     );
   }
 
@@ -83,7 +83,6 @@ export class VisuallyCompleteCalculator {
    */
   async attemptMeasurement(): Promise<number | null> {
     if (!this.isSupportedEnvironment) {
-      console.warn('Environment is not supported');
       return null;
     }
 
@@ -94,7 +93,6 @@ export class VisuallyCompleteCalculator {
     this.stopObserving();
 
     if (!this.mutations.length) {
-      console.warn('No mutations detected');
       return null;
     }
 
