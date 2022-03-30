@@ -9,7 +9,8 @@ const app = express();
 
 // disable browser cache
 app.use((req, res, next) => {
-  res.set('Cache-Control', 'no-cache');
+  res.header('Cache-Control', 'no-cache');
+  res.header('Vary', '*'); // macOS safari doesn't respect Cache-Control
   next();
 });
 
