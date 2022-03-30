@@ -43,7 +43,7 @@ export class VisuallyCompleteCalculator {
       'MutationObserver' in window &&
       'IntersectionObserver' in window &&
       typeof document.querySelectorAll === 'function' &&
-      window.performance?.timing != null
+      window.performance?.timing != null // use != to check against null AND undefined
     );
   }
 
