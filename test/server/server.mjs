@@ -28,6 +28,8 @@ app.use(({query}, res, next) => {
 app.use(express.static(path.join(__dirname, 'public')));
 // allow loading compiled library code from /dist
 app.use('/dist', express.static(path.join(__dirname, '../../dist')));
+// allow loading libraries from node_modules
+app.use('/node_modules', express.static(path.join(__dirname, '../../node_modules')));
 
 // app.get('/', (req, res) => {
 //   // TODO: show something useful?
