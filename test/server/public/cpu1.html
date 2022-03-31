@@ -1,12 +1,13 @@
 <head>
-  <script type="module" src="/analytics.mjs"></script>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
 </head>
 
 <body>
   <h1 id="h1">Hello world!</h1>
 
   <script src="/busy.js"></script>
-  <script type="module">
+  <script>
     window.addEventListener('load', () => {
       busy(500);
       const p = document.createElement('p');

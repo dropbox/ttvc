@@ -1,5 +1,6 @@
 <head>
-  <script type="module" src="/analytics.mjs"></script>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
 </head>
 
 <body>
@@ -8,10 +9,13 @@
   <img src="/150.png?delay=300" />
   <img src="/150.png?delay=400" />
 
-  <script type="module">
-    // append a new node
-    const h2 = document.createElement('h2');
-    h2.textContent = `Hello world!`;
-    document.body.appendChild(h2);
+  <script>
+    window.setTimeout(() => {
+      // append a new node
+      const h2 = document.createElement('h2');
+      h2.textContent = `Hello world!`;
+      document.body.appendChild(h2);
+      console.log('mutation');
+    }, 0);
   </script>
 </body>

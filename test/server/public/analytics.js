@@ -7,6 +7,8 @@ function init() {
     return requestAnimationFrame(init);
   }
 
+  console.log('init');
+
   const calculator = new TTVC.PageLoadVisuallyCompleteCalculator();
   calculator.start();
 
