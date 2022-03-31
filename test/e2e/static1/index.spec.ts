@@ -6,7 +6,7 @@ import {getEntries} from '../../util/entries';
 const PAGELOAD_DELAY = 200;
 
 test.describe('TTVC', () => {
-  test('a mutation triggered after an AJAX request', async ({page}) => {
+  test('a static HTML document', async ({page}) => {
     test.fail(); // ttvc should still be marked on a static document!
     await page.goto(`http://localhost:3000/test/static1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
