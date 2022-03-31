@@ -8,7 +8,6 @@ const FIRST_SCRIPT_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('two appended script tags, the first triggers a mutation', async ({page}) => {
-    test.fail(); // script tags appear to be counted as loading images?
     await page.goto(`http://localhost:3000/test/scripts3?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
