@@ -1,18 +1,17 @@
 <head>
   <script src="/dist/index.min.js"></script>
-  <script src="/analytics.js"></script>
-  <script crossorigin src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+  <script src="/node_modules/react/umd/react.production.min.js"></script>
+  <script src="/node_modules/react-dom/umd/react-dom.production.min.js"></script>
 </head>
 
 <body>
   <div id="app"></div>
 
+  <!-- FIXME: analytics script shouldn't need to be in body to init before React runs -->
+  <script src="/analytics.js"></script>
   <script>
-    window.setTimeout(() => {
-      const App = () => React.createElement('h1', null, 'Hello world!');
+    const App = () => React.createElement('h1', null, 'Hello world!');
 
-      ReactDOM.render(React.createElement(App), document.getElementById('app'));
-    }, 0)
+    ReactDOM.render(React.createElement(App), document.getElementById('app'));
   </script>
 </body>
