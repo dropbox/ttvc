@@ -1,15 +1,15 @@
 import {test, expect} from '@playwright/test';
 
-import {FUDGE} from '../util/constants';
-import {getEntries} from '../util/entries';
+import {FUDGE} from '../../util/constants';
+import {getEntries} from '../../util/entries';
 
 const PAGELOAD_DELAY = 1000;
 const IMAGE_DELAY = 500;
 
 test.describe('TTVC', () => {
-  test('one loading image and one image w/ inline data url', async ({page}) => {
-    test.fail(); // ttvc should handle images with data urls
-    await page.goto(`http://localhost:3000/test/images5?delay=${PAGELOAD_DELAY}`, {
+  test('a single loading image', async ({page}) => {
+    test.fail(); // ttvc should not require mutations to mark a timestamp
+    await page.goto(`http://localhost:3000/test/images1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

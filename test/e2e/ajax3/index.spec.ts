@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 
-import {FUDGE} from '../util/constants';
-import {getEntries, entryCountIs} from '../util/entries';
+import {FUDGE} from '../../util/constants';
+import {getEntries, entryCountIs} from '../../util/entries';
 
 const PAGELOAD_DELAY = 200;
 const AJAX_DELAY = 500; // see text-mutation.html

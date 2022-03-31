@@ -49,7 +49,7 @@ app.post('/api', (req, res) => {
 
 app.get('/test/:view', ({params}, res) => {
   const view = params.view;
-  res.sendFile(`public/${view}.html`, {root: __dirname});
+  res.sendFile(`test/e2e/${view}/index.html`, {root: '.'});
 });
 
 app.listen(PORT, () => {

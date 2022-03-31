@@ -1,13 +1,13 @@
 import {test, expect} from '@playwright/test';
 
-import {FUDGE} from '../util/constants';
-import {getEntries} from '../util/entries';
+import {FUDGE} from '../../util/constants';
+import {getEntries} from '../../util/entries';
 
 const PAGELOAD_DELAY = 200;
 
 test.describe('TTVC', () => {
-  test('a simple react application', async ({page}) => {
-    test.fail(); // ttvc is measured before intersection observer events fire
+  test('a mutation triggered after an AJAX request', async ({page}) => {
+    test.fail(); // ttvc should still be marked on a static document!
     await page.goto(`http://localhost:3000/test/static1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });

@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 
-import {FUDGE} from '../util/constants';
-import {getEntries} from '../util/entries';
+import {FUDGE} from '../../util/constants';
+import {getEntries} from '../../util/entries';
 
 const PAGELOAD_DELAY = 200;
 const CPU_DELAY = 500;
