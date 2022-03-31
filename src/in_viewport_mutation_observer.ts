@@ -108,9 +108,6 @@ export class InViewportMutationObserver {
    * This function will wait for all images to load and will return the time when they finished loading
    */
   public waitForLoadingImages = () => {
-    if (loadingImages.size === 0) {
-      return Promise.resolve(performance.now());
-    }
     return this.loadingImagesPromise;
   };
 
