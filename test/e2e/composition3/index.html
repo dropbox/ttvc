@@ -14,7 +14,7 @@
     fetch('/api?delay=500')
       .then((res) => res.text())
       .then(() => {
-        busy(200);
+        busy(1000);
         document.head.appendChild(asyncScript);
       });
   </script>

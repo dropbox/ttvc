@@ -5,7 +5,7 @@ import {getEntries} from '../../util/entries';
 
 const PAGELOAD_DELAY = 200;
 const AJAX_DELAY = 500;
-const CPU_DELAY = 200;
+const CPU_DELAY = 1000;
 const SCRIPT_DELAY = 500;
 
 test.describe('TTVC', () => {
