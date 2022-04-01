@@ -73,6 +73,7 @@ export class InViewportMutationObserver {
   private intersectionsObservedCount = 0;
   private totalMutationCallbackLatencyOverhead = 0;
   private totalIntersectionCallbackLatencyOverhead = 0;
+  private pageHasImages = false;
   public wasDocumentHiddenAtSomePoint = false;
 
   constructor(params: InViewportMutationObserverParams) {
@@ -108,6 +109,9 @@ export class InViewportMutationObserver {
    * This function will wait for all images to load and will return the time when they finished loading
    */
   public waitForLoadingImages = () => {
+    if (!this.pageHasImages) {
+      return Promise.resolve(0);
+    }
     return this.loadingImagesPromise;
   };
 
@@ -177,6 +181,7 @@ export class InViewportMutationObserver {
   private imageIntersectionObserverCallback = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
+        this.pageHasImages = true;
         loadingImages.add(entry.target as HTMLElement);
       }
     });
