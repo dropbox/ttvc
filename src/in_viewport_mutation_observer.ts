@@ -11,7 +11,6 @@ export class InViewportMutationObserver {
     attributeFilter: ['hidden', 'style', 'src'],
     attributeOldValue: true,
     attributes: true,
-    characterData: true,
     childList: true,
     subtree: true,
   };
@@ -96,10 +95,6 @@ export class InViewportMutationObserver {
               this.mutations.set(node.parentElement, mutation);
             }
           });
-          break;
-        case 'characterData':
-          this.intersectionObserver.observe(target.parentElement);
-          this.mutations.set(target.parentElement, mutation);
           break;
         case 'attributes':
         default:
