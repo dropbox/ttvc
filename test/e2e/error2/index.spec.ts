@@ -8,6 +8,7 @@ const IMAGE_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('an appended image that fails to load + background lazyloaded script', async ({page}) => {
+    test.fail(); // ttvc doesn't account for image that loaded before window.load event
     await page.goto(`http://localhost:3000/test/error2?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
