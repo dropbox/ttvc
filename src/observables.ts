@@ -1,3 +1,5 @@
+import {requestIdleCallback} from './utils';
+
 // track a count of in-flight APIv2 requests
 type Message = 'IDLE' | 'BUSY';
 type Subscriber = (message: Message) => void;
@@ -215,16 +217,7 @@ export async function requestAllIdleCallback(callback: () => void) {
     state.networkIdle = message === 'IDLE';
 
     if (state.networkIdle) {
-      // window.setTimeout(() => {
-      //   window.requestIdleCallback(() => {
-      //     requestAnimationFrame(() => {
-      //       handleCpuIdle();
-      //     });
-      //   });
-      // }, MINIMUM_IDLE_MS);
-      window.requestAnimationFrame(() => {
-        window.requestIdleCallback(handleCpuIdle);
-      });
+      requestIdleCallback(handleCpuIdle);
     } else {
       window.clearTimeout(timeout);
     }
