@@ -20,6 +20,7 @@
     "build:tsc": "tsc --project tsconfig.build.json",
     "build:rollup": "rollup --config rollup.config.js",
     "test": "npm-run-all build test:*",
+    "test:lint": "eslint --ext .js --ext .ts ./",
     "test:unit": "jest",
     "test:e2e": "playwright test",
     "express": "node test/server/server.mjs",
