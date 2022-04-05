@@ -8,11 +8,11 @@
   <h1 id="h1">Hello world!</h1>
 
   <script>
-    const asyncScript = document.createElement('script');
-    asyncScript.src = '/mutation.js?delay=500';
+    const lazyScript = document.createElement('script');
+    lazyScript.src = '/mutation.js?delay=500';
 
     fetch('/api?delay=500')
       .then((res) => res.text())
-      .then(() => document.head.appendChild(asyncScript));
+      .then(() => document.head.appendChild(lazyScript));
   </script>
 </body>
