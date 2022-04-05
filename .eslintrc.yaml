@@ -6,8 +6,6 @@ parserOptions:
   sourceType: 'module'
   project:
     - './tsconfig.json'
-env:
-  browser: true
 extends:
   - 'eslint:recommended'
 rules:
