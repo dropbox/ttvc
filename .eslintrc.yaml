@@ -1,0 +1,23 @@
+root: true
+reportUnusedDisableDirectives: true
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaVersion: 6
+  sourceType: 'module'
+  project:
+    - './tsconfig.json'
+env:
+  browser: true
+extends:
+  - 'eslint:recommended'
+rules:
+  'prefer-const':
+    - 'warn'
+    - destructuring: 'all'
+  'no-throw-literal': 'warn'
+
+  no-restricted-globals:
+    - 'error'
+    - name: 'SharedArrayBuffer'
+      message:
+        'SharedArrayBuffer is not yet implemented in all runtimes we support.  For details, see https://caniuse.pp.dropbox.com/#feat=mdn-api_JavaScript-builtins--SharedArrayBuffer'
