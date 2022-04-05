@@ -16,6 +16,7 @@ export class VisuallyCompleteCalculator {
   private startTime = 0;
   private lastMutationTimestamp = 0;
   private subscribers = new Set<MetricSubscriber>();
+  private shouldCancel = false;
 
   /**
    * Determine whether the calculator should run in the current environment
@@ -47,37 +48,58 @@ export class VisuallyCompleteCalculator {
   async start(time: number = 0) {
     // setup
     this.inViewportMutationObserver.observe(document.body);
+    window.addEventListener('click', this.cancel);
+    window.addEventListener('keydown', this.cancel);
+    window.addEventListener('pagehide', this.cancel);
+    window.addEventListener('visibilitychange', this.cancel);
+    this.shouldCancel = false;
+
     // save start timestamp
     this.startTime = time;
 
-    // wait for page to be definitely DONE
-    // - wait for window.on("load")
-    await waitForPageLoad();
-    console.log('PAGE LOAD');
-    // - wait for simultaneous network and CPU idle
-    await new Promise<void>((resolve) => requestAllIdleCallback(resolve));
-    console.log('ALL IDLE');
-    // - wait for loading images
-    const lastImageLoaded = await this.inViewportMutationObserver.waitForLoadingImages();
-    console.log('NAVIGATION DONE');
+    try {
+      // wait for page to be definitely DONE
+      // - wait for window.on("load")
+      await waitForPageLoad();
+      // console.log('PAGE LOAD');
+      if (this.shouldCancel) throw 'cancel';
 
-    // identify timestamp of last visible change
-    const lastVisibleUpdate = Math.max(lastImageLoaded, this.lastMutationTimestamp);
+      // - wait for simultaneous network and CPU idle
+      await new Promise<void>((resolve) => requestAllIdleCallback(resolve));
+      // console.log('ALL IDLE');
+      if (this.shouldCancel) throw 'cancel';
 
-    // TODO: Bail out if user interacts or page was hidden!
+      // - wait for loading images
+      const lastImageLoaded = await this.inViewportMutationObserver.waitForLoadingImages();
+      // console.log('NAVIGATION DONE');
+      if (this.shouldCancel) throw 'cancel';
 
-    // report result to subscribers
-    this.next(lastVisibleUpdate - this.startTime);
+      // identify timestamp of last visible change
+      const lastVisibleUpdate = Math.max(lastImageLoaded, this.lastMutationTimestamp);
+
+      // report result to subscribers
+      this.next(lastVisibleUpdate - this.startTime);
+    } catch (e) {
+      // abort computation of ttvc and do nothing
+    }
 
     // cleanup
     // this.inViewportMutationObserver.disconnect();
     this.startTime = 0;
     this.lastMutationTimestamp = 0;
+    window.removeEventListener('click', this.cancel);
+    window.removeEventListener('keydown', this.cancel);
+    window.removeEventListener('pagehide', this.cancel);
+    window.removeEventListener('visibilitychange', this.cancel);
   }
 
   private next(measurement: number) {
     this.subscribers.forEach((subscriber) => subscriber(measurement));
   }
+
+  private cancel = (event: Event) => {
+    this.shouldCancel = true;
+  };
 
   /** subscribe to Visually Complete metrics */
   getVC = (subscriber: MetricSubscriber) => {
