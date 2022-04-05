@@ -7,7 +7,6 @@ const PAGELOAD_DELAY = 200;
 
 test.describe('TTVC', () => {
   test('a static HTML document', async ({page}) => {
-    test.fail(); // ttvc should still be marked on a static document!
     await page.goto(`http://localhost:3000/test/static1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
