@@ -6,8 +6,8 @@ import {getEntries} from '../../util/entries';
 const PAGELOAD_DELAY = 200;
 
 test.describe('TTVC', () => {
-  // TODO: This test is flaky, because it depends on how quickly intersectionobservever events are fired
   test('a single image with style="display: none" and a simultaneous mutation', async ({page}) => {
+    test.fail(); // ttvc should exclude images that are not visible
     await page.goto(`http://localhost:3000/test/invisible2?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });

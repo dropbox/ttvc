@@ -10,6 +10,7 @@ test.describe('TTVC', () => {
   test('a single image with style="display: none" + a mutation + background lazyload', async ({
     page,
   }) => {
+    test.fail(); // ttvc should exclude images that are not visible
     await page.goto(`http://localhost:3000/test/invisible3?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
