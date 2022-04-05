@@ -15,6 +15,9 @@ rules:
     - 'warn'
     - destructuring: 'all'
   'no-throw-literal': 'warn'
+  eqeqeq:
+   - 'error'
+   - 'allow-null'
 
   no-restricted-globals:
     - 'error'
