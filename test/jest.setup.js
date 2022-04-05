@@ -1,3 +1,4 @@
+/* eslint-env browser, node */
 // TODO: Consider rewriting unit tests so that they do not require these global stubs
 
 // stub the MutationObserver and IntersectionObserver interfaces
