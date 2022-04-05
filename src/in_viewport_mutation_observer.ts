@@ -69,8 +69,8 @@ export class InViewportMutationObserver {
   }
 
   public disconnect() {
-    // this.mutationObserver.disconnect();
-    // this.intersectionObserver.disconnect();
+    this.mutationObserver.disconnect();
+    this.intersectionObserver.disconnect();
   }
 
   private mutationObserverCallback: MutationCallback = (mutations) => {

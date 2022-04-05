@@ -84,7 +84,7 @@ export class VisuallyCompleteCalculator {
     }
 
     // cleanup
-    // this.inViewportMutationObserver.disconnect();
+    this.inViewportMutationObserver.disconnect();
     this.startTime = 0;
     this.lastMutationTimestamp = 0;
     window.removeEventListener('click', this.cancel);
