@@ -1,0 +1,8 @@
+dist
+lib
+**/*.d.ts
+
+# FIXME: Enable lint of source and test files after replacing the legacy
+# implementation
+src
+test/unit
