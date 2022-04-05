@@ -1,4 +1,7 @@
 /* eslint-env browser, node */
+/* eslint-disable
+  @typescript-eslint/no-unused-vars,
+  @typescript-eslint/no-empty-function */
 // TODO: Consider rewriting unit tests so that they do not require these global stubs
 
 // stub the MutationObserver and IntersectionObserver interfaces
