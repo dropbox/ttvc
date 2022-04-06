@@ -1,0 +1,19 @@
+<head>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
+  <script async src="/stub.js?delay=1000"></script>
+</head>
+
+<body>
+  <h1>Hello world!</h1>
+
+  <script>
+    window.setTimeout(() => {
+      const p = document.createElement('p');
+      p.textContent = "This is a paragraph.";
+      p.style = "margin-top:2000px"
+      document.body.appendChild(p);
+    }, 500)
+  </script>
+  <script async src="/mutation.js?delay=200"></script>
+</body>

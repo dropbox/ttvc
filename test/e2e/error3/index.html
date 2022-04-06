@@ -1,0 +1,18 @@
+<head>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
+  <script async src="/stub.js?delay=1500"></script>
+</head>
+
+<body>
+  <h1 id="h1">Hello world!</h1>
+
+  <script>
+    window.setTimeout(() => {
+      const script = document.createElement('script');
+      script.src = '/stubbly.js';
+      document.head.appendChild(script);
+    }, 0)
+  </script>
+  <script async src="/mutation.js?delay=200"></script>
+</body>

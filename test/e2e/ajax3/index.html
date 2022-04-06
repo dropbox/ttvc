@@ -1,0 +1,20 @@
+<head>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
+</head>
+
+<body>
+  <h1 id="h1">Hello</h1>
+
+  <script>
+    fetch('/api?delay=500', {
+      headers: {'content-type': 'application/json'},
+      method: 'POST',
+      body: JSON.stringify({name: 'jack'}),
+    })
+      .then((res) => res.json())
+      .then((json) => {
+        h1.textContent = `Hello ${json.name}!`;
+      });
+  </script>
+</body>

@@ -1,0 +1,21 @@
+<head>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
+</head>
+
+<body>
+  <img src="/150.png?delay=100" />
+  <img src="/150.png?delay=200" />
+  <img src="/150.png?delay=300" />
+  <img src="/150.png?delay=400" />
+
+  <script>
+    window.setTimeout(() => {
+      // append a new node
+      const h2 = document.createElement('h2');
+      h2.textContent = `Hello world!`;
+      document.body.appendChild(h2);
+      console.log('mutation');
+    }, 0);
+  </script>
+</body>

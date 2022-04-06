@@ -1,0 +1,18 @@
+<head>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
+</head>
+
+<body>
+  <h1 id="h1">Hello world!</h1>
+
+  <script src="/busy.js"></script>
+  <script>
+    window.addEventListener('load', () => {
+      busy(500);
+      const p = document.createElement('p');
+      p.innerText = 'This is a paragraph.';
+      document.body.appendChild(p);
+    });
+  </script>
+</body>
