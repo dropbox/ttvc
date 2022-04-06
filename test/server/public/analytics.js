@@ -17,7 +17,7 @@ function init() {
     callback(measurement);
   }
 
-  getTTVC((ms) => {
+  void getTTVC((ms) => {
     console.log('TTVC:', ms);
     if (ms != null) {
       window.entries.push(ms);

@@ -9,7 +9,7 @@ test.describe('TTVC', () => {
     });
 
     // visibility change should abort calculation
-    page.evaluate(() => {
+    await page.evaluate(() => {
       Object.defineProperty(document, 'visibilityState', {
         get() {
           return 'hidden';
