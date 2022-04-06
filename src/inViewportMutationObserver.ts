@@ -37,18 +37,6 @@ export class InViewportMutationObserver {
       this.imageLoadCallback?.();
     }
   };
-  // private loadingImagesPromise = new Promise<number>((resolve, reject) => {
-  //   window.document.addEventListener(
-  //     'load',
-  //     (event) => {
-  //       this.loadingImages.delete(event.target as HTMLElement);
-  //       if (this.loadingImages.size === 0) {
-  //         resolve(performance.now());
-  //       }
-  //     },
-  //     {capture: true}
-  //   );
-  // });
 
   /**
    * This function will wait for all images to load and will return the time when they finished loading

@@ -1,15 +1,7 @@
-import {requestIdleCallback} from './utils';
+import {MINIMUM_IDLE_MS} from './constants';
 
-// track a count of in-flight APIv2 requests
-type Message = 'IDLE' | 'BUSY';
+export type Message = 'IDLE' | 'BUSY';
 type Subscriber = (message: Message) => void;
-
-// wait for the network and CPU to be idle for this long before declaring the
-// page done
-const MINIMUM_IDLE_MS = 200;
-
-// TODO: Instrument edison prefetches
-// TODO: Review codebase for other AJAX helpers we may want to instrument
 
 /**
  * Alerts subscribers to the presence or absence of pending AJAX requests
@@ -127,8 +119,8 @@ class ScriptLoadingIdleObservable {
  * ScriptLoadingIdleObservable.
  */
 class NetworkIdleObservable {
-  private ajaxIdleObservable = ajaxIdleObservable;
-  private scriptLoadingIdleObservable = scriptLoadingIdleObservable;
+  private ajaxIdleObservable = getAjaxIdleObservable();
+  private scriptLoadingIdleObservable = getScriptLoadingIdleObservable();
   private subscribers = new Set<Subscriber>();
 
   // idle state
@@ -187,52 +179,42 @@ class NetworkIdleObservable {
   };
 }
 
-// initialize observable singletons
-export const ajaxIdleObservable = new AjaxIdleObservable();
-const scriptLoadingIdleObservable = new ScriptLoadingIdleObservable();
-const networkIdleObservable = new NetworkIdleObservable();
+// observable singletons
+let ajaxIdleObservable: AjaxIdleObservable;
+let scriptLoadingIdleObservable: ScriptLoadingIdleObservable;
+let networkIdleObservable: NetworkIdleObservable;
+
+const getAjaxIdleObservable = () => {
+  if (!ajaxIdleObservable) {
+    ajaxIdleObservable = new AjaxIdleObservable();
+  }
+  return ajaxIdleObservable;
+};
+const getScriptLoadingIdleObservable = () => {
+  if (!scriptLoadingIdleObservable) {
+    scriptLoadingIdleObservable = new ScriptLoadingIdleObservable();
+  }
+  return scriptLoadingIdleObservable;
+};
+export const getNetworkIdleObservable = () => {
+  if (!networkIdleObservable) {
+    networkIdleObservable = new NetworkIdleObservable();
+  }
+  return networkIdleObservable;
+};
 
 /**
- * Request a callback when the CPU and network have both been simultaneously
- * idle for MINIMUM_IDLE_MS.
+ * Call this to notify ttvc that an AJAX request has just begun.
  *
- * NOTE: will only trigger once
+ * Instrument your site's AJAX requests with `incrementAjaxCount` and
+ * `decrementAjaxCount` to ensure that ttvc is not reported early.
  */
-export async function requestAllIdleCallback(callback: () => void) {
-  const state = {
-    networkIdle: networkIdleObservable.isIdle(),
-  };
+export const incrementAjaxCount = () => getAjaxIdleObservable().increment();
 
-  let timeout = null;
-
-  const handleAllIdle = () => {
-    timeout = setTimeout(() => {
-      callback();
-      unsubscribe();
-    }, MINIMUM_IDLE_MS);
-  };
-
-  const handleNetworkChange = (message: Message) => {
-    console.log('NETWORK', message);
-    state.networkIdle = message === 'IDLE';
-
-    if (state.networkIdle) {
-      requestIdleCallback(handleCpuIdle);
-    } else {
-      window.clearTimeout(timeout);
-    }
-  };
-
-  const handleCpuIdle = () => {
-    if (state.networkIdle && !timeout) {
-      handleAllIdle();
-    }
-  };
-
-  const unsubscribe = networkIdleObservable.subscribe(handleNetworkChange);
-
-  // base case
-  if (state.networkIdle) {
-    handleNetworkChange('IDLE');
-  }
-}
+/**
+ * Call this to notify ttvc that an AJAX request has just resolved.
+ *
+ * Instrument your site's AJAX requests with `incrementAjaxCount` and
+ * `decrementAjaxCount` to ensure that ttvc is not reported early.
+ */
+export const decrementAjaxCount = () => getAjaxIdleObservable().decrement();

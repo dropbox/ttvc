@@ -1,15 +1,13 @@
-import {InViewportMutationObserver} from './in_viewport_mutation_observer';
+import {InViewportMutationObserver} from './inViewportMutationObserver';
 import {waitForPageLoad} from './utils';
-import {requestAllIdleCallback} from './observables';
-
-// declare const process: NodeJS.Process;
+import {requestAllIdleCallback} from './requestAllIdleCallback';
 
 type MetricSubscriber = (measurement: number) => void;
 
 /**
  * TODO: Document
  */
-export class VisuallyCompleteCalculator {
+class VisuallyCompleteCalculator {
   private inViewportMutationObserver: InViewportMutationObserver;
 
   // measurement state
@@ -32,7 +30,6 @@ export class VisuallyCompleteCalculator {
   }
 
   constructor() {
-    // TODO: report exception if env not supported
     if (!VisuallyCompleteCalculator.isSupportedEnvironment()) {
       throw new Error('VisuallyCompleteCalculator: This browser/runtime is not supported.');
     }
@@ -63,12 +60,10 @@ export class VisuallyCompleteCalculator {
       await waitForPageLoad();
       // console.log('PAGE LOAD');
       if (this.shouldCancel) throw 'cancel';
-
       // - wait for simultaneous network and CPU idle
       await new Promise<void>((resolve) => requestAllIdleCallback(resolve));
       // console.log('ALL IDLE');
       if (this.shouldCancel) throw 'cancel';
-
       // - wait for loading images
       const lastImageLoaded = await this.inViewportMutationObserver.waitForLoadingImages();
       // console.log('NAVIGATION DONE');
@@ -76,7 +71,6 @@ export class VisuallyCompleteCalculator {
 
       // identify timestamp of last visible change
       const lastVisibleUpdate = Math.max(lastImageLoaded, this.lastMutationTimestamp);
-
       // report result to subscribers
       this.next(lastVisibleUpdate - this.startTime);
     } catch (e) {
@@ -110,3 +104,12 @@ export class VisuallyCompleteCalculator {
     return () => this.subscribers.delete(subscriber);
   };
 }
+
+// export calculator singleton
+let calculator: VisuallyCompleteCalculator;
+export const getVisuallyCompleteCalculator = () => {
+  if (!calculator) {
+    calculator = new VisuallyCompleteCalculator();
+  }
+  return calculator;
+};
