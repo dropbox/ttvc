@@ -17,5 +17,7 @@ jobs:
       run: yarn
     - name: Install Playwright
       run: npx playwright install --with-deps
+    - name: Build ttvc
+      run: yarn build
     - name: Run Playwright tests
-      run: yarn ci:e2e
+      run: yarn test:e2e

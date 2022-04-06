@@ -15,14 +15,14 @@
     "access": "public"
   },
   "scripts": {
+    "clean": "rm -rf dist && rm -rf lib",
     "build": "npm-run-all --parallel build:*",
     "build:tsc": "tsc --project tsconfig.build.json",
     "build:rollup": "rollup --config rollup.config.js",
-    "test": "npm-run-all build test:unit --parallel --race test:server test:e2e",
+    "test": "npm-run-all build test:*",
     "test:unit": "jest",
-    "test:server": "node test/server/server.mjs",
     "test:e2e": "playwright test",
-    "ci:e2e": "npm-run-all build --parallel --race test:server test:e2e",
+    "express": "node test/server/server.mjs",
     "release": "np"
   },
   "engines": {
