@@ -1,4 +1,3 @@
-import {MINIMUM_IDLE_MS} from '../../src/constants';
 import {NetworkIdleObservable} from '../../src/networkIdleObservable';
 
 describe('networkIdleObservable', () => {

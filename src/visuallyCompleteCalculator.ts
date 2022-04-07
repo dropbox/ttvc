@@ -36,13 +36,12 @@ class VisuallyCompleteCalculator {
 
     this.inViewportMutationObserver = new InViewportMutationObserver({
       callback: (mutation) =>
-        // @ts-ignore FIXME
         (this.lastMutationTimestamp = Math.max(this.lastMutationTimestamp, mutation.timestamp)),
     });
   }
 
   /** begin measuring a new navigation */
-  async start(time: number = 0) {
+  async start(time = 0) {
     // setup
     this.inViewportMutationObserver.observe(document.body);
     window.addEventListener('click', this.cancel);
@@ -86,7 +85,7 @@ class VisuallyCompleteCalculator {
     this.subscribers.forEach((subscriber) => subscriber(measurement));
   }
 
-  private cancel = (event: Event) => {
+  private cancel = () => {
     this.shouldCancel = true;
   };
 

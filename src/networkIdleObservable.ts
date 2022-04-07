@@ -1,5 +1,3 @@
-import {MINIMUM_IDLE_MS} from './constants';
-
 export type Message = 'IDLE' | 'BUSY';
 type Subscriber = (message: Message) => void;
 

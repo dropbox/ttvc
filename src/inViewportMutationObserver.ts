@@ -1,4 +1,5 @@
-export type InViewportMutationObserverCallback = (mutation: MutationRecord) => void;
+export type InViewportMutationObserverCallback = (mutation: TimestampedMutationRecord) => void;
+export type TimestampedMutationRecord = MutationRecord & {timestamp: number};
 
 // TODO: Consider adopting ES6 Observable interface
 // TODO: Consider flattening this class into the module scope.
@@ -14,7 +15,7 @@ export class InViewportMutationObserver {
     childList: true,
     subtree: true,
   };
-  private mutations: WeakMap<Node, MutationRecord> = new WeakMap();
+  private mutations: WeakMap<Node, TimestampedMutationRecord> = new WeakMap();
   private loadingImages: Set<HTMLElement | null> = new Set();
   private lastImageLoadTimestamp = 0;
   private imageLoadCallback?: () => void;
@@ -62,9 +63,8 @@ export class InViewportMutationObserver {
   }
 
   private mutationObserverCallback: MutationCallback = (mutations) => {
-    mutations.forEach((mutation) => {
+    mutations.forEach((mutation: TimestampedMutationRecord) => {
       // console.log(mutation);
-      // @ts-ignore FIXME
       mutation.timestamp = performance.now();
 
       let target: Element | null = null;
@@ -96,7 +96,7 @@ export class InViewportMutationObserver {
     entries.forEach((entry) => {
       // console.log(entry);
       if (entry.isIntersecting && this.mutations.has(entry.target)) {
-        const mutation = this.mutations.get(entry.target)!;
+        const mutation = this.mutations.get(entry.target);
         this.mutations.delete(entry.target);
         this.callback(mutation);
 

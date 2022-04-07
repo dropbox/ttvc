@@ -9,7 +9,7 @@ import {requestIdleCallback} from './utils';
  * NOTE: will only trigger once
  */
 export function requestAllIdleCallback(callback: () => void) {
-  let networkIdleObservable = getNetworkIdleObservable();
+  const networkIdleObservable = getNetworkIdleObservable();
 
   // state
   let networkIdle = networkIdleObservable.isIdle();
