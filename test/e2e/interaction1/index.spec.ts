@@ -9,7 +9,7 @@ test.describe('TTVC', () => {
     });
 
     // user interaction should abort calculation
-    page.click('body');
+    await page.click('body');
 
     // wait long enough to ensure ttvc would have been logged
     try {

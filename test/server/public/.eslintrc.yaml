@@ -3,4 +3,4 @@ env:
 
 rules:
   # Allow authoring of non-module script files
-  "@typescript-eslint/no-unused-vars": "off"
+  'no-unused-vars': 'off'

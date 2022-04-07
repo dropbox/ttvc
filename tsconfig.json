@@ -9,6 +9,7 @@
     "checkJs": true,
     "paths": {
       "/dist/*": ["./dist/*"]
-    }
-  }
+    },
+  },
+  "exclude": ["lib", "dist"]
 }
