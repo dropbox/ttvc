@@ -43,7 +43,7 @@ class VisuallyCompleteCalculator {
   /** begin measuring a new navigation */
   async start(time = 0) {
     // setup
-    this.inViewportMutationObserver.observe(document.body);
+    this.inViewportMutationObserver.observe(document.documentElement);
     window.addEventListener('click', this.cancel);
     window.addEventListener('keydown', this.cancel);
     window.addEventListener('pagehide', this.cancel);

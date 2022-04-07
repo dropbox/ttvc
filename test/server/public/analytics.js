@@ -9,10 +9,10 @@ window.fetch = (...args) => {
 };
 
 function init() {
-  // keep trying until document.body is present
-  if (!document.body) {
-    return requestAnimationFrame(init);
-  }
+  // // keep trying until document.body is present
+  // if (!document.body) {
+  //   return requestAnimationFrame(init);
+  // }
 
   console.log('init');
 
