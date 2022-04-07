@@ -29,8 +29,8 @@ export class InViewportMutationObserver {
     window.document.addEventListener('error', this.handleImageLoadOrError, {capture: true});
   }
 
-  private handleImageLoadOrError = (event) => {
-    if (this.loadingImages.has(event.target)) {
+  private handleImageLoadOrError = (event: Event) => {
+    if (this.loadingImages.has(event.target as HTMLElement)) {
       this.lastImageLoadTimestamp = performance.now();
     }
     this.loadingImages.delete(event.target as HTMLElement);

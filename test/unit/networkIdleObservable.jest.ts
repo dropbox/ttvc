@@ -5,7 +5,7 @@ describe('networkIdleObservable', () => {
   let subscriber: jest.Mock;
   let networkIdleObservable: NetworkIdleObservable;
 
-  beforeEach(async () => {
+  beforeEach(() => {
     networkIdleObservable = new NetworkIdleObservable();
     subscriber = jest.fn();
     unsubscribe = networkIdleObservable.subscribe(subscriber);

@@ -3,10 +3,10 @@ import {getVisuallyCompleteCalculator} from './visuallyCompleteCalculator.js';
 
 export function getTTVC(callback: (ms: number) => void) {
   const calculator = getVisuallyCompleteCalculator();
-  calculator.start();
+  void calculator.start();
   calculator.getVC(callback);
 
-  window.addEventListener('locationchange', () => calculator.start());
+  window.addEventListener('locationchange', () => void calculator.start());
 }
 
 export const incrementAjaxCount = getNetworkIdleObservable().incrementAjaxCount;

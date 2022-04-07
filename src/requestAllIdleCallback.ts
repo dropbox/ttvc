@@ -13,7 +13,7 @@ export function requestAllIdleCallback(callback: () => void) {
 
   // state
   let networkIdle = networkIdleObservable.isIdle();
-  let timeout = null;
+  let timeout: number | null = null;
 
   const handleNetworkChange = (message: Message) => {
     // console.log('NETWORK', message);
