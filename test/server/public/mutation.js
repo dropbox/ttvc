@@ -2,4 +2,3 @@
 const p = document.createElement('p');
 p.innerText = 'This is a paragraph.';
 document.body.appendChild(p);
-console.log('mutation');

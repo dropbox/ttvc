@@ -63,7 +63,7 @@ export class InViewportMutationObserver {
 
   private mutationObserverCallback: MutationCallback = (mutations) => {
     mutations.forEach((mutation) => {
-      console.log(mutation);
+      // console.log(mutation);
       // @ts-ignore FIXME
       mutation.timestamp = performance.now();
 
@@ -94,7 +94,7 @@ export class InViewportMutationObserver {
 
   private intersectionObserverCallback: IntersectionObserverCallback = (entries) => {
     entries.forEach((entry) => {
-      console.log(entry);
+      // console.log(entry);
       if (entry.isIntersecting && this.mutations.has(entry.target)) {
         const mutation = this.mutations.get(entry.target)!;
         this.mutations.delete(entry.target);

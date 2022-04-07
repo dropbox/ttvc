@@ -16,7 +16,7 @@ export function requestAllIdleCallback(callback: () => void) {
   let timeout = null;
 
   const handleNetworkChange = (message: Message) => {
-    console.log('NETWORK', message);
+    // console.log('NETWORK', message);
     networkIdle = message === 'IDLE';
 
     if (networkIdle) {
