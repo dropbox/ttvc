@@ -1,6 +1,5 @@
+import {getNetworkIdleObservable} from './networkIdleObservable.js';
 import {getVisuallyCompleteCalculator} from './visuallyCompleteCalculator.js';
-
-export {incrementAjaxCount, decrementAjaxCount} from './networkIdleObservable.js';
 
 export function getTTVC(callback: (ms: number) => void) {
   const calculator = getVisuallyCompleteCalculator();
@@ -9,3 +8,6 @@ export function getTTVC(callback: (ms: number) => void) {
 
   window.addEventListener('locationchange', () => calculator.start());
 }
+
+export const incrementAjaxCount = getNetworkIdleObservable().incrementAjaxCount;
+export const decrementAjaxCount = getNetworkIdleObservable().decrementAjaxCount;

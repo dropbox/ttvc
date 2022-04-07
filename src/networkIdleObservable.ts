@@ -27,10 +27,10 @@ class AjaxIdleObservable {
 
   /** call this whenever an instrumented AJAX request is resolved */
   decrement = () => {
-    this.pendingRequests -= 1;
-    if (this.pendingRequests === 0) {
+    if (this.pendingRequests === 1) {
       this.next('IDLE');
     }
+    this.pendingRequests = Math.max(this.pendingRequests - 1, 0);
   };
 
   subscribe = (subscriber: Subscriber) => {
@@ -114,19 +114,20 @@ class ScriptLoadingIdleObservable {
 }
 
 /**
+ * DO NOT INTIALIZE THIS CLASS DIRECTLY. Use getNetworkIdleObservable instead.
+ *
  * Alerts subscribers to the presence or absence of _any_ observable network
  * activity. Combines the functionalities of AjaxIdleObservable and
  * ScriptLoadingIdleObservable.
  */
-class NetworkIdleObservable {
-  private ajaxIdleObservable = getAjaxIdleObservable();
-  private scriptLoadingIdleObservable = getScriptLoadingIdleObservable();
+export class NetworkIdleObservable {
+  private ajaxIdleObservable = new AjaxIdleObservable();
+  private scriptLoadingIdleObservable = new ScriptLoadingIdleObservable();
   private subscribers = new Set<Subscriber>();
 
   // idle state
   private ajaxIdle = true;
   private scriptLoadingIdle = true;
-  private idleTimeout?: number = undefined;
 
   constructor() {
     this.ajaxIdleObservable.subscribe(this.handleUpdate('AJAX'));
@@ -147,17 +148,7 @@ class NetworkIdleObservable {
     // if this is a change, notify subscribers
     const isIdle = this.ajaxIdle && this.scriptLoadingIdle;
     if (wasIdle !== isIdle) {
-      if (isIdle) {
-        this.idleTimeout = window.setTimeout(() => this.next('IDLE'), MINIMUM_IDLE_MS);
-      } else {
-        if (this.idleTimeout != null) {
-          window.clearTimeout(this.idleTimeout);
-          this.idleTimeout = undefined;
-        } else {
-          this.next('BUSY');
-        }
-      }
-      // this.next(isIdle ? 'IDLE' : 'BUSY');
+      this.next(isIdle ? 'IDLE' : 'BUSY');
     }
   };
 
@@ -165,6 +156,22 @@ class NetworkIdleObservable {
     // console.log('NETWORK', message);
     this.subscribers.forEach((subscriber) => subscriber(message));
   };
+
+  /**
+   * Call this to notify ttvc that an AJAX request has just begun.
+   *
+   * Instrument your site's AJAX requests with `incrementAjaxCount` and
+   * `decrementAjaxCount` to ensure that ttvc is not reported early.
+   */
+  incrementAjaxCount = () => this.ajaxIdleObservable.increment();
+
+  /**
+   * Call this to notify ttvc that an AJAX request has just resolved.
+   *
+   * Instrument your site's AJAX requests with `incrementAjaxCount` and
+   * `decrementAjaxCount` to ensure that ttvc is not reported early.
+   */
+  decrementAjaxCount = () => this.ajaxIdleObservable.decrement();
 
   isIdle = () => {
     return this.ajaxIdle && this.scriptLoadingIdle;
@@ -179,42 +186,11 @@ class NetworkIdleObservable {
   };
 }
 
-// observable singletons
-let ajaxIdleObservable: AjaxIdleObservable;
-let scriptLoadingIdleObservable: ScriptLoadingIdleObservable;
+// expose observable as a singleton
 let networkIdleObservable: NetworkIdleObservable;
-
-const getAjaxIdleObservable = () => {
-  if (!ajaxIdleObservable) {
-    ajaxIdleObservable = new AjaxIdleObservable();
-  }
-  return ajaxIdleObservable;
-};
-const getScriptLoadingIdleObservable = () => {
-  if (!scriptLoadingIdleObservable) {
-    scriptLoadingIdleObservable = new ScriptLoadingIdleObservable();
-  }
-  return scriptLoadingIdleObservable;
-};
 export const getNetworkIdleObservable = () => {
   if (!networkIdleObservable) {
     networkIdleObservable = new NetworkIdleObservable();
   }
   return networkIdleObservable;
 };
-
-/**
- * Call this to notify ttvc that an AJAX request has just begun.
- *
- * Instrument your site's AJAX requests with `incrementAjaxCount` and
- * `decrementAjaxCount` to ensure that ttvc is not reported early.
- */
-export const incrementAjaxCount = () => getAjaxIdleObservable().increment();
-
-/**
- * Call this to notify ttvc that an AJAX request has just resolved.
- *
- * Instrument your site's AJAX requests with `incrementAjaxCount` and
- * `decrementAjaxCount` to ensure that ttvc is not reported early.
- */
-export const decrementAjaxCount = () => getAjaxIdleObservable().decrement();
