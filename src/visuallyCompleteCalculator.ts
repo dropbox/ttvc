@@ -54,27 +54,22 @@ class VisuallyCompleteCalculator {
     // save start timestamp
     this.startTime = time;
 
-    try {
-      // wait for page to be definitely DONE
-      // - wait for window.on("load")
-      await waitForPageLoad();
-      // console.log('PAGE LOAD');
-      if (this.shouldCancel) throw 'cancel';
-      // - wait for simultaneous network and CPU idle
-      await new Promise<void>((resolve) => requestAllIdleCallback(resolve));
-      // console.log('ALL IDLE');
-      if (this.shouldCancel) throw 'cancel';
-      // - wait for loading images
-      const lastImageLoaded = await this.inViewportMutationObserver.waitForLoadingImages();
-      // console.log('NAVIGATION DONE');
-      if (this.shouldCancel) throw 'cancel';
+    // wait for page to be definitely DONE
+    // - wait for window.on("load")
+    await waitForPageLoad();
+    // console.log('PAGE LOAD');
+    // - wait for simultaneous network and CPU idle
+    await new Promise<void>((resolve) => requestAllIdleCallback(resolve));
+    // console.log('ALL IDLE');
+    // - wait for loading images
+    const lastImageLoaded = await this.inViewportMutationObserver.waitForLoadingImages();
+    // console.log('NAVIGATION DONE');
 
+    if (!this.shouldCancel) {
       // identify timestamp of last visible change
       const lastVisibleUpdate = Math.max(lastImageLoaded, this.lastMutationTimestamp);
       // report result to subscribers
       this.next(lastVisibleUpdate - this.startTime);
-    } catch (e) {
-      // abort computation of ttvc and do nothing
     }
 
     // cleanup
