@@ -67,10 +67,10 @@ export class InViewportMutationObserver {
       // console.log(entry);
       if (entry.isIntersecting && this.mutations.has(entry.target)) {
         const mutation = this.mutations.get(entry.target);
-        this.mutations.delete(entry.target);
-        this.intersectionObserver.unobserve(entry.target);
         this.callback(mutation);
       }
+      this.mutations.delete(entry.target);
+      this.intersectionObserver.unobserve(entry.target);
     });
   };
 }
