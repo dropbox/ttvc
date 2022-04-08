@@ -32,7 +32,7 @@ export class InViewportMutationObserver {
   };
   private mutations: Map<Node, TimestampedMutationRecord> = new Map();
 
-  constructor({callback}: {callback: InViewportMutationObserverCallback}) {
+  constructor(callback: InViewportMutationObserverCallback) {
     this.callback = callback;
     this.mutationObserver = new MutationObserver(this.mutationObserverCallback);
     this.intersectionObserver = new IntersectionObserver(this.intersectionObserverCallback);

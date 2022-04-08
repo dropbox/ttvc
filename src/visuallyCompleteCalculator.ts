@@ -37,10 +37,10 @@ class VisuallyCompleteCalculator {
       throw new Error('VisuallyCompleteCalculator: This browser/runtime is not supported.');
     }
 
-    this.inViewportMutationObserver = new InViewportMutationObserver({
-      callback: (mutation) =>
-        (this.lastMutationTimestamp = Math.max(this.lastMutationTimestamp, mutation.timestamp)),
-    });
+    this.inViewportMutationObserver = new InViewportMutationObserver(
+      (mutation) =>
+        (this.lastMutationTimestamp = Math.max(this.lastMutationTimestamp, mutation.timestamp))
+    );
     this.inViewportImageObserver = new InViewportImageObserver(
       (timestamp) =>
         (this.lastImageLoadTimestamp = Math.max(this.lastImageLoadTimestamp, timestamp))
