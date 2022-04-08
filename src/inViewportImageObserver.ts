@@ -2,7 +2,17 @@
  * Modeled after IntersectionObserver and MutationObserver, this Image observer
  * reports image load times for images that are visible within the viewport.
  *
- * TODO: Document usage
+ * @example
+ * const observer = new InViewportImageObserver((timestamp) => {
+ *   // do something with the image load event time
+ * });
+ *
+ * // begin listening for all visible image load events
+ * // note that observe() takes no arguments
+ * observer.observe();
+ *
+ * // stop listening to image load events
+ * observer.disconnect();
  */
 export class InViewportImageObserver {
   private intersectionObserver: IntersectionObserver;

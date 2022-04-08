@@ -1,9 +1,24 @@
 export type InViewportMutationObserverCallback = (mutation: TimestampedMutationRecord) => void;
 export type TimestampedMutationRecord = MutationRecord & {timestamp: number};
 
-// TODO: Consider adopting ES6 Observable interface
-// TODO: Consider flattening this class into the module scope.
-
+/**
+ * Instantiate this class to monitor mutation events that occur *within the
+ * viewport*.
+ *
+ * This class is modeled after the standard MutationObserver API, but does not
+ * report mutations that did not occur within the viewport.
+ *
+ * @example
+ * const observer = new InViewportMutationObserver((mutation) => {
+ *   // do something with the mutation
+ * });
+ *
+ * // begin watching for visible mutations to the body element
+ * observer.observe(document.body);
+ *
+ * // stop watching for mutations
+ * observer.disconnect();
+ */
 export class InViewportMutationObserver {
   private callback: InViewportMutationObserverCallback;
   private intersectionObserver: IntersectionObserver;
