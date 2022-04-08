@@ -34,7 +34,6 @@ export class InViewportMutationObserver {
 
   private mutationObserverCallback: MutationCallback = (mutations) => {
     mutations.forEach((mutation: TimestampedMutationRecord) => {
-      // console.log(mutation);
       mutation.timestamp = performance.now();
 
       let target: Element | null = null;

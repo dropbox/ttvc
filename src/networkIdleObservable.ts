@@ -109,7 +109,6 @@ class ResourceLoadingIdleObservable {
   };
 
   private remove = (element: ResourceLoadingElement) => {
-    // console.log('pending resources:', this.pendingResources.size);
     this.pendingResources.delete(element);
     if (this.pendingResources.size === 0) {
       this.next('IDLE');
@@ -165,7 +164,6 @@ export class NetworkIdleObservable {
   };
 
   private next = (message: Message) => {
-    // console.log('NETWORK', message);
     this.subscribers.forEach((subscriber) => subscriber(message));
   };
 

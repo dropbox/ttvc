@@ -64,10 +64,8 @@ class VisuallyCompleteCalculator {
     // wait for page to be definitely DONE
     // - wait for window.on("load")
     await waitForPageLoad();
-    console.log('PAGE LOAD');
     // - wait for simultaneous network and CPU idle
     await new Promise<void>(requestAllIdleCallback);
-    console.log('ALL IDLE');
 
     if (!this.shouldCancel) {
       // identify timestamp of last visible change
