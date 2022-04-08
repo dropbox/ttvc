@@ -8,20 +8,12 @@ window.fetch = (...args) => {
   return oldFetch(...args).finally(TTVC.decrementAjaxCount);
 };
 
-function init() {
-  // // keep trying until document.body is present
-  // if (!document.body) {
-  //   return requestAnimationFrame(init);
-  // }
+TTVC.init();
+console.log('init');
 
-  console.log('init');
-
-  TTVC.getTTVC((ms) => {
-    console.log('TTVC:', ms);
-    if (ms != null) {
-      window.entries.push(ms);
-    }
-  });
-}
-
-init();
+TTVC.getTTVC((ms) => {
+  console.log('TTVC:', ms);
+  if (ms != null) {
+    window.entries.push(ms);
+  }
+});

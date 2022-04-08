@@ -3,7 +3,7 @@ import {waitForPageLoad} from './utils';
 import {requestAllIdleCallback} from './requestAllIdleCallback';
 import {InViewportImageObserver} from './inViewportImageObserver';
 
-type MetricSubscriber = (measurement: number) => void;
+export type MetricSubscriber = (measurement: number) => void;
 
 /**
  * TODO: Document

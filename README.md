@@ -25,7 +25,10 @@ $ yarn add @dropbox-performance/ttvc
 > ⚠️ **This API has not stabilized and is likely to change.**
 
 ```js
-import {getTTVC} from '@dropbox-performance/ttvc';
+import {init, getTTVC} from '@dropbox-performance/ttvc';
+
+// Vall this as early in pageload as possible to setup instrumentation.
+init();
 
 // Reports the last visible change for each navigation that
 // occurs during the life of this document.
