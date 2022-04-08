@@ -1,5 +1,6 @@
 export type Message = 'IDLE' | 'BUSY';
 type Subscriber = (message: Message) => void;
+type ResourceLoadingElement = HTMLScriptElement | HTMLLinkElement | HTMLImageElement;
 
 /**
  * Alerts subscribers to the presence or absence of pending AJAX requests
@@ -40,9 +41,9 @@ class AjaxIdleObservable {
   };
 }
 
-/** Alerts subscribers to the presence or absence of pending script resources */
-class ScriptLoadingIdleObservable {
-  private pendingScripts = new Set<HTMLScriptElement | HTMLLinkElement>();
+/** Alerts subscribers to the presence or absence of pending resources */
+class ResourceLoadingIdleObservable {
+  private pendingResources = new Set<ResourceLoadingElement>();
   private subscribers = new Set<Subscriber>();
 
   constructor() {
@@ -53,25 +54,33 @@ class ScriptLoadingIdleObservable {
         const o = new MutationObserver((mutations) => {
           mutations.forEach((mutation) => {
             mutation.addedNodes.forEach((node) => {
-              if (node instanceof HTMLScriptElement || node instanceof HTMLLinkElement) {
+              if (
+                node instanceof HTMLScriptElement ||
+                node instanceof HTMLLinkElement ||
+                node instanceof HTMLImageElement
+              ) {
                 this.add(node);
+              } else if (node.hasChildNodes() && node instanceof HTMLElement) {
+                // images may be mounted within large subtrees, this is less
+                // common with link/script elements
+                node.querySelectorAll('img').forEach(this.add);
               }
             });
           });
         });
 
-        // watch for new tags added as direct children of <head> and <body> tags
-        o.observe(window.document.head, {childList: true});
-        o.observe(window.document.body, {childList: true});
+        // watch for new tags added anywhere in the document
+        o.observe(window.document.documentElement, {childList: true, subtree: true});
 
-        // as scripts load, remove them from pendingScripts
+        // as resources load, remove them from pendingResources
         ['load', 'error'].forEach((eventType) => {
           window.document.addEventListener(
             eventType,
             (event) => {
               if (
                 event.target instanceof HTMLScriptElement ||
-                event.target instanceof HTMLLinkElement
+                event.target instanceof HTMLLinkElement ||
+                event.target instanceof HTMLImageElement
               ) {
                 this.remove(event.target);
               }
@@ -87,17 +96,22 @@ class ScriptLoadingIdleObservable {
     this.subscribers.forEach((subscriber) => subscriber(message));
   };
 
-  private add = (script: HTMLScriptElement | HTMLLinkElement) => {
-    if (this.pendingScripts.size === 0) {
+  private add = (element: ResourceLoadingElement) => {
+    // if element is an image and it's complete, ignore it
+    if (element instanceof HTMLImageElement && element.complete) {
+      return;
+    }
+
+    if (this.pendingResources.size === 0) {
       this.next('BUSY');
     }
-    this.pendingScripts.add(script);
+    this.pendingResources.add(element);
   };
 
-  private remove = (script: HTMLScriptElement | HTMLLinkElement) => {
-    // console.log('pending scripts:', this.pendingScripts.size);
-    this.pendingScripts.delete(script);
-    if (this.pendingScripts.size === 0) {
+  private remove = (element: ResourceLoadingElement) => {
+    // console.log('pending resources:', this.pendingResources.size);
+    this.pendingResources.delete(element);
+    if (this.pendingResources.size === 0) {
       this.next('IDLE');
     }
   };
@@ -120,7 +134,7 @@ class ScriptLoadingIdleObservable {
  */
 export class NetworkIdleObservable {
   private ajaxIdleObservable = new AjaxIdleObservable();
-  private scriptLoadingIdleObservable = new ScriptLoadingIdleObservable();
+  private resourceLoadingIdleObservable = new ResourceLoadingIdleObservable();
   private subscribers = new Set<Subscriber>();
 
   // idle state
@@ -129,17 +143,17 @@ export class NetworkIdleObservable {
 
   constructor() {
     this.ajaxIdleObservable.subscribe(this.handleUpdate('AJAX'));
-    this.scriptLoadingIdleObservable.subscribe(this.handleUpdate('SCRIPT_LOADING'));
+    this.resourceLoadingIdleObservable.subscribe(this.handleUpdate('RESOURCE_LOADING'));
   }
 
-  private handleUpdate = (source: 'AJAX' | 'SCRIPT_LOADING') => (message: Message) => {
+  private handleUpdate = (source: 'AJAX' | 'RESOURCE_LOADING') => (message: Message) => {
     const wasIdle = this.ajaxIdle && this.scriptLoadingIdle;
 
     // update state
     if (source === 'AJAX') {
       this.ajaxIdle = message === 'IDLE';
     }
-    if (source === 'SCRIPT_LOADING') {
+    if (source === 'RESOURCE_LOADING') {
       this.scriptLoadingIdle = message === 'IDLE';
     }
 
