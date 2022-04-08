@@ -97,7 +97,7 @@ class VisuallyCompleteCalculator {
   };
 
   /** subscribe to Visually Complete metrics */
-  getVC = (subscriber: MetricSubscriber) => {
+  getTTVC = (subscriber: MetricSubscriber) => {
     // register subscriber callback
     this.subscribers.add(subscriber);
 
@@ -105,6 +105,8 @@ class VisuallyCompleteCalculator {
     return () => this.subscribers.delete(subscriber);
   };
 }
+
+export type {VisuallyCompleteCalculator};
 
 // export calculator singleton
 let calculator: VisuallyCompleteCalculator;
