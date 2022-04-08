@@ -14,8 +14,6 @@ export class InViewportImageObserver {
   constructor(callback: (timestamp: number) => void) {
     this.callback = callback;
     this.intersectionObserver = new IntersectionObserver(this.intersectionObserverCallback);
-    document.addEventListener('load', this.handleLoadOrErrorEvent, {capture: true});
-    document.addEventListener('error', this.handleLoadOrErrorEvent, {capture: true});
   }
 
   private intersectionObserverCallback = (entries: IntersectionObserverEntry[]) => {
@@ -36,9 +34,18 @@ export class InViewportImageObserver {
     }
   };
 
+  /** Start observing loading images. */
+  observe() {
+    document.addEventListener('load', this.handleLoadOrErrorEvent, {capture: true});
+    document.addEventListener('error', this.handleLoadOrErrorEvent, {capture: true});
+  }
+
+  /** Stop observing loading images, and clean up. */
   disconnect() {
     this.lastImageLoadTimestamp = 0;
     this.imageLoadTimes.clear();
     this.intersectionObserver.disconnect();
+    document.removeEventListener('load', this.handleLoadOrErrorEvent);
+    document.removeEventListener('error', this.handleLoadOrErrorEvent);
   }
 }

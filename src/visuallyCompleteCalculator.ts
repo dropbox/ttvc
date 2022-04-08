@@ -50,6 +50,7 @@ class VisuallyCompleteCalculator {
   /** begin measuring a new navigation */
   async start(time = 0) {
     // setup
+    this.inViewportImageObserver.observe();
     this.inViewportMutationObserver.observe(document.documentElement);
     window.addEventListener('click', this.cancel);
     window.addEventListener('keydown', this.cancel);
