@@ -15,45 +15,15 @@ export class InViewportMutationObserver {
     childList: true,
     subtree: true,
   };
-  private mutations: WeakMap<Node, TimestampedMutationRecord> = new WeakMap();
-  private loadingImages: Set<HTMLElement | null> = new Set();
-  private lastImageLoadTimestamp = 0;
-  private imageLoadCallback?: () => void;
+  private mutations: Map<Node, TimestampedMutationRecord> = new Map();
 
   constructor({callback}: {callback: InViewportMutationObserverCallback}) {
     this.callback = callback;
     this.mutationObserver = new MutationObserver(this.mutationObserverCallback);
     this.intersectionObserver = new IntersectionObserver(this.intersectionObserverCallback);
-
-    window.document.addEventListener('load', this.handleImageLoadOrError, {capture: true});
-    window.document.addEventListener('error', this.handleImageLoadOrError, {capture: true});
   }
 
-  private handleImageLoadOrError = (event: Event) => {
-    if (this.loadingImages.has(event.target as HTMLElement)) {
-      this.lastImageLoadTimestamp = performance.now();
-    }
-    this.loadingImages.delete(event.target as HTMLElement);
-    if (this.loadingImages.size === 0) {
-      this.imageLoadCallback?.();
-    }
-  };
-
-  /**
-   * This function will wait for all images to load and will return the time when they finished loading
-   * TODO: Decouple this from InViewportMutationObserver
-   */
-  public waitForLoadingImages = (): Promise<number> => {
-    if (this.loadingImages.size === 0) {
-      return Promise.resolve(this.lastImageLoadTimestamp);
-    }
-    return new Promise((resolve) => {
-      this.imageLoadCallback = () => resolve(this.lastImageLoadTimestamp);
-    });
-  };
-
   public observe(target: HTMLElement) {
-    // this.isObserving = true;
     this.mutationObserver.observe(target, this.mutationObserverConfig);
   }
 
@@ -98,20 +68,8 @@ export class InViewportMutationObserver {
       if (entry.isIntersecting && this.mutations.has(entry.target)) {
         const mutation = this.mutations.get(entry.target);
         this.mutations.delete(entry.target);
+        this.intersectionObserver.unobserve(entry.target);
         this.callback(mutation);
-
-        if (mutation.target instanceof HTMLElement) {
-          // Find image nodes and adds them to set
-          // Part 1. Find all img elms that children of targetWrapper.element
-          const imgs = mutation.target.querySelectorAll('img');
-          imgs.forEach((img) => {
-            // Part 2. Check if that element is complete already
-            if (img && !img.complete) {
-              // Part 3. If not, add element to set
-              this.loadingImages.add(img);
-            }
-          });
-        }
       }
     });
   };

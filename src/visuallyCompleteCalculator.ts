@@ -1,6 +1,7 @@
 import {InViewportMutationObserver} from './inViewportMutationObserver';
 import {waitForPageLoad} from './utils';
 import {requestAllIdleCallback} from './requestAllIdleCallback';
+import {InViewportImageObserver} from './inViewportImageObserver';
 
 type MetricSubscriber = (measurement: number) => void;
 
@@ -9,10 +10,12 @@ type MetricSubscriber = (measurement: number) => void;
  */
 class VisuallyCompleteCalculator {
   private inViewportMutationObserver: InViewportMutationObserver;
+  private inViewportImageObserver: InViewportImageObserver;
 
   // measurement state
   private startTime = 0;
   private lastMutationTimestamp = 0;
+  private lastImageLoadTimestamp = 0;
   private subscribers = new Set<MetricSubscriber>();
   private shouldCancel = false;
 
@@ -38,6 +41,10 @@ class VisuallyCompleteCalculator {
       callback: (mutation) =>
         (this.lastMutationTimestamp = Math.max(this.lastMutationTimestamp, mutation.timestamp)),
     });
+    this.inViewportImageObserver = new InViewportImageObserver(
+      (timestamp) =>
+        (this.lastImageLoadTimestamp = Math.max(this.lastImageLoadTimestamp, timestamp))
+    );
   }
 
   /** begin measuring a new navigation */
@@ -56,29 +63,28 @@ class VisuallyCompleteCalculator {
     // wait for page to be definitely DONE
     // - wait for window.on("load")
     await waitForPageLoad();
-    // console.log('PAGE LOAD');
+    console.log('PAGE LOAD');
     // - wait for simultaneous network and CPU idle
-    await new Promise<void>((resolve) => requestAllIdleCallback(resolve));
-    // console.log('ALL IDLE');
-    // - wait for loading images
-    const lastImageLoaded = await this.inViewportMutationObserver.waitForLoadingImages();
-    // console.log('NAVIGATION DONE');
+    await new Promise<void>(requestAllIdleCallback);
+    console.log('ALL IDLE');
 
     if (!this.shouldCancel) {
       // identify timestamp of last visible change
-      const lastVisibleUpdate = Math.max(lastImageLoaded, this.lastMutationTimestamp);
+      const lastVisibleUpdate = Math.max(this.lastImageLoadTimestamp, this.lastMutationTimestamp);
       // report result to subscribers
       this.next(lastVisibleUpdate - this.startTime);
     }
 
     // cleanup
+    this.inViewportImageObserver.disconnect();
     this.inViewportMutationObserver.disconnect();
-    this.startTime = 0;
-    this.lastMutationTimestamp = 0;
     window.removeEventListener('click', this.cancel);
     window.removeEventListener('keydown', this.cancel);
     window.removeEventListener('pagehide', this.cancel);
     window.removeEventListener('visibilitychange', this.cancel);
+    this.lastMutationTimestamp = 0;
+    this.lastImageLoadTimestamp = 0;
+    this.startTime = 0;
   }
 
   private next(measurement: number) {
