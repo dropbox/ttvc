@@ -9,7 +9,7 @@ const SCRIPT_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('ajax request > script load > mutation + background lazyloaded script', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/composition1?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/composition1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

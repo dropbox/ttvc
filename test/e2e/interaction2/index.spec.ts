@@ -4,7 +4,7 @@ import {entryCountIs, getEntries} from '../../util/entries';
 
 test.describe('TTVC', () => {
   test('tab is backgrounded before page completes loading', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/interaction1`, {
+    await page.goto(`/test/interaction1`, {
       waitUntil: 'domcontentloaded',
     });
 

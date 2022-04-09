@@ -8,7 +8,7 @@ const CPU_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('CPU load followed by a mutation', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/cpu1?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/cpu1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

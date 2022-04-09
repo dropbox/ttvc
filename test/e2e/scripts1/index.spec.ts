@@ -8,7 +8,7 @@ const SCRIPT_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('a single loading script tag and then a mutation', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/scripts1?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/scripts1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

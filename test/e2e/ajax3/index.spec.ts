@@ -8,7 +8,7 @@ const AJAX_DELAY = 500; // see text-mutation.html
 
 test.describe('TTVC', () => {
   test('a mutation triggered after an AJAX request', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/ajax3?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/ajax3?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

@@ -8,7 +8,7 @@ const SCRIPT_DELAY = 200;
 
 test.describe('TTVC', () => {
   test('a visible mutation + a mutation with invisible parent', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/invisible5?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/invisible5?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

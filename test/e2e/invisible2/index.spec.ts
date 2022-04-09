@@ -7,7 +7,7 @@ const PAGELOAD_DELAY = 200;
 
 test.describe('TTVC', () => {
   test('a single image with style="display: none" and a simultaneous mutation', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/invisible2?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/invisible2?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

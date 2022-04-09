@@ -7,7 +7,7 @@ const PAGELOAD_DELAY = 200;
 
 test.describe('TTVC', () => {
   test('a static HTML document', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/static1?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/static1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

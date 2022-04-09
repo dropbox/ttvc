@@ -7,7 +7,7 @@ const IMAGE_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('a single image with style="display: none"', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/invisible1?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/invisible1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 
