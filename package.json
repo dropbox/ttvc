@@ -23,7 +23,6 @@
     "test:lint": "eslint --ext .js --ext .ts ./",
     "test:typecheck": "tsc --noEmit --project tsconfig.json",
     "test:unit": "jest",
-    "test:e2e": "playwright test",
     "express": "node test/server/server.mjs",
     "release": "np"
   },
