@@ -55,6 +55,7 @@ class VisuallyCompleteCalculator {
     this.inViewportMutationObserver.observe(document.documentElement);
     window.addEventListener('pagehide', cancel);
     window.addEventListener('visibilitychange', cancel);
+    window.addEventListener('locationchange', cancel);
     // attach user interaction listeners next tick (we don't want to pick up the SPA navigation click)
     window.setTimeout(() => {
       window.addEventListener('click', cancel);
@@ -77,10 +78,11 @@ class VisuallyCompleteCalculator {
     // cleanup
     this.inViewportImageObserver.disconnect();
     this.inViewportMutationObserver.disconnect();
-    window.removeEventListener('click', cancel);
-    window.removeEventListener('keydown', cancel);
     window.removeEventListener('pagehide', cancel);
     window.removeEventListener('visibilitychange', cancel);
+    window.removeEventListener('locationchange', cancel);
+    window.removeEventListener('click', cancel);
+    window.removeEventListener('keydown', cancel);
   }
 
   private next(measurement: number) {
