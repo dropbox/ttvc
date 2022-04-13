@@ -12,7 +12,7 @@ test.describe('TTVC', () => {
   test('script load > ajax request > CPU work > script load > mutation + background lazyloaded script', async ({
     page,
   }) => {
-    await page.goto(`http://localhost:3000/test/composition2?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/composition2?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

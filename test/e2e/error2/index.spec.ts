@@ -8,7 +8,7 @@ const IMAGE_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('an appended image that fails to load + background lazyloaded script', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/error2?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/error2?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

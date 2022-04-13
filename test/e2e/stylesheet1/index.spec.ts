@@ -9,7 +9,7 @@ const STYLESHEET_DELAY = 500;
 test.describe('TTVC', () => {
   test('a static HTML document', async ({page}) => {
     test.fail(); // ttvc doesn't account for stylesheets yet
-    await page.goto(`http://localhost:3000/test/stylesheet1?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/stylesheet1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

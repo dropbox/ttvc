@@ -8,7 +8,7 @@ const IMAGE_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('an image that fails to load', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/error1?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/error1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

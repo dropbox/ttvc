@@ -8,7 +8,7 @@ const LONGEST_IMAGE_DELAY = 400;
 
 test.describe('TTVC', () => {
   test('four loading images with a concurrent mutation', async ({page}) => {
-    await page.goto(`http://localhost:3000/test/images3?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/images3?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

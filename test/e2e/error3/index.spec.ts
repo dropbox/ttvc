@@ -10,7 +10,7 @@ test.describe('TTVC', () => {
   test('an appended script that errors (404) + a mutation + background lazyloaded script', async ({
     page,
   }) => {
-    await page.goto(`http://localhost:3000/test/error3?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/error3?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

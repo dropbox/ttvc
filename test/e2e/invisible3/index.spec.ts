@@ -10,7 +10,7 @@ test.describe('TTVC', () => {
   test('a single image with style="display: none" + a mutation + background lazyload', async ({
     page,
   }) => {
-    await page.goto(`http://localhost:3000/test/invisible3?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/invisible3?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 
