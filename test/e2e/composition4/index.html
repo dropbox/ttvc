@@ -1,0 +1,18 @@
+<head>
+  <script src="/dist/index.min.js"></script>
+</head>
+
+<body>
+  <h1 id="h1">Hello world!</h1>
+
+  <script src="/analytics.js"></script>
+  <script>
+    const asyncScript = document.createElement('script');
+    asyncScript.src = '/mutation.js';
+
+    fetch('/api?delay=500')
+      .then(() => new Promise((resolve) => window.setTimeout(resolve, 100)))
+      .then(() => fetch('/api?delay=500'))
+      .then(() => document.head.appendChild(asyncScript));
+  </script>
+</body>
