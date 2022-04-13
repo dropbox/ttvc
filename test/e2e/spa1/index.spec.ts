@@ -22,7 +22,6 @@ test.describe('TTVC', () => {
     });
 
     test('SPA navigation', async ({page}) => {
-      test.fail(); // we need to correctly set start time on each navigation!
       // trigger a navigation
       await page.click('[data-goto="/about"]');
 
