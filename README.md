@@ -25,16 +25,14 @@ $ yarn add @dropbox-performance/ttvc
 > ⚠️ **This API has not stabilized and is likely to change.**
 
 ```js
-import {PageloadVisuallyCompleteCalculator} from '@dropbox-performance/ttvc';
+import {init, getTTVC} from '@dropbox-performance/ttvc';
 
-// Initialize the calculator as early as possible in your page
-// load so that it can observe changes.
-const calculator = new PageLoadVisuallyCompleteCalculator();
-calculator.start();
+// Vall this as early in pageload as possible to setup instrumentation.
+init();
 
-// Wait for the document to complete loading and compute the
-// timestamp of the last visible change.
-calculator.attemptMeasurement().then(timestamp => {
+// Reports the last visible change for each navigation that
+// occurs during the life of this document.
+const unsubscribe = getTTVC(timestamp => {
     console.log(timestamp);
 });
 ```
@@ -67,6 +65,12 @@ This project is developed with TypeScript.  You can compile the TypeScript sourc
 $ yarn build
 ```
 
+While testing locally, you may find it useful to build the rollup bundle in watch mode.
+
+```
+$ yarn build:rollup --watch
+```
+
 ## Testing
 
 You can run all tests together with:
@@ -75,12 +79,15 @@ You can run all tests together with:
 $ yarn test
 ```
 
-### Testing with Jest
+### Individual tests
 
-To run only jest unit tests:
+There are four individual test scripts
 
 ```
-$ yarn test:unit
+$ yarn test:lint // runs eslint
+$ yarn test:typecheck // runs typescript with --noEmit
+$ yarn test:unit // runs jest unit tests
+$ yarn test:e2e // runs playwright tests (requires yarn build to have been run)
 ```
 
 
@@ -95,13 +102,14 @@ $ npx playwright install
 Run test suite:
 
 ```
+$ yarn build // build the ttvc package before testing
 $ yarn test:e2e
 ```
 
 To manually test pages, start the test server.
 
 ```
-$ yarn test:server
+$ yarn express
 ```
 
-Then navigate to a test case in your favorite browser.  e.g. http://localhost:3000/test/ajax-mutation/
+You can launch tests in the browser by opening http://localhost:3000/test/[test-folder].  e.g. http://localhost:3000/test/ajax1/

@@ -8,7 +8,6 @@ const LONGEST_IMAGE_DELAY = 400;
 
 test.describe('TTVC', () => {
   test('four loading images with a concurrent mutation and a script tag', async ({page}) => {
-    test.fail(); // FIXME: investigate why loading script moves TTVC
     await page.goto(`http://localhost:3000/test/images4?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });

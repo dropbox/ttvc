@@ -8,7 +8,6 @@ const IMAGE_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('one loading image and one image w/ inline data url', async ({page}) => {
-    test.fail(); // ttvc should handle images with data urls
     await page.goto(`http://localhost:3000/test/images5?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });

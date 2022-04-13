@@ -15,7 +15,7 @@ test.describe('TTVC', () => {
           return 'hidden';
         },
       });
-      document.dispatchEvent(new Event('visibilityChange', {bubbles: true}));
+      document.dispatchEvent(new Event('visibilitychange', {bubbles: true}));
     });
 
     // wait long enough to ensure ttvc would have been logged

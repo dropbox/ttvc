@@ -8,7 +8,6 @@ const IMAGE_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('a loading image with a concurrent mutation', async ({page}) => {
-    test.fail(); // ttvc doesn't account for image that loaded before window.load event
     await page.goto(`http://localhost:3000/test/images2?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });

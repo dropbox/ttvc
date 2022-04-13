@@ -8,7 +8,6 @@ const IMAGE_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('a simple react application with an image', async ({page}) => {
-    test.fail(); // ttvc doesn't wait for React render pass before calculating
     await page.goto(`http://localhost:3000/test/react2?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
