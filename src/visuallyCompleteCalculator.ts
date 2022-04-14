@@ -1,8 +1,8 @@
 import {InViewportMutationObserver} from './inViewportMutationObserver';
-import {waitForPageLoad} from './utils';
+import {waitForPageLoad} from './util';
 import {requestAllIdleCallback} from './requestAllIdleCallback';
 import {InViewportImageObserver} from './inViewportImageObserver';
-import {Logger} from './utils/logger';
+import {Logger} from './util/logger';
 
 export type MetricSubscriber = (measurement: number) => void;
 

@@ -1,4 +1,4 @@
-import {Logger} from './utils/logger';
+import {Logger} from './util/logger';
 
 export type InViewportMutationObserverCallback = (mutation: TimestampedMutationRecord) => void;
 export type TimestampedMutationRecord = MutationRecord & {timestamp: number};

@@ -1,4 +1,4 @@
-import {CONFIG} from '../utils/constants';
+import {CONFIG} from './constants';
 
 export class Logger {
   private static format(...messages: unknown[]) {

@@ -1,7 +1,7 @@
-import {CONFIG} from './utils/constants';
+import {CONFIG} from './util/constants';
 import {Message, getNetworkIdleObservable} from './networkIdleObservable';
-import {requestIdleCallback} from './utils';
-import {Logger} from './utils/logger';
+import {requestIdleCallback} from './util';
+import {Logger} from './util/logger';
 
 /**
  * Request a callback when the CPU and network have both been simultaneously

@@ -1,4 +1,4 @@
-import {Logger} from './utils/logger';
+import {Logger} from './util/logger';
 
 /**
  * Modeled after IntersectionObserver and MutationObserver, this Image observer

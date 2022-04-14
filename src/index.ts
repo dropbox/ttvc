@@ -1,6 +1,6 @@
 import {getNetworkIdleObservable} from './networkIdleObservable';
-import {TtvcOptions, setConfig} from './utils/constants';
-import {Logger} from './utils/logger';
+import {TtvcOptions, setConfig} from './util/constants';
+import {Logger} from './util/logger';
 import {
   getVisuallyCompleteCalculator,
   MetricSubscriber,

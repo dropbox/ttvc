@@ -1,4 +1,4 @@
-import {Logger} from './utils/logger';
+import {Logger} from './util/logger';
 
 export type Message = 'IDLE' | 'BUSY';
 type Subscriber = (message: Message) => void;

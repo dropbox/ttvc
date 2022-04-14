@@ -1,6 +1,6 @@
 import {decrementAjaxCount, incrementAjaxCount} from '../../src';
 import {requestAllIdleCallback} from '../../src/requestAllIdleCallback';
-import {CONFIG} from '../../src/utils/constants';
+import {CONFIG} from '../../src/util/constants';
 import {FUDGE} from '../util/constants';
 
 const wait = async (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
