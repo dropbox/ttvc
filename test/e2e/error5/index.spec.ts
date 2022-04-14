@@ -1,15 +1,12 @@
 import {test, expect} from '@playwright/test';
 
-import {FUDGE} from '../../util/constants';
-import {getEntries} from '../../util/entries';
-
 const PAGELOAD_DELAY = 200;
 
 const unsupportedErrorMessage = new Error(["VisuallyCompleteCalculator: This browser/runtime is not supported."]);
 
 test.describe('TTVC', () => {
   test('an unsupported environment', async ({page}) => {
-    let errorCount = [];
+    const errorCount = [];
     page.on('pageerror', exception => {
       errorCount.push(exception)
     });
