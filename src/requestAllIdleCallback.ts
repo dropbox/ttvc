@@ -1,4 +1,4 @@
-import {IDLE_TIMEOUT} from './index';
+import {CONFIG} from './utils/constants';
 import {Message, getNetworkIdleObservable} from './networkIdleObservable';
 import {requestIdleCallback} from './utils';
 import {Logger} from './utils/logger';
@@ -39,7 +39,7 @@ export function requestAllIdleCallback(callback: () => void) {
       Logger.info('requestAllIdleCallback: ALL IDLE');
       callback();
       unsubscribe();
-    }, IDLE_TIMEOUT);
+    }, CONFIG.IDLE_TIMEOUT);
   };
 
   const unsubscribe = networkIdleObservable.subscribe(handleNetworkChange);

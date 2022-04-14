@@ -1,5 +1,6 @@
-import {IDLE_TIMEOUT, decrementAjaxCount, incrementAjaxCount} from '../../src';
+import {decrementAjaxCount, incrementAjaxCount} from '../../src';
 import {requestAllIdleCallback} from '../../src/requestAllIdleCallback';
+import {CONFIG} from '../../src/utils/constants';
 import {FUDGE} from '../util/constants';
 
 const wait = async (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -13,7 +14,7 @@ describe('requestAllIdleCallback', () => {
   });
 
   it('waits IDLE_TIMEOUT before resolving', async () => {
-    await wait(IDLE_TIMEOUT);
+    await wait(CONFIG.IDLE_TIMEOUT);
     expect(callback).not.toHaveBeenCalled();
     await wait(FUDGE);
     expect(callback).toHaveBeenCalled();
@@ -21,20 +22,20 @@ describe('requestAllIdleCallback', () => {
 
   it('respects pending ajax requests', async () => {
     incrementAjaxCount();
-    await wait(IDLE_TIMEOUT + FUDGE);
+    await wait(CONFIG.IDLE_TIMEOUT + FUDGE);
     expect(callback).not.toHaveBeenCalled();
 
     decrementAjaxCount();
-    await wait(IDLE_TIMEOUT + FUDGE);
+    await wait(CONFIG.IDLE_TIMEOUT + FUDGE);
     expect(callback).toHaveBeenCalled();
   });
 
   it('does not trigger callback during idle periods less than IDLE_TIMEOUT', async () => {
     incrementAjaxCount();
     decrementAjaxCount();
-    await wait(IDLE_TIMEOUT / 2);
+    await wait(CONFIG.IDLE_TIMEOUT / 2);
     incrementAjaxCount();
-    await wait(IDLE_TIMEOUT + FUDGE);
+    await wait(CONFIG.IDLE_TIMEOUT + FUDGE);
     expect(callback).not.toHaveBeenCalled();
   });
 });

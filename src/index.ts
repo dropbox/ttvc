@@ -1,20 +1,11 @@
-import {getNetworkIdleObservable} from './networkIdleObservable.js';
-import {Logger} from './utils/logger.js';
+import {getNetworkIdleObservable} from './networkIdleObservable';
+import {TtvcOptions, setConfig} from './utils/constants';
+import {Logger} from './utils/logger';
 import {
   getVisuallyCompleteCalculator,
   MetricSubscriber,
   VisuallyCompleteCalculator,
 } from './visuallyCompleteCalculator.js';
-
-type TtvcOptions = {
-  debug?: boolean;
-  idleTimeout?: number;
-};
-
-/** Decide whether to log debug messages. */
-export let DEBUG = false;
-/** A duration in ms to wait before declaring the page idle. */
-export let IDLE_TIMEOUT = 200;
 
 let calculator: VisuallyCompleteCalculator;
 
@@ -23,8 +14,7 @@ let calculator: VisuallyCompleteCalculator;
  */
 export const init = (options?: TtvcOptions) => {
   // apply options
-  if (options?.debug) DEBUG = options.debug;
-  if (options?.idleTimeout) IDLE_TIMEOUT = options.idleTimeout;
+  setConfig(options);
 
   Logger.info('init()');
 
