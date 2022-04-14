@@ -6,9 +6,9 @@ import {entryCountIs, getEntries} from '../../util/entries';
 const PAGELOAD_DELAY = 200;
 
 test.describe('TTVC', () => {
-  test.describe('single page app: hash router + sync mutation', () => {
+  test.describe('single page app: duplicate "locationchange" event', () => {
     test.beforeEach(async ({page}) => {
-      await page.goto(`/test/spa1?delay=${PAGELOAD_DELAY}`, {
+      await page.goto(`/test/spa3?delay=${PAGELOAD_DELAY}`, {
         waitUntil: 'networkidle',
       });
     });
@@ -25,9 +25,15 @@ test.describe('TTVC', () => {
       // trigger a navigation
       await page.click('[data-goto="/about"]');
 
-      await entryCountIs(page, 2);
+      // wait for a possible duplicate entry
+      try {
+        await entryCountIs(page, 3, 1000);
+      } catch (e) {
+        // pass
+      }
       const entries = await getEntries(page);
 
+      expect(entries.length).toBe(2);
       expect(entries[1]).toBeGreaterThanOrEqual(0);
       expect(entries[1]).toBeLessThanOrEqual(0 + FUDGE);
     });

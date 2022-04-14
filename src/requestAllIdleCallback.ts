@@ -23,6 +23,7 @@ export function requestAllIdleCallback(callback: () => void) {
       requestIdleCallback(handleCpuIdle);
     } else {
       window.clearTimeout(timeout);
+      timeout = null;
     }
   };
 

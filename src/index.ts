@@ -12,7 +12,7 @@ let calculator: VisuallyCompleteCalculator;
 export const init = () => {
   calculator = getVisuallyCompleteCalculator();
   void calculator.start();
-  window.addEventListener('locationchange', () => void calculator.start());
+  window.addEventListener('locationchange', () => void calculator.start(performance.now()));
 };
 
 /**

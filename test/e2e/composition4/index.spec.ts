@@ -9,7 +9,6 @@ const TIMEOUT_DELAY = 100;
 
 test.describe('TTVC', () => {
   test('ajax request > short timeout > ajax request > mutation', async ({page}) => {
-    test.fail(); // requestAllIdleCallback has a bug that can be triggered by a brief idle period
     await page.goto(`/test/composition4?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
