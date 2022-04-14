@@ -1,5 +1,4 @@
-import {decrementAjaxCount, incrementAjaxCount} from '../../src';
-import {IDLE_TIMEOUT} from '../../src';
+import {IDLE_TIMEOUT, decrementAjaxCount, incrementAjaxCount} from '../../src';
 import {requestAllIdleCallback} from '../../src/requestAllIdleCallback';
 import {FUDGE} from '../util/constants';
 
