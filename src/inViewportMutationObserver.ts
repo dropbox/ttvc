@@ -41,12 +41,12 @@ export class InViewportMutationObserver {
   }
 
   public observe(target: HTMLElement) {
-    Logger.debug('InViewportMutationObserver.observe()', '::', 'target =', target);
+    Logger.info('InViewportMutationObserver.observe()', '::', 'target =', target);
     this.mutationObserver.observe(target, this.mutationObserverConfig);
   }
 
   public disconnect() {
-    Logger.debug('InViewportMutationObserver.disconnect()');
+    Logger.info('InViewportMutationObserver.disconnect()');
     this.mutationObserver.disconnect();
     this.intersectionObserver.disconnect();
   }

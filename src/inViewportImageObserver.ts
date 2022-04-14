@@ -51,14 +51,14 @@ export class InViewportImageObserver {
 
   /** Start observing loading images. */
   observe() {
-    Logger.debug('InViewportImageObserver.observe()');
+    Logger.info('InViewportImageObserver.observe()');
     document.addEventListener('load', this.handleLoadOrErrorEvent, {capture: true});
     document.addEventListener('error', this.handleLoadOrErrorEvent, {capture: true});
   }
 
   /** Stop observing loading images, and clean up. */
   disconnect() {
-    Logger.debug('InViewportImageObserver.disconnect()');
+    Logger.info('InViewportImageObserver.disconnect()');
     this.lastImageLoadTimestamp = 0;
     this.imageLoadTimes.clear();
     this.intersectionObserver.disconnect();
