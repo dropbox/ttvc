@@ -12,7 +12,7 @@ test.describe('TTVC', () => {
 
     await page.mouse.wheel(0, 2000)
 
-    await page.waitForTimeout(1000);
+    await entryCountIs(page, 1);
 
     const entries = await getEntries(page);
 

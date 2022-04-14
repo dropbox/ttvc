@@ -5,17 +5,20 @@ import {getEntries} from '../../util/entries';
 
 const PAGELOAD_DELAY = 200;
 
+const unsupportedErrorMessage = new Error(["VisuallyCompleteCalculator: This browser/runtime is not supported."]);
+
 test.describe('TTVC', () => {
-  test('an unsuported envirioment', async ({page}) => {
-    test.fail(); //we excpect ttvc calculator to fail in unsuported invirioments
+  test('an unsupported environment', async ({page}) => {
+    let errorCount = [];
+    page.on('pageerror', exception => {
+      errorCount.push(exception)
+    });
+
     await page.goto(`/test/error5?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 
-    const entries = await getEntries(page);
-
-    expect(entries.length).toBe(1);
-    expect(entries[0]).toBeGreaterThanOrEqual(PAGELOAD_DELAY);
-    expect(entries[0]).toBeLessThanOrEqual(PAGELOAD_DELAY + FUDGE);
+    expect(errorCount.length).toBe(1);
+    expect(errorCount[0]).toEqual(unsupportedErrorMessage);
   });
 });
