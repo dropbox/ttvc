@@ -44,7 +44,7 @@ export class InViewportImageObserver {
   private handleLoadOrErrorEvent = (event: Event) => {
     if (event.target instanceof HTMLImageElement) {
       Logger.debug('InViewportImageObserver.handleLoadOrErrorEvent()', '::', 'event =', event);
-      this.imageLoadTimes.set(event.target, performance.now());
+      this.imageLoadTimes.set(event.target, event.timeStamp);
       this.intersectionObserver.observe(event.target);
     }
   };
