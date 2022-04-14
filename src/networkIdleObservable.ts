@@ -1,3 +1,5 @@
+import {Logger} from './util/logger';
+
 export type Message = 'IDLE' | 'BUSY';
 type Subscriber = (message: Message) => void;
 type ResourceLoadingElement = HTMLScriptElement | HTMLLinkElement | HTMLImageElement;
@@ -13,6 +15,7 @@ class AjaxIdleObservable {
   private subscribers = new Set<Subscriber>();
 
   private next = (message: Message) => {
+    Logger.debug('AjaxIdleObservable.next()', message);
     this.subscribers.forEach((subscriber) => subscriber(message));
   };
 
@@ -30,6 +33,14 @@ class AjaxIdleObservable {
       this.next('IDLE');
     }
     this.pendingRequests = Math.max(this.pendingRequests - 1, 0);
+    if (this.pendingRequests < 10) {
+      Logger.debug(
+        'AjaxIdleObservable.decrement()',
+        '::',
+        'pendingRequests =',
+        this.pendingRequests
+      );
+    }
   };
 
   subscribe = (subscriber: Subscriber) => {
@@ -93,6 +104,7 @@ class ResourceLoadingIdleObservable {
   }
 
   private next = (message: Message) => {
+    Logger.debug('ResourceLoadingIdleObservable.next()', message);
     this.subscribers.forEach((subscriber) => subscriber(message));
   };
 
@@ -112,6 +124,14 @@ class ResourceLoadingIdleObservable {
     this.pendingResources.delete(element);
     if (this.pendingResources.size === 0) {
       this.next('IDLE');
+    }
+    if (this.pendingResources.size < 10) {
+      Logger.debug(
+        'ResourceLoadingIdleObservable.remove()',
+        '::',
+        'pendingResources =',
+        this.pendingResources
+      );
     }
   };
 
@@ -164,6 +184,7 @@ export class NetworkIdleObservable {
   };
 
   private next = (message: Message) => {
+    Logger.debug('NetworkIdleObservable.next()', message);
     this.subscribers.forEach((subscriber) => subscriber(message));
   };
 

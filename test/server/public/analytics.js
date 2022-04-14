@@ -8,8 +8,7 @@ window.fetch = (...args) => {
   return oldFetch(...args).finally(TTVC.decrementAjaxCount);
 };
 
-TTVC.init();
-console.log('init');
+TTVC.init({debug: true});
 
 TTVC.getTTVC((ms) => {
   console.log('TTVC:', ms);
