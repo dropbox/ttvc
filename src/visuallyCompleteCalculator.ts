@@ -20,6 +20,7 @@ class VisuallyCompleteCalculator {
   private lastMutationTimestamp = 0;
   private lastImageLoadTimestamp = 0;
   private subscribers = new Set<MetricSubscriber>();
+  private navigationCount = 0;
 
   /**
    * Determine whether the calculator should run in the current environment
@@ -51,6 +52,7 @@ class VisuallyCompleteCalculator {
 
   /** begin measuring a new navigation */
   async start(startTime = 0) {
+    const navigationIndex = (this.navigationCount += 1);
     Logger.info('VisuallyCompleteCalculator.start()');
 
     // setup
@@ -82,13 +84,16 @@ class VisuallyCompleteCalculator {
     }
 
     // cleanup
-    this.inViewportImageObserver.disconnect();
-    this.inViewportMutationObserver.disconnect();
     window.removeEventListener('pagehide', cancel);
     window.removeEventListener('visibilitychange', cancel);
     window.removeEventListener('locationchange', cancel);
     window.removeEventListener('click', cancel);
     window.removeEventListener('keydown', cancel);
+    // only disconnect observers if this is the most recent navigation
+    if (navigationIndex === this.navigationCount) {
+      this.inViewportImageObserver.disconnect();
+      this.inViewportMutationObserver.disconnect();
+    }
   }
 
   private next(measurement: number) {
