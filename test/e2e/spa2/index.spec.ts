@@ -32,5 +32,26 @@ test.describe('TTVC', () => {
       expect(entries[1]).toBeGreaterThanOrEqual(AJAX_DELAY);
       expect(entries[1]).toBeLessThanOrEqual(AJAX_DELAY + FUDGE);
     });
+
+    test('two overlapping SPA navigations', async ({page}) => {
+      // trigger a navigation
+      await page.click('[data-goto="/about"]');
+
+      // trigger a second navigation *before* the first resolves
+      await page.waitForTimeout(FUDGE);
+      await page.click('[data-goto="/about"]');
+
+      // wait for a possible duplicate entry
+      try {
+        await entryCountIs(page, 3, 2000);
+      } catch (e) {
+        // pass
+      }
+      const entries = await getEntries(page);
+
+      expect(entries.length).toBe(2);
+      expect(entries[1]).toBeGreaterThanOrEqual(AJAX_DELAY);
+      expect(entries[1]).toBeLessThanOrEqual(AJAX_DELAY + FUDGE);
+    });
   });
 });
