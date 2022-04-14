@@ -2,6 +2,7 @@ import {InViewportMutationObserver} from './inViewportMutationObserver';
 import {waitForPageLoad} from './utils';
 import {requestAllIdleCallback} from './requestAllIdleCallback';
 import {InViewportImageObserver} from './inViewportImageObserver';
+import {Logger} from './utils/logger';
 
 export type MetricSubscriber = (measurement: number) => void;
 
@@ -50,6 +51,8 @@ class VisuallyCompleteCalculator {
 
   /** begin measuring a new navigation */
   async start(startTime = 0) {
+    Logger.info('VisuallyCompleteCalculator.start()');
+
     // setup
     let shouldCancel = false;
     const cancel = () => (shouldCancel = true);
@@ -89,6 +92,15 @@ class VisuallyCompleteCalculator {
   }
 
   private next(measurement: number) {
+    Logger.debug(
+      'VisuallyCompleteCalculator.next()',
+      '::',
+      'lastImageLoadTimestamp =',
+      this.lastImageLoadTimestamp,
+      'lastMutationTimestamp =',
+      this.lastMutationTimestamp
+    );
+    Logger.info('TTVC:', measurement);
     this.subscribers.forEach((subscriber) => subscriber(measurement));
   }
 

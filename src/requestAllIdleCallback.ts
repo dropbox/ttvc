@@ -1,6 +1,7 @@
 import {IDLE_TIMEOUT} from './index';
 import {Message, getNetworkIdleObservable} from './networkIdleObservable';
 import {requestIdleCallback} from './utils';
+import {Logger} from './utils/logger';
 
 /**
  * Request a callback when the CPU and network have both been simultaneously
@@ -16,7 +17,6 @@ export function requestAllIdleCallback(callback: () => void) {
   let timeout: number | null = null;
 
   const handleNetworkChange = (message: Message) => {
-    // console.log('NETWORK', message);
     networkIdle = message === 'IDLE';
 
     if (networkIdle) {
@@ -28,6 +28,7 @@ export function requestAllIdleCallback(callback: () => void) {
   };
 
   const handleCpuIdle = () => {
+    Logger.debug('requestAllIdleCallback.handleCpuIdle()');
     if (networkIdle && !timeout) {
       handleAllIdle();
     }
@@ -35,6 +36,7 @@ export function requestAllIdleCallback(callback: () => void) {
 
   const handleAllIdle = () => {
     timeout = window.setTimeout(() => {
+      Logger.info('requestAllIdleCallback: ALL IDLE');
       callback();
       unsubscribe();
     }, IDLE_TIMEOUT);

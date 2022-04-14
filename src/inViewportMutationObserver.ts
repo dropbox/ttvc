@@ -1,3 +1,5 @@
+import {Logger} from './utils/logger';
+
 export type InViewportMutationObserverCallback = (mutation: TimestampedMutationRecord) => void;
 export type TimestampedMutationRecord = MutationRecord & {timestamp: number};
 
@@ -39,15 +41,23 @@ export class InViewportMutationObserver {
   }
 
   public observe(target: HTMLElement) {
+    Logger.debug('InViewportMutationObserver.observe()', '::', 'target =', target);
     this.mutationObserver.observe(target, this.mutationObserverConfig);
   }
 
   public disconnect() {
+    Logger.debug('InViewportMutationObserver.disconnect()');
     this.mutationObserver.disconnect();
     this.intersectionObserver.disconnect();
   }
 
   private mutationObserverCallback: MutationCallback = (mutations) => {
+    Logger.debug(
+      'InViewportMutationObserver.mutationObserverCallback()',
+      '::',
+      'mutations =',
+      mutations
+    );
     mutations.forEach((mutation: TimestampedMutationRecord) => {
       mutation.timestamp = performance.now();
 
@@ -77,10 +87,16 @@ export class InViewportMutationObserver {
   };
 
   private intersectionObserverCallback: IntersectionObserverCallback = (entries) => {
+    Logger.debug(
+      'InViewportMutationObserver.intersectionObserverCallback()',
+      '::',
+      'entries =',
+      entries
+    );
     entries.forEach((entry) => {
-      // console.log(entry);
       if (entry.isIntersecting && this.mutations.has(entry.target)) {
         const mutation = this.mutations.get(entry.target);
+        Logger.info('InViewportMutationObserver.callback()', '::', 'mutation =', mutation);
         this.callback(mutation);
       }
       this.mutations.delete(entry.target);
