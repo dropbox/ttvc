@@ -1,10 +1,10 @@
-import {MINIMUM_IDLE_MS} from './constants';
+import {IDLE_TIMEOUT} from './index';
 import {Message, getNetworkIdleObservable} from './networkIdleObservable';
 import {requestIdleCallback} from './utils';
 
 /**
  * Request a callback when the CPU and network have both been simultaneously
- * idle for MINIMUM_IDLE_MS.
+ * idle for IDLE_TIMEOUT.
  *
  * NOTE: will only trigger once
  */
@@ -37,7 +37,7 @@ export function requestAllIdleCallback(callback: () => void) {
     timeout = window.setTimeout(() => {
       callback();
       unsubscribe();
-    }, MINIMUM_IDLE_MS);
+    }, IDLE_TIMEOUT);
   };
 
   const unsubscribe = networkIdleObservable.subscribe(handleNetworkChange);

@@ -9,6 +9,9 @@ export type MetricSubscriber = (measurement: number) => void;
  * TODO: Document
  */
 class VisuallyCompleteCalculator {
+  public debug = false;
+  public idleTimeout = 200;
+
   private inViewportMutationObserver: InViewportMutationObserver;
   private inViewportImageObserver: InViewportImageObserver;
 

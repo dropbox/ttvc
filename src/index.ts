@@ -5,11 +5,22 @@ import {
   VisuallyCompleteCalculator,
 } from './visuallyCompleteCalculator.js';
 
+type TtvcOptions = {
+  idleTimeout?: number;
+};
+
+/** A duration in ms to wait before declaring the page idle. */
+export let IDLE_TIMEOUT = 200;
+
 let calculator: VisuallyCompleteCalculator;
 
-// Start monitoring initial pageload
-// TODO: Should we ask library consumers to manually initialize?
-export const init = () => {
+/**
+ *  Start ttvc and begin monitoring network activity and visual changes.
+ */
+export const init = (options?: TtvcOptions) => {
+  // apply options
+  if (options?.idleTimeout) IDLE_TIMEOUT = options.idleTimeout;
+
   calculator = getVisuallyCompleteCalculator();
   void calculator.start();
   window.addEventListener('locationchange', () => void calculator.start(performance.now()));
