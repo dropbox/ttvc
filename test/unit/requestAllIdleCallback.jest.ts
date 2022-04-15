@@ -1,6 +1,6 @@
 import {decrementAjaxCount, incrementAjaxCount} from '../../src';
-import {MINIMUM_IDLE_MS} from '../../src/constants';
 import {requestAllIdleCallback} from '../../src/requestAllIdleCallback';
+import {CONFIG} from '../../src/util/constants';
 import {FUDGE} from '../util/constants';
 
 const wait = async (ms: number) => new Promise((resolve) => window.setTimeout(resolve, ms));
@@ -13,8 +13,8 @@ describe('requestAllIdleCallback', () => {
     requestAllIdleCallback(callback);
   });
 
-  it('waits MINIMUM_IDLE_MS before resolving', async () => {
-    await wait(MINIMUM_IDLE_MS);
+  it('waits IDLE_TIMEOUT before resolving', async () => {
+    await wait(CONFIG.IDLE_TIMEOUT);
     expect(callback).not.toHaveBeenCalled();
     await wait(FUDGE);
     expect(callback).toHaveBeenCalled();
@@ -22,20 +22,20 @@ describe('requestAllIdleCallback', () => {
 
   it('respects pending ajax requests', async () => {
     incrementAjaxCount();
-    await wait(MINIMUM_IDLE_MS + FUDGE);
+    await wait(CONFIG.IDLE_TIMEOUT + FUDGE);
     expect(callback).not.toHaveBeenCalled();
 
     decrementAjaxCount();
-    await wait(MINIMUM_IDLE_MS + FUDGE);
+    await wait(CONFIG.IDLE_TIMEOUT + FUDGE);
     expect(callback).toHaveBeenCalled();
   });
 
-  it('does not trigger callback during idle periods less than MINIMUM_IDLE_MS', async () => {
+  it('does not trigger callback during idle periods less than IDLE_TIMEOUT', async () => {
     incrementAjaxCount();
     decrementAjaxCount();
-    await wait(MINIMUM_IDLE_MS / 2);
+    await wait(CONFIG.IDLE_TIMEOUT / 2);
     incrementAjaxCount();
-    await wait(MINIMUM_IDLE_MS + FUDGE);
+    await wait(CONFIG.IDLE_TIMEOUT + FUDGE);
     expect(callback).not.toHaveBeenCalled();
   });
 });
