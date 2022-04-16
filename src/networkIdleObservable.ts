@@ -109,8 +109,12 @@ class ResourceLoadingIdleObservable {
   };
 
   private add = (element: ResourceLoadingElement) => {
-    // if element is an image and it's complete, ignore it
-    if (element instanceof HTMLImageElement && element.complete) {
+    // ignore elements without resources to load
+    if (
+      (element instanceof HTMLImageElement && element.complete) ||
+      (element instanceof HTMLLinkElement && !element.href) ||
+      (element instanceof HTMLScriptElement && !element.src)
+    ) {
       return;
     }
 
