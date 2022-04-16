@@ -1,0 +1,17 @@
+<head>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
+</head>
+
+<body>
+  <h1 id="h1">Heading 1</h1>
+
+  <script>
+    const p = document.createElement('p');
+    document.body.appendChild(p);
+
+    // add a text node, but remove it before the mutation is processed
+    p.textContent = 'This is a paragraph.';
+    p.textContent = null;
+  </script>
+</body>
