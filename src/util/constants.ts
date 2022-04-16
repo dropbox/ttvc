@@ -8,10 +8,10 @@ export type TtvcOptions = {
 export const CONFIG = {
   /** Decide whether to log debug messages. */
   DEBUG: false,
-  /** A duration in ms to wait before declaring the page idle. */
+  /** A duration in ms to wait before declaring the page completely idle. */
   IDLE_TIMEOUT: 200,
-  /** A duration in ms to wait before assuming that a pending network request
-   * was not instrumented correctly */
+  /** A duration in ms to wait before assuming that a single network request
+   * was not instrumented correctly. */
   NETWORK_TIMEOUT: 30000,
 };
 
