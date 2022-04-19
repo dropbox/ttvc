@@ -1,0 +1,18 @@
+<head>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
+</head>
+
+<body>
+  <h1 id="h1">Hello world!</h1>
+
+  <script type="module">
+    // This script simulates something a browser extension might do.
+    window.addEventListener('load', () => {
+      // inline script
+      const script = document.createElement('script');
+      script.innerText = 'document.body.style.color = "violet"';
+      document.body.appendChild(script);
+    });
+  </script>
+</body>

@@ -1,0 +1,18 @@
+<head>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
+</head>
+
+<body>
+  <h1 id="h1">Hello world!</h1>
+
+  <script type="module">
+    // This script simulates something a browser extension might do.
+    window.addEventListener('load', () => {
+      // malformed stylesheet
+      const link = document.createElement('link');
+      link.rel = 'stylesheet';
+      document.body.appendChild(link);
+    });
+  </script>
+</body>
