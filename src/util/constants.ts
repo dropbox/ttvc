@@ -12,7 +12,7 @@ export const CONFIG = {
   IDLE_TIMEOUT: 200,
   /** A duration in ms to wait before assuming that a single network request
    * was not instrumented correctly. */
-  NETWORK_TIMEOUT: 30000,
+  NETWORK_TIMEOUT: 60000,
 };
 
 export const setConfig = (options?: TtvcOptions) => {
