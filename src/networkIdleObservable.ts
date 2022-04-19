@@ -23,6 +23,7 @@ class AjaxIdleObservable {
   };
 
   private startCleanupTimeout = () => {
+    this.abortCleanupTimeout();
     const cleanup = () => {
       Logger.warn(
         'AjaxIdleObservable',
@@ -47,7 +48,6 @@ class AjaxIdleObservable {
 
   /** call this whenever an instrumented AJAX request is triggered */
   increment = () => {
-    this.abortCleanupTimeout();
     this.startCleanupTimeout();
     if (this.pendingRequests === 0) {
       this.next('BUSY');
@@ -142,6 +142,7 @@ class ResourceLoadingIdleObservable {
   };
 
   private startCleanupTimeout = () => {
+    this.abortCleanupTimeout();
     const cleanup = () => {
       Logger.warn(
         'ResourceLoadingIdleObservable',
@@ -160,11 +161,11 @@ class ResourceLoadingIdleObservable {
   };
 
   private abortCleanupTimeout = () => {
+    window.clearTimeout(this.cleanupTimeout);
     this.cleanupTimeout = undefined;
   };
 
   private add = (element: ResourceLoadingElement) => {
-    this.abortCleanupTimeout();
     this.startCleanupTimeout();
     // ignore elements without resources to load
     if (
