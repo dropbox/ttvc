@@ -72,7 +72,7 @@ export class InViewportMutationObserver {
               this.intersectionObserver.observe(node);
               this.mutations.set(node, mutation);
             }
-            if (node instanceof Text) {
+            if (node instanceof Text && node.parentElement != null) {
               this.intersectionObserver.observe(node.parentElement);
               this.mutations.set(node.parentElement, mutation);
             }
