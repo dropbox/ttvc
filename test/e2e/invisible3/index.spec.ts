@@ -18,7 +18,7 @@ test.describe('TTVC', () => {
 
     expect(entries.length).toBe(1);
     const expectedTtvc = PAGELOAD_DELAY + SCRIPT_DELAY;
-    expect(entries[0]).toBeGreaterThanOrEqual(expectedTtvc);
-    expect(entries[0]).toBeLessThanOrEqual(expectedTtvc + FUDGE);
+    expect(entries[0].duration).toBeGreaterThanOrEqual(expectedTtvc);
+    expect(entries[0].duration).toBeLessThanOrEqual(expectedTtvc + FUDGE);
   });
 });

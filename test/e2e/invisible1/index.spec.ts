@@ -14,7 +14,7 @@ test.describe('TTVC', () => {
     const entries = await getEntries(page);
 
     expect(entries.length).toBe(1);
-    expect(entries[0]).toBeGreaterThanOrEqual(PAGELOAD_DELAY);
-    expect(entries[0]).toBeLessThanOrEqual(PAGELOAD_DELAY + IMAGE_DELAY);
+    expect(entries[0].duration).toBeGreaterThanOrEqual(PAGELOAD_DELAY);
+    expect(entries[0].duration).toBeLessThanOrEqual(PAGELOAD_DELAY + IMAGE_DELAY);
   });
 });

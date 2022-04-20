@@ -15,8 +15,8 @@ test.describe('TTVC', () => {
     const entries = await getEntries(page);
 
     expect(entries.length).toBe(1);
-    expect(entries[0]).toBeGreaterThanOrEqual(PAGELOAD_DELAY + IMAGE_DELAY);
+    expect(entries[0].duration).toBeGreaterThanOrEqual(PAGELOAD_DELAY + IMAGE_DELAY);
     // react loads and runs at inconsistent speeds, so oduble the fudge factor
-    expect(entries[0]).toBeLessThanOrEqual(PAGELOAD_DELAY + IMAGE_DELAY + FUDGE * 2);
+    expect(entries[0].duration).toBeLessThanOrEqual(PAGELOAD_DELAY + IMAGE_DELAY + FUDGE * 2);
   });
 });
