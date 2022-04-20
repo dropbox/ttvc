@@ -14,6 +14,12 @@ export type Metric = {
 
   // the difference between start and end; this is the value of "TTVC"
   duration: number;
+
+  // additional metadata related to the current navigation
+  detail: {
+    // if ttvc ignored a stalled network request, this value will be true
+    didNetworkTimeOut: boolean;
+  };
 };
 
 export type MetricSubscriber = (measurement: Metric) => void;
@@ -86,7 +92,7 @@ class VisuallyCompleteCalculator {
     // - wait for window.on("load")
     await waitForPageLoad();
     // - wait for simultaneous network and CPU idle
-    await new Promise<void>(requestAllIdleCallback);
+    const didNetworkTimeOut = await new Promise<boolean>(requestAllIdleCallback);
 
     if (!shouldCancel) {
       // identify timestamp of last visible change
@@ -97,6 +103,7 @@ class VisuallyCompleteCalculator {
         start,
         end,
         duration: end - start,
+        detail: {didNetworkTimeOut},
       });
     }
 
