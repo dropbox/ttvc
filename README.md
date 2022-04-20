@@ -45,6 +45,58 @@ TBC
 
 TBC
 
+# API
+
+## Types
+
+### `Metric`
+
+```typescript
+export type Metric = {
+  // time since timeOrigin that the navigation was triggered
+  // (this will be 0 for the initial pageload)
+  start: number;
+
+  // time since timeOrigin that ttvc was marked for the current navigation
+  end: number;
+
+  // the difference between start and end; this is the value of "TTVC"
+  duration: number;
+
+  // additional metadata related to the current navigation
+  detail: {
+    // if ttvc ignored a stalled network request, this value will be true
+    didNetworkTimeOut: boolean;
+  };
+};
+```
+
+### `TtvcOptions`
+
+```typescript
+export type TtvcOptions = {
+  // decide whether to log debug messages
+  debug?: boolean;
+
+  // the duration in ms to wait before declaring the page completely idle
+  idleTimeout?: number;
+
+  // a duration in ms to wait before assuming that a single network request
+  // was not instrumented correctly
+  networkTimeout?: number;
+};
+```
+
+## Functions
+
+### `init()`
+
+TBC
+
+### `getTTVC()`
+
+TBC
+
 # Browser Support
 
 TBC
