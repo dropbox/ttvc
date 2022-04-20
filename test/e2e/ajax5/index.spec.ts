@@ -10,7 +10,13 @@ test.describe('TTVC', () => {
       waitUntil: 'networkidle',
     });
 
-    await entryCountIs(page, 1, 5000);
+    // wait long enough to ensure ttvc would have been logged
+    try {
+      await entryCountIs(page, 1, 5000);
+    } catch (e) {
+      // pass
+    }
+
     const entries = await getEntries(page);
 
     // ttvc should never be reported
