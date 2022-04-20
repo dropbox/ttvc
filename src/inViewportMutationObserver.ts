@@ -78,7 +78,6 @@ export class InViewportMutationObserver {
 
   private intersectionObserverCallback: IntersectionObserverCallback = (entries) => {
     entries.forEach((entry) => {
-      // console.log(entry);
       if (entry.isIntersecting && this.mutations.has(entry.target)) {
         const mutation = this.mutations.get(entry.target);
         this.callback(mutation);

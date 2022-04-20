@@ -8,8 +8,7 @@ const IFRAME_DELAY = 500;
 
 test.describe('TTVC', () => {
   test('a static document with an iframe', async ({page}) => {
-    test.fail(); // TODO: iframe content is not accounted for
-    await page.goto(`/test/static1?delay=${PAGELOAD_DELAY}`, {
+    await page.goto(`/test/iframe1?delay=${PAGELOAD_DELAY}`, {
       waitUntil: 'networkidle',
     });
 

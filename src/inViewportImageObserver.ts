@@ -1,6 +1,8 @@
 /**
  * Modeled after IntersectionObserver and MutationObserver, this Image observer
  * reports image load times for images that are visible within the viewport.
+ * 
+ * Note: ImageObserver treats iframes as images to give accurate times
  *
  * @example
  * const observer = new InViewportImageObserver((timestamp) => {
@@ -16,7 +18,7 @@
  */
 export class InViewportImageObserver {
   private intersectionObserver: IntersectionObserver;
-  private imageLoadTimes = new Map<HTMLImageElement, number>();
+  private imageLoadTimes = new Map<HTMLImageElement | HTMLIFrameElement, number>();
   private callback: (timestamp: number) => void;
 
   public lastImageLoadTimestamp = 0;
@@ -28,7 +30,7 @@ export class InViewportImageObserver {
 
   private intersectionObserverCallback = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry) => {
-      const img = entry.target as HTMLImageElement;
+      const img = entry.target as HTMLImageElement | HTMLIFrameElement;
       if (entry.isIntersecting) {
         this.callback(this.imageLoadTimes.get(img));
       }
@@ -38,7 +40,7 @@ export class InViewportImageObserver {
   };
 
   private handleLoadOrErrorEvent = (event: Event) => {
-    if (event.target instanceof HTMLImageElement) {
+    if (event.target instanceof HTMLImageElement || event.target instanceof HTMLIFrameElement) {
       this.imageLoadTimes.set(event.target, performance.now());
       this.intersectionObserver.observe(event.target);
     }
