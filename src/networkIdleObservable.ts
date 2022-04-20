@@ -3,7 +3,7 @@ import {Logger} from './util/logger';
 
 export type Message = 'IDLE' | 'BUSY';
 type Subscriber = (message: Message) => void;
-type ResourceLoadingElement = HTMLScriptElement | HTMLLinkElement | HTMLImageElement;
+type ResourceLoadingElement = HTMLScriptElement | HTMLLinkElement | HTMLImageElement | HTMLIFrameElement;
 
 /**
  * Alerts subscribers to the presence or absence of pending AJAX requests
@@ -106,7 +106,8 @@ class ResourceLoadingIdleObservable {
               if (
                 node instanceof HTMLScriptElement ||
                 node instanceof HTMLLinkElement ||
-                node instanceof HTMLImageElement
+                node instanceof HTMLImageElement ||
+                node instanceof HTMLIFrameElement
               ) {
                 this.add(node);
               } else if (node.hasChildNodes() && node instanceof HTMLElement) {
@@ -129,7 +130,8 @@ class ResourceLoadingIdleObservable {
               if (
                 event.target instanceof HTMLScriptElement ||
                 event.target instanceof HTMLLinkElement ||
-                event.target instanceof HTMLImageElement
+                event.target instanceof HTMLImageElement ||
+                event.target instanceof HTMLIFrameElement
               ) {
                 this.remove(event.target);
               }
@@ -179,7 +181,8 @@ class ResourceLoadingIdleObservable {
     if (
       (element instanceof HTMLImageElement && element.complete) ||
       (element instanceof HTMLLinkElement && !element.href) ||
-      (element instanceof HTMLScriptElement && !element.src)
+      (element instanceof HTMLScriptElement && !element.src) ||
+      (element instanceof HTMLIFrameElement && !element.src)
     ) {
       return;
     }
