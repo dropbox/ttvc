@@ -23,6 +23,8 @@ class AjaxIdleObservable {
   };
 
   private startCleanupTimeout = () => {
+    if (CONFIG.NETWORK_TIMEOUT === 0) return;
+
     this.abortCleanupTimeout();
     const cleanup = () => {
       Logger.warn(
@@ -142,6 +144,8 @@ class ResourceLoadingIdleObservable {
   };
 
   private startCleanupTimeout = () => {
+    if (CONFIG.NETWORK_TIMEOUT === 0) return;
+
     this.abortCleanupTimeout();
     const cleanup = () => {
       Logger.warn(
