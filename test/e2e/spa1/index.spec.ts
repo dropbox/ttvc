@@ -17,8 +17,8 @@ test.describe('TTVC', () => {
       const entries = await getEntries(page);
 
       expect(entries.length).toBe(1);
-      expect(entries[0]).toBeGreaterThanOrEqual(PAGELOAD_DELAY);
-      expect(entries[0]).toBeLessThanOrEqual(PAGELOAD_DELAY + FUDGE);
+      expect(entries[0].duration).toBeGreaterThanOrEqual(PAGELOAD_DELAY);
+      expect(entries[0].duration).toBeLessThanOrEqual(PAGELOAD_DELAY + FUDGE);
     });
 
     test('SPA navigation', async ({page}) => {
@@ -28,8 +28,8 @@ test.describe('TTVC', () => {
       await entryCountIs(page, 2);
       const entries = await getEntries(page);
 
-      expect(entries[1]).toBeGreaterThanOrEqual(0);
-      expect(entries[1]).toBeLessThanOrEqual(0 + FUDGE);
+      expect(entries[1].duration).toBeGreaterThanOrEqual(0);
+      expect(entries[1].duration).toBeLessThanOrEqual(0 + FUDGE);
     });
   });
 });

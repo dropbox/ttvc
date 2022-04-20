@@ -4,7 +4,25 @@ import {requestAllIdleCallback} from './requestAllIdleCallback';
 import {InViewportImageObserver} from './inViewportImageObserver';
 import {Logger} from './util/logger';
 
-export type MetricSubscriber = (measurement: number) => void;
+export type Metric = {
+  // time since timeOrigin that the navigation was triggered
+  // (this will be 0 for the initial pageload)
+  start: number;
+
+  // time since timeOrigin that ttvc was marked for the current navigation
+  end: number;
+
+  // the difference between start and end; this is the value of "TTVC"
+  duration: number;
+
+  // additional metadata related to the current navigation
+  detail: {
+    // if ttvc ignored a stalled network request, this value will be true
+    didNetworkTimeOut: boolean;
+  };
+};
+
+export type MetricSubscriber = (measurement: Metric) => void;
 
 /**
  * TODO: Document
@@ -51,7 +69,7 @@ class VisuallyCompleteCalculator {
   }
 
   /** begin measuring a new navigation */
-  async start(startTime = 0) {
+  async start(start = 0) {
     const navigationIndex = (this.navigationCount += 1);
     Logger.info('VisuallyCompleteCalculator.start()');
 
@@ -74,13 +92,19 @@ class VisuallyCompleteCalculator {
     // - wait for window.on("load")
     await waitForPageLoad();
     // - wait for simultaneous network and CPU idle
-    await new Promise<void>(requestAllIdleCallback);
+    const didNetworkTimeOut = await new Promise<boolean>(requestAllIdleCallback);
 
     if (!shouldCancel) {
       // identify timestamp of last visible change
-      const lastVisibleUpdate = Math.max(this.lastImageLoadTimestamp, this.lastMutationTimestamp);
+      const end = Math.max(this.lastImageLoadTimestamp, this.lastMutationTimestamp);
+
       // report result to subscribers
-      this.next(lastVisibleUpdate - startTime);
+      this.next({
+        start,
+        end,
+        duration: end - start,
+        detail: {didNetworkTimeOut},
+      });
     }
 
     // cleanup
@@ -96,7 +120,7 @@ class VisuallyCompleteCalculator {
     }
   }
 
-  private next(measurement: number) {
+  private next(measurement: Metric) {
     Logger.debug(
       'VisuallyCompleteCalculator.next()',
       '::',

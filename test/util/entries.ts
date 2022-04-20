@@ -1,9 +1,10 @@
 import type {Page} from '@playwright/test';
+import type {Metric} from '../../src';
 
 // Use window.entries to communicate between browser and test processes
 declare global {
   interface Window {
-    entries: number[];
+    entries: Metric[];
   }
 }
 

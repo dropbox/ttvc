@@ -15,6 +15,7 @@ class AjaxIdleObservable {
   private pendingRequests = 0;
   private subscribers = new Set<Subscriber>();
 
+  public didNetworkTimeOut = false;
   private cleanupTimeout?: number; // time out if ajax request never resolves
 
   private next = (message: Message) => {
@@ -36,6 +37,7 @@ class AjaxIdleObservable {
         'pendingRequests =',
         this.pendingRequests
       );
+      this.didNetworkTimeOut = true;
       this.pendingRequests = 0;
       this.next('IDLE');
     };
@@ -90,6 +92,7 @@ class ResourceLoadingIdleObservable {
   private pendingResources = new Set<ResourceLoadingElement>();
   private subscribers = new Set<Subscriber>();
 
+  public didNetworkTimeOut = false;
   private cleanupTimeout?: number; // time out if resource never resolves
 
   constructor() {
@@ -157,6 +160,7 @@ class ResourceLoadingIdleObservable {
         'pendingResources =',
         this.pendingResources
       );
+      this.didNetworkTimeOut = true;
       this.pendingResources = new Set();
       this.next('IDLE');
     };
@@ -275,6 +279,18 @@ export class NetworkIdleObservable {
 
   isIdle = () => {
     return this.ajaxIdle && this.scriptLoadingIdle;
+  };
+
+  didNetworkTimeOut = () => {
+    return (
+      this.ajaxIdleObservable.didNetworkTimeOut ||
+      this.resourceLoadingIdleObservable.didNetworkTimeOut
+    );
+  };
+
+  resetDidNetworkTimeOut = () => {
+    this.ajaxIdleObservable.didNetworkTimeOut = false;
+    this.resourceLoadingIdleObservable.didNetworkTimeOut = false;
   };
 
   subscribe = (subscriber: Subscriber) => {
