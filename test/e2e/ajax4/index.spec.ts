@@ -17,5 +17,6 @@ test.describe('TTVC', () => {
     expect(entries.length).toBe(1);
     expect(entries[0].duration).toBeGreaterThanOrEqual(PAGELOAD_DELAY);
     expect(entries[0].duration).toBeLessThanOrEqual(PAGELOAD_DELAY + FUDGE);
+    expect(entries[0].detail.didNetworkTimeOut).toBe(true);
   });
 });
