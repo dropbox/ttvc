@@ -8,7 +8,7 @@ window.fetch = (...args) => {
   return oldFetch(...args).finally(TTVC.decrementAjaxCount);
 };
 
-TTVC.init({debug: true, networkTimeout: 3000});
+TTVC.init({debug: true, networkTimeout: window.NETWORK_TIMEOUT ?? 3000});
 
 TTVC.getTTVC((ms) => {
   console.log('TTVC:', ms);
