@@ -32,8 +32,8 @@ init();
 
 // Reports the last visible change for each navigation that
 // occurs during the life of this document.
-const unsubscribe = getTTVC(timestamp => {
-    console.log(timestamp);
+const unsubscribe = getTTVC((measurement) => {
+  console.log('TTVC:', measurement.duration);
 });
 ```
 
