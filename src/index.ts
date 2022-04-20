@@ -1,4 +1,6 @@
-import {getNetworkIdleObservable} from './networkIdleObservable.js';
+import {getNetworkIdleObservable} from './networkIdleObservable';
+import {TtvcOptions, setConfig} from './util/constants';
+import {Logger} from './util/logger';
 import {
   getVisuallyCompleteCalculator,
   MetricSubscriber,
@@ -7,12 +9,18 @@ import {
 
 let calculator: VisuallyCompleteCalculator;
 
-// Start monitoring initial pageload
-// TODO: Should we ask library consumers to manually initialize?
-export const init = () => {
+/**
+ *  Start ttvc and begin monitoring network activity and visual changes.
+ */
+export const init = (options?: TtvcOptions) => {
+  // apply options
+  setConfig(options);
+
+  Logger.info('init()');
+
   calculator = getVisuallyCompleteCalculator();
   void calculator.start();
-  window.addEventListener('locationchange', () => void calculator.start());
+  window.addEventListener('locationchange', () => void calculator.start(performance.now()));
 };
 
 /**

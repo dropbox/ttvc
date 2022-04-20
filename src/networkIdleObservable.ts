@@ -1,3 +1,6 @@
+import {CONFIG} from './util/constants';
+import {Logger} from './util/logger';
+
 export type Message = 'IDLE' | 'BUSY';
 type Subscriber = (message: Message) => void;
 type ResourceLoadingElement = HTMLScriptElement | HTMLLinkElement | HTMLImageElement;
@@ -12,12 +15,40 @@ class AjaxIdleObservable {
   private pendingRequests = 0;
   private subscribers = new Set<Subscriber>();
 
+  private cleanupTimeout?: number; // time out if ajax request never resolves
+
   private next = (message: Message) => {
+    Logger.debug('AjaxIdleObservable.next()', message);
     this.subscribers.forEach((subscriber) => subscriber(message));
+  };
+
+  private startCleanupTimeout = () => {
+    this.abortCleanupTimeout();
+    const cleanup = () => {
+      Logger.warn(
+        'AjaxIdleObservable',
+        '::',
+        'Timed out waiting for requests to resolve.',
+        'Make sure that incrementAjaxCount() is always matched with decrementAjaxCount().',
+        '::',
+        'pendingRequests =',
+        this.pendingRequests
+      );
+      this.pendingRequests = 0;
+      this.next('IDLE');
+    };
+
+    this.cleanupTimeout = window.setTimeout(cleanup, CONFIG.NETWORK_TIMEOUT);
+  };
+
+  private abortCleanupTimeout = () => {
+    window.clearTimeout(this.cleanupTimeout);
+    this.cleanupTimeout = undefined;
   };
 
   /** call this whenever an instrumented AJAX request is triggered */
   increment = () => {
+    this.startCleanupTimeout();
     if (this.pendingRequests === 0) {
       this.next('BUSY');
     }
@@ -26,10 +57,21 @@ class AjaxIdleObservable {
 
   /** call this whenever an instrumented AJAX request is resolved */
   decrement = () => {
+    this.abortCleanupTimeout();
     if (this.pendingRequests === 1) {
       this.next('IDLE');
+    } else {
+      this.startCleanupTimeout();
     }
     this.pendingRequests = Math.max(this.pendingRequests - 1, 0);
+    if (this.pendingRequests < 10) {
+      Logger.debug(
+        'AjaxIdleObservable.decrement()',
+        '::',
+        'pendingRequests =',
+        this.pendingRequests
+      );
+    }
   };
 
   subscribe = (subscriber: Subscriber) => {
@@ -45,6 +87,8 @@ class AjaxIdleObservable {
 class ResourceLoadingIdleObservable {
   private pendingResources = new Set<ResourceLoadingElement>();
   private subscribers = new Set<Subscriber>();
+
+  private cleanupTimeout?: number; // time out if resource never resolves
 
   constructor() {
     // watch out for SSR
@@ -93,12 +137,42 @@ class ResourceLoadingIdleObservable {
   }
 
   private next = (message: Message) => {
+    Logger.debug('ResourceLoadingIdleObservable.next()', message);
     this.subscribers.forEach((subscriber) => subscriber(message));
   };
 
+  private startCleanupTimeout = () => {
+    this.abortCleanupTimeout();
+    const cleanup = () => {
+      Logger.warn(
+        'ResourceLoadingIdleObservable',
+        '::',
+        'Timed out waiting for resources to resolve.',
+        'Consider filing a bug report if this continues to occur.',
+        '::',
+        'pendingResources =',
+        this.pendingResources
+      );
+      this.pendingResources = new Set();
+      this.next('IDLE');
+    };
+
+    this.cleanupTimeout = window.setTimeout(cleanup, CONFIG.NETWORK_TIMEOUT);
+  };
+
+  private abortCleanupTimeout = () => {
+    window.clearTimeout(this.cleanupTimeout);
+    this.cleanupTimeout = undefined;
+  };
+
   private add = (element: ResourceLoadingElement) => {
-    // if element is an image and it's complete, ignore it
-    if (element instanceof HTMLImageElement && element.complete) {
+    this.startCleanupTimeout();
+    // ignore elements without resources to load
+    if (
+      (element instanceof HTMLImageElement && element.complete) ||
+      (element instanceof HTMLLinkElement && !element.href) ||
+      (element instanceof HTMLScriptElement && !element.src)
+    ) {
       return;
     }
 
@@ -109,9 +183,20 @@ class ResourceLoadingIdleObservable {
   };
 
   private remove = (element: ResourceLoadingElement) => {
+    this.abortCleanupTimeout();
     this.pendingResources.delete(element);
     if (this.pendingResources.size === 0) {
       this.next('IDLE');
+    } else {
+      this.startCleanupTimeout();
+    }
+    if (this.pendingResources.size < 10) {
+      Logger.debug(
+        'ResourceLoadingIdleObservable.remove()',
+        '::',
+        'pendingResources =',
+        this.pendingResources
+      );
     }
   };
 
@@ -164,6 +249,7 @@ export class NetworkIdleObservable {
   };
 
   private next = (message: Message) => {
+    Logger.debug('NetworkIdleObservable.next()', message);
     this.subscribers.forEach((subscriber) => subscriber(message));
   };
 

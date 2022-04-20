@@ -1,7 +1,8 @@
 import {InViewportMutationObserver} from './inViewportMutationObserver';
-import {waitForPageLoad} from './utils';
+import {waitForPageLoad} from './util';
 import {requestAllIdleCallback} from './requestAllIdleCallback';
 import {InViewportImageObserver} from './inViewportImageObserver';
+import {Logger} from './util/logger';
 
 export type MetricSubscriber = (measurement: number) => void;
 
@@ -9,15 +10,17 @@ export type MetricSubscriber = (measurement: number) => void;
  * TODO: Document
  */
 class VisuallyCompleteCalculator {
+  public debug = false;
+  public idleTimeout = 200;
+
   private inViewportMutationObserver: InViewportMutationObserver;
   private inViewportImageObserver: InViewportImageObserver;
 
   // measurement state
-  private startTime = 0;
   private lastMutationTimestamp = 0;
   private lastImageLoadTimestamp = 0;
   private subscribers = new Set<MetricSubscriber>();
-  private shouldCancel = false;
+  private navigationCount = 0;
 
   /**
    * Determine whether the calculator should run in the current environment
@@ -48,18 +51,24 @@ class VisuallyCompleteCalculator {
   }
 
   /** begin measuring a new navigation */
-  async start(time = 0) {
+  async start(startTime = 0) {
+    const navigationIndex = (this.navigationCount += 1);
+    Logger.info('VisuallyCompleteCalculator.start()');
+
     // setup
+    let shouldCancel = false;
+    const cancel = () => (shouldCancel = true);
+
     this.inViewportImageObserver.observe();
     this.inViewportMutationObserver.observe(document.documentElement);
-    window.addEventListener('click', this.cancel);
-    window.addEventListener('keydown', this.cancel);
-    window.addEventListener('pagehide', this.cancel);
-    window.addEventListener('visibilitychange', this.cancel);
-    this.shouldCancel = false;
-
-    // save start timestamp
-    this.startTime = time;
+    window.addEventListener('pagehide', cancel);
+    window.addEventListener('visibilitychange', cancel);
+    window.addEventListener('locationchange', cancel);
+    // attach user interaction listeners next tick (we don't want to pick up the SPA navigation click)
+    window.setTimeout(() => {
+      window.addEventListener('click', cancel);
+      window.addEventListener('keydown', cancel);
+    }, 0);
 
     // wait for page to be definitely DONE
     // - wait for window.on("load")
@@ -67,32 +76,38 @@ class VisuallyCompleteCalculator {
     // - wait for simultaneous network and CPU idle
     await new Promise<void>(requestAllIdleCallback);
 
-    if (!this.shouldCancel) {
+    if (!shouldCancel) {
       // identify timestamp of last visible change
       const lastVisibleUpdate = Math.max(this.lastImageLoadTimestamp, this.lastMutationTimestamp);
       // report result to subscribers
-      this.next(lastVisibleUpdate - this.startTime);
+      this.next(lastVisibleUpdate - startTime);
     }
 
     // cleanup
-    this.inViewportImageObserver.disconnect();
-    this.inViewportMutationObserver.disconnect();
-    window.removeEventListener('click', this.cancel);
-    window.removeEventListener('keydown', this.cancel);
-    window.removeEventListener('pagehide', this.cancel);
-    window.removeEventListener('visibilitychange', this.cancel);
-    this.lastMutationTimestamp = 0;
-    this.lastImageLoadTimestamp = 0;
-    this.startTime = 0;
+    window.removeEventListener('pagehide', cancel);
+    window.removeEventListener('visibilitychange', cancel);
+    window.removeEventListener('locationchange', cancel);
+    window.removeEventListener('click', cancel);
+    window.removeEventListener('keydown', cancel);
+    // only disconnect observers if this is the most recent navigation
+    if (navigationIndex === this.navigationCount) {
+      this.inViewportImageObserver.disconnect();
+      this.inViewportMutationObserver.disconnect();
+    }
   }
 
   private next(measurement: number) {
+    Logger.debug(
+      'VisuallyCompleteCalculator.next()',
+      '::',
+      'lastImageLoadTimestamp =',
+      this.lastImageLoadTimestamp,
+      'lastMutationTimestamp =',
+      this.lastMutationTimestamp
+    );
+    Logger.info('TTVC:', measurement);
     this.subscribers.forEach((subscriber) => subscriber(measurement));
   }
-
-  private cancel = () => {
-    this.shouldCancel = true;
-  };
 
   /** subscribe to Visually Complete metrics */
   getTTVC = (subscriber: MetricSubscriber) => {

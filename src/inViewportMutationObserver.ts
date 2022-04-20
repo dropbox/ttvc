@@ -1,3 +1,5 @@
+import {Logger} from './util/logger';
+
 export type InViewportMutationObserverCallback = (mutation: TimestampedMutationRecord) => void;
 export type TimestampedMutationRecord = MutationRecord & {timestamp: number};
 
@@ -39,15 +41,23 @@ export class InViewportMutationObserver {
   }
 
   public observe(target: HTMLElement) {
+    Logger.info('InViewportMutationObserver.observe()', '::', 'target =', target);
     this.mutationObserver.observe(target, this.mutationObserverConfig);
   }
 
   public disconnect() {
+    Logger.info('InViewportMutationObserver.disconnect()');
     this.mutationObserver.disconnect();
     this.intersectionObserver.disconnect();
   }
 
   private mutationObserverCallback: MutationCallback = (mutations) => {
+    Logger.debug(
+      'InViewportMutationObserver.mutationObserverCallback()',
+      '::',
+      'mutations =',
+      mutations
+    );
     mutations.forEach((mutation: TimestampedMutationRecord) => {
       mutation.timestamp = performance.now();
 
@@ -62,7 +72,7 @@ export class InViewportMutationObserver {
               this.intersectionObserver.observe(node);
               this.mutations.set(node, mutation);
             }
-            if (node instanceof Text) {
+            if (node instanceof Text && node.parentElement != null) {
               this.intersectionObserver.observe(node.parentElement);
               this.mutations.set(node.parentElement, mutation);
             }
@@ -77,9 +87,16 @@ export class InViewportMutationObserver {
   };
 
   private intersectionObserverCallback: IntersectionObserverCallback = (entries) => {
+    Logger.debug(
+      'InViewportMutationObserver.intersectionObserverCallback()',
+      '::',
+      'entries =',
+      entries
+    );
     entries.forEach((entry) => {
       if (entry.isIntersecting && this.mutations.has(entry.target)) {
         const mutation = this.mutations.get(entry.target);
+        Logger.info('InViewportMutationObserver.callback()', '::', 'mutation =', mutation);
         this.callback(mutation);
       }
       this.mutations.delete(entry.target);

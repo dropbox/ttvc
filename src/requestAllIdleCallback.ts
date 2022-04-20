@@ -1,10 +1,11 @@
-import {MINIMUM_IDLE_MS} from './constants';
+import {CONFIG} from './util/constants';
 import {Message, getNetworkIdleObservable} from './networkIdleObservable';
-import {requestIdleCallback} from './utils';
+import {requestIdleCallback} from './util';
+import {Logger} from './util/logger';
 
 /**
  * Request a callback when the CPU and network have both been simultaneously
- * idle for MINIMUM_IDLE_MS.
+ * idle for IDLE_TIMEOUT.
  *
  * NOTE: will only trigger once
  */
@@ -16,17 +17,18 @@ export function requestAllIdleCallback(callback: () => void) {
   let timeout: number | null = null;
 
   const handleNetworkChange = (message: Message) => {
-    // console.log('NETWORK', message);
     networkIdle = message === 'IDLE';
 
     if (networkIdle) {
       requestIdleCallback(handleCpuIdle);
     } else {
       window.clearTimeout(timeout);
+      timeout = null;
     }
   };
 
   const handleCpuIdle = () => {
+    Logger.debug('requestAllIdleCallback.handleCpuIdle()');
     if (networkIdle && !timeout) {
       handleAllIdle();
     }
@@ -34,9 +36,10 @@ export function requestAllIdleCallback(callback: () => void) {
 
   const handleAllIdle = () => {
     timeout = window.setTimeout(() => {
+      Logger.info('requestAllIdleCallback: ALL IDLE');
       callback();
       unsubscribe();
-    }, MINIMUM_IDLE_MS);
+    }, CONFIG.IDLE_TIMEOUT);
   };
 
   const unsubscribe = networkIdleObservable.subscribe(handleNetworkChange);
