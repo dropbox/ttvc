@@ -22,8 +22,6 @@ $ yarn add @dropbox-performance/ttvc
 
 ## Basic usage
 
-> ⚠️ **This API has not stabilized and is likely to change.**
-
 ```js
 import {init, getTTVC} from '@dropbox-performance/ttvc';
 
