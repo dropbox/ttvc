@@ -41,11 +41,93 @@ const unsubscribe = getTTVC((measurement) => {
 
 ## Report metrics to a collection endpoint
 
-TBC
+```js
+import {init, getTTVC} from '@dropbox-performance/ttvc';
+
+init();
+
+let measurements = [];
+
+// capture measurements in client
+getTTVC((measurement) => {
+  measurements.append(measurement);
+});
+
+// flush data to server when page is hidden
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    navigator.sendBeacon('/log', JSON.stringify(measurements));
+    measurements = [];
+  }
+});
+```
 
 ## Record a PerformanceTimeline entry
 
-TBC
+Capture a span using the [Performance Timeline](https://developer.mozilla.org/en-US/docs/Web/API/Performance_Timeline) API.
+
+NOTE: Setting arbitrary start and end times with `performance.measure` relies on the [User Timing Level 3](https://w3c.github.io/user-timing/) specification. This is not yet adopted by all major browsers.
+
+```js
+import {init, getTTVC} from '@dropbox-performance/ttvc';
+
+init();
+
+getTTVC(({start, end, duration, detail}) => {
+  window.performance.measure('TTVC', {
+    start,
+    end,
+    duration,
+    detail,
+  });
+});
+```
+
+## Client-side navigation with React Router
+
+```js
+// analytics.js
+import {init, getTTVC} from '@dropbox-performance/ttvc';
+
+init();
+
+getTTVC((measurement) => {
+  console.log('TTVC:', measurement.duration);
+});
+```
+
+```js
+// app.js
+import React, {useEffect} from 'react';
+import ReactDOM from 'react-dom';
+import {BrowserRouter, useLocation} from 'react-router-dom';
+
+ReactDOM.render(
+  <BrowserRouter>
+    <App />
+  </BrowserRouter>,
+  document.getElementById('root')
+);
+
+const App = () => {
+  const location = useLocation();
+
+  useEffect(() => {
+    // This event signals to ttvc that a new navigation has begun.
+    window.dispatchEvent(new Event('locationchange'));
+  }, [location]);
+
+  return (
+    <div className="App">
+      <h1>Welcome to React Router!</h1>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        {/* ... more routes */}
+      </Routes>
+    </div>
+  );
+};
+```
 
 # API
 
