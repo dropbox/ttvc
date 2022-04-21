@@ -85,6 +85,12 @@ getTTVC(({start, end, duration, detail}) => {
 
 ## Client-side navigation with React Router
 
+@dropbox-performance/ttvc supports measuring client-side navigations!
+
+What counts as navigation may be different in each application, but as long as you signal that a navigation has begun, this library can figure out the rest.
+
+To trigger a new navigation measurement, simply dispatch a "locationchange" event on the window object.
+
 ```js
 // analytics.js
 import {init, getTTVC} from '@dropbox-performance/ttvc';
