@@ -95,11 +95,49 @@ export type TtvcOptions = {
 
 ### `init()`
 
-TBC
+```typescript
+type init = (options?: TtvcOptions) -> void;
+```
+
+Sets up instrumentation for the current page and begins monitoring.  For the most accurate results, call this as early in pageload as possible.
+
+Accepts an optional options argument (see above).
 
 ### `getTTVC()`
 
-TBC
+```typescript
+type getTTVC = (subscriber: (metric: Metric) -> void) -> () => void;
+```
+
+Register a callback function as a subscriber to new TTVC metric measurements.
+
+Returns an "unsubscribe" function which may be called to unregister the subscribed callback function.
+
+The callback function may be called more than once if in-page navigation occurs.  Calling getTTVC more than once allows you to register more than one subscriber to TTVC events.
+
+### `incrementAjaxCount() & decrementAjaxCount()`
+
+```typescript
+type incrementAjaxCount = () -> void;
+type decrementAjaxCount = () -> void;
+```
+
+Use these functions to instrument AJAX requests in your application.  Try to ensure `incrementAjaxCount` and `decrementAjaxCount` are called exactly once for each request, regardless of success or failure.
+
+e.g.
+
+```javascript
+// patch window.fetch
+const nativeFetch = window.fetch;
+
+window.fetch = (...args) => {
+  TTVC.incrementAjaxCount();
+  return nativeFetch(...args)
+    .finally(TTVC.decrementAjaxCount);
+};
+
+```
+
 
 # Browser Support
 
