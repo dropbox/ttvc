@@ -109,11 +109,11 @@ Accepts an optional options argument (see above).
 type getTTVC = (subscriber: (metric: Metric) -> void) -> () => void;
 ```
 
-Register a callback function as a subscriber to new TTVC metric measurements.
+Register a callback function as a subscriber to new TTVC metric measurements.  Returns an "unsubscribe" function which may be called to unregister the subscribed callback function.
 
-Returns an "unsubscribe" function which may be called to unregister the subscribed callback function.
+The callback function may be called more than once if in-page navigation occurs.
 
-The callback function may be called more than once if in-page navigation occurs.  Calling getTTVC more than once allows you to register more than one subscriber to TTVC events.
+`getTTVC` may be called more than once to register more than one subscriber.
 
 ### `incrementAjaxCount() & decrementAjaxCount()`
 
