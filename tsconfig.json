@@ -3,7 +3,7 @@
     "outDir": "/dev/null",
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
-    "target": "es2016",
+    "target": "es2017",
     "module": "es2020",
     "declaration": true,
     "checkJs": true,
