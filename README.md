@@ -27,7 +27,7 @@ $ yarn add @dropbox-performance/ttvc
 ```js
 import {init, getTTVC} from '@dropbox-performance/ttvc';
 
-// Vall this as early in pageload as possible to setup instrumentation.
+// Call this as early in pageload as possible to setup instrumentation.
 init();
 
 // Reports the last visible change for each navigation that
