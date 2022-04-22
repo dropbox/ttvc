@@ -16,7 +16,7 @@
   - [Building](#building)
   - [Testing](#testing)
 
-# Overview
+## Overview
 
 > ⚠️ **This library is an experimental early-stage project. Use at your own risk.**
 
@@ -24,7 +24,7 @@
 
 Visually Complete measures the moment in time when users perceive that all the visual elements of a page have completely loaded. Once the page has reached visually complete, nothing else should change in the viewport without the user’s input.
 
-# Get started
+## Get started
 
 This library is available from npm.  Add it to your project using the `npm` or `yarn` package managers.
 
@@ -36,9 +36,9 @@ $ npm install @dropbox-performance/ttvc
 $ yarn add @dropbox-performance/ttvc
 ```
 
-# Usage
+## Usage
 
-## Basic usage
+### Basic usage
 
 ```js
 import {init, getTTVC} from '@dropbox-performance/ttvc';
@@ -57,7 +57,7 @@ const unsubscribe = getTTVC((measurement) => {
 });
 ```
 
-## Report metrics to a collection endpoint
+### Report metrics to a collection endpoint
 
 ```js
 import {init, getTTVC} from '@dropbox-performance/ttvc';
@@ -80,7 +80,7 @@ document.addEventListener('visibilitychange', () => {
 });
 ```
 
-## Record a PerformanceTimeline entry
+### Record a PerformanceTimeline entry
 
 Capture a span using the [Performance Timeline](https://developer.mozilla.org/en-US/docs/Web/API/Performance_Timeline) API.
 
@@ -101,7 +101,7 @@ getTTVC(({start, end, duration, detail}) => {
 });
 ```
 
-## Client-side navigation with React Router
+### Client-side navigation with React Router
 
 @dropbox-performance/ttvc supports measuring client-side navigations!
 
@@ -153,11 +153,11 @@ const App = () => {
 };
 ```
 
-# API
+## API
 
-## Types
+### Types
 
-### `Metric`
+#### `Metric`
 
 ```typescript
 export type Metric = {
@@ -179,7 +179,7 @@ export type Metric = {
 };
 ```
 
-### `TtvcOptions`
+#### `TtvcOptions`
 
 ```typescript
 export type TtvcOptions = {
@@ -195,9 +195,9 @@ export type TtvcOptions = {
 };
 ```
 
-## Functions
+### Functions
 
-### `init()`
+#### `init()`
 
 ```typescript
 type init = (options?: TtvcOptions) -> void;
@@ -207,7 +207,7 @@ Sets up instrumentation for the current page and begins monitoring.  For the mos
 
 Accepts an optional options argument (see above).
 
-### `getTTVC()`
+#### `getTTVC()`
 
 ```typescript
 type getTTVC = (subscriber: (metric: Metric) -> void) -> () => void;
@@ -219,7 +219,7 @@ The callback function may be called more than once if in-page navigation occurs.
 
 `getTTVC` may be called more than once to register more than one subscriber.
 
-### `incrementAjaxCount() & decrementAjaxCount()`
+#### `incrementAjaxCount() & decrementAjaxCount()`
 
 ```typescript
 type incrementAjaxCount = () -> void;
@@ -243,11 +243,11 @@ window.fetch = (...args) => {
 ```
 
 
-# Browser Support
+## Browser Support
 
 TBC
 
-# Developing
+## Developing
 
 This package expects node version 16 or greater, and the `yarn` package manager.  Once you have these prerequisites, install project dependencies with:
 
@@ -255,7 +255,7 @@ This package expects node version 16 or greater, and the `yarn` package manager.
 yarn install
 ```
 
-## Building
+### Building
 
 This project is developed with TypeScript.  You can compile the TypeScript source files to JavaScript with:
 
@@ -269,7 +269,7 @@ While testing locally, you may find it useful to build the rollup bundle in watc
 $ yarn build:rollup --watch
 ```
 
-## Testing
+### Testing
 
 You can run all tests together with:
 
@@ -277,7 +277,7 @@ You can run all tests together with:
 $ yarn test
 ```
 
-### Individual tests
+#### Individual tests
 
 There are four individual test scripts
 
@@ -289,7 +289,7 @@ $ yarn test:e2e // runs playwright tests (requires yarn build to have been run)
 ```
 
 
-### Testing with Playwright
+#### Testing with Playwright
 
 Before running any playwright tests, you will need to install the default set of browsers:
 
