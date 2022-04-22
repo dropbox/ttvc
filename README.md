@@ -249,7 +249,7 @@ TBC
 
 ## Developing
 
-This package expects node version 16 or greater, and the `yarn` package manager.  Once you have these prerequisites, install project dependencies with:
+To develop this package, you will need node version 16 or greater, and the `yarn` package manager.  Once you have these prerequisites, install project dependencies with:
 
 ```
 yarn install
