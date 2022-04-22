@@ -91,7 +91,7 @@ import {init, getTTVC} from '@dropbox-performance/ttvc';
 
 init();
 
-getTTVC(({start, end, duration, detail}) => {
+getTTVC(({start, end, duration, detail}: Metric) => {
   window.performance.measure('TTVC', {
     start,
     end,
