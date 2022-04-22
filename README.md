@@ -1,3 +1,21 @@
+`ttvc`
+======
+
+- [Overview](#overview)
+- [Get started](#get-started)
+- [Usage](#usage)
+  - [Basic usage](#basic-usage)
+  - [Report metrics to a collection endpoint](#report-metrics-to-a-collection-endpoint)
+  - [Record a PerformanceTimeline entry](#record-a-performancetimeline-entry)
+  - [Client-side navigation with React Router](#client-side-navigation-with-react-router)
+- [API](#api)
+  - [Types](#types)
+  - [Functions](#functions)
+- [Browser Support](#browser-support)
+- [Developing](#developing)
+  - [Building](#building)
+  - [Testing](#testing)
+
 # Overview
 
 > ⚠️ **This library is an experimental early-stage project. Use at your own risk.**
