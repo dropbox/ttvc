@@ -6,7 +6,7 @@ const unsupportedErrorMessage = new Error("VisuallyCompleteCalculator: This brow
 
 test.describe('TTVC', () => {
   test('an unsupported environment', async ({page}) => {
-    const errorCount = [];
+    const errorCount: Array<Error> = [];
     page.on('pageerror', exception => {
       errorCount.push(exception)
     });

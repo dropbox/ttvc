@@ -1,7 +1,7 @@
 import {Logger} from './util/logger';
 
 export type InViewportMutationObserverCallback = (mutation: TimestampedMutationRecord) => void;
-export type TimestampedMutationRecord = MutationRecord & {timestamp: number};
+export interface TimestampedMutationRecord extends MutationRecord {timestamp: number};
 
 /**
  * Instantiate this class to monitor mutation events that occur *within the
@@ -58,30 +58,33 @@ export class InViewportMutationObserver {
       'mutations =',
       mutations
     );
-    mutations.forEach((mutation: TimestampedMutationRecord) => {
-      mutation.timestamp = performance.now();
+    mutations.forEach((mutation: MutationRecord) => {
+      const timestampedMutation: TimestampedMutationRecord = {
+        ...mutation,
+        timestamp: performance.now(),
+      };
 
       let target: Element | null = null;
-      if (mutation.target instanceof Element) target = mutation.target;
-      if (mutation.target instanceof Text) target = mutation.target.parentElement;
+      if (timestampedMutation.target instanceof Element) target = timestampedMutation.target;
+      if (timestampedMutation.target instanceof Text) target = timestampedMutation.target.parentElement;
 
-      switch (mutation.type) {
+      switch (timestampedMutation.type) {
         case 'childList':
-          mutation.addedNodes.forEach((node) => {
+          timestampedMutation.addedNodes.forEach((node) => {
             if (node instanceof HTMLElement) {
               this.intersectionObserver.observe(node);
-              this.mutations.set(node, mutation);
+              this.mutations.set(node, timestampedMutation);
             }
             if (node instanceof Text && node.parentElement != null) {
               this.intersectionObserver.observe(node.parentElement);
-              this.mutations.set(node.parentElement, mutation);
+              this.mutations.set(node.parentElement, timestampedMutation);
             }
           });
           break;
         case 'attributes':
         default:
-          this.intersectionObserver.observe(target);
-          this.mutations.set(target, mutation);
+          this.intersectionObserver.observe(target!);
+          this.mutations.set(target!, timestampedMutation);
       }
     });
   };
@@ -97,7 +100,7 @@ export class InViewportMutationObserver {
       if (entry.isIntersecting && this.mutations.has(entry.target)) {
         const mutation = this.mutations.get(entry.target);
         Logger.info('InViewportMutationObserver.callback()', '::', 'mutation =', mutation);
-        this.callback(mutation);
+        this.callback(mutation!);
       }
       this.mutations.delete(entry.target);
       this.intersectionObserver.unobserve(entry.target);

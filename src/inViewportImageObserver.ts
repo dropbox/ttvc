@@ -34,7 +34,7 @@ export class InViewportImageObserver {
     entries.forEach((entry) => {
       const img = entry.target as HTMLImageElement | HTMLIFrameElement;
       if (entry.isIntersecting) {
-        const timestamp = this.imageLoadTimes.get(img);
+        const timestamp: number = this.imageLoadTimes.get(img)!;
         Logger.info('InViewportImageObserver.callback()', '::', 'timestamp =', timestamp);
         this.callback(timestamp);
       }
