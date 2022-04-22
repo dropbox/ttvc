@@ -7,6 +7,7 @@ import {
   VisuallyCompleteCalculator,
 } from './visuallyCompleteCalculator.js';
 
+export type {TtvcOptions};
 export type {Metric, MetricSubscriber} from './visuallyCompleteCalculator';
 
 let calculator: VisuallyCompleteCalculator;
