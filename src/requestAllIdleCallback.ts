@@ -22,7 +22,7 @@ export function requestAllIdleCallback(callback: (didNetworkTimeOut: boolean) =>
     if (networkIdle) {
       requestIdleCallback(handleCpuIdle);
     } else {
-      window.clearTimeout(timeout!);
+      window.clearTimeout(timeout as number);
       timeout = null;
     }
   };
