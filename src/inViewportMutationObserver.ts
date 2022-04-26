@@ -59,12 +59,15 @@ export class InViewportMutationObserver {
       mutations
     );
     mutations.forEach((mutation: TimestampedMutationRecord) => {
-      console.log(mutation)
       mutation.timestamp = performance.now()
 
       let target: Element | null = null;
       if (mutation.target instanceof Element) target = mutation.target;
       if (mutation.target instanceof Text) target = mutation.target.parentElement;
+
+      if (!target) {
+        return
+      }
 
       switch (mutation.type) {
         case 'childList':
@@ -81,8 +84,8 @@ export class InViewportMutationObserver {
           break;
         case 'attributes':
         default:
-          this.intersectionObserver.observe(target as HTMLElement);
-          this.mutations.set(target as HTMLElement, mutation);
+          this.intersectionObserver.observe(target);
+          this.mutations.set(target, mutation);
       }
     });
   };
@@ -95,10 +98,10 @@ export class InViewportMutationObserver {
       entries
     );
     entries.forEach((entry) => {
-      if (entry.isIntersecting && this.mutations.has(entry.target)) {
-        const mutation = this.mutations.get(entry.target);
+      const mutation = this.mutations.get(entry.target);
+      if (entry.isIntersecting && mutation != null) {
         Logger.info('InViewportMutationObserver.callback()', '::', 'mutation =', mutation);
-        this.callback(mutation as TimestampedMutationRecord);
+        this.callback(mutation);
       }
       this.mutations.delete(entry.target);
       this.intersectionObserver.unobserve(entry.target);

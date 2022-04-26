@@ -33,8 +33,8 @@ export class InViewportImageObserver {
   private intersectionObserverCallback = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry) => {
       const img = entry.target as HTMLImageElement | HTMLIFrameElement;
-      if (entry.isIntersecting) {
-        const timestamp: number = this.imageLoadTimes.get(img) as number;
+      const timestamp = this.imageLoadTimes.get(img);
+      if (entry.isIntersecting && timestamp != null) {
         Logger.info('InViewportImageObserver.callback()', '::', 'timestamp =', timestamp);
         this.callback(timestamp);
       }
