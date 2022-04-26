@@ -1,5 +1,6 @@
 `ttvc`
 ======
+https://img.shields.io/bundlephobia/min/@dropbox-performance/ttvc
 
 - [Overview](#overview)
 - [Get started](#get-started)
