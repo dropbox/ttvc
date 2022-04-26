@@ -1,5 +1,4 @@
-`ttvc`
-======
+# `ttvc`
 
 - [Overview](#overview)
 - [Get started](#get-started)
@@ -26,7 +25,7 @@ Visually Complete measures the moment in time when users perceive that all the v
 
 ## Get started
 
-This library is available from npm.  Add it to your project using the `npm` or `yarn` package managers.
+This library is available from npm. Add it to your project using the `npm` or `yarn` package managers.
 
 ```
 $ npm install @dropbox-performance/ttvc
@@ -203,7 +202,7 @@ export type TtvcOptions = {
 type init = (options?: TtvcOptions) -> void;
 ```
 
-Sets up instrumentation for the current page and begins monitoring.  For the most accurate results, call this as early in pageload as possible.
+Sets up instrumentation for the current page and begins monitoring. For the most accurate results, call this as early in pageload as possible.
 
 Accepts an optional options argument (see above).
 
@@ -213,7 +212,7 @@ Accepts an optional options argument (see above).
 type getTTVC = (subscriber: (metric: Metric) -> void) -> () => void;
 ```
 
-Register a callback function as a subscriber to new TTVC metric measurements.  Returns an "unsubscribe" function which may be called to unregister the subscribed callback function.
+Register a callback function as a subscriber to new TTVC metric measurements. Returns an "unsubscribe" function which may be called to unregister the subscribed callback function.
 
 The callback function may be called more than once if in-page navigation occurs.
 
@@ -226,7 +225,7 @@ type incrementAjaxCount = () -> void;
 type decrementAjaxCount = () -> void;
 ```
 
-Use these functions to instrument AJAX requests in your application.  Try to ensure `incrementAjaxCount` and `decrementAjaxCount` are called exactly once for each request, regardless of success or failure.
+Use these functions to instrument AJAX requests in your application. Try to ensure `incrementAjaxCount` and `decrementAjaxCount` are called exactly once for each request, regardless of success or failure.
 
 e.g.
 
@@ -236,12 +235,9 @@ const nativeFetch = window.fetch;
 
 window.fetch = (...args) => {
   TTVC.incrementAjaxCount();
-  return nativeFetch(...args)
-    .finally(TTVC.decrementAjaxCount);
+  return nativeFetch(...args).finally(TTVC.decrementAjaxCount);
 };
-
 ```
-
 
 ## Browser Support
 
@@ -249,7 +245,7 @@ TBC
 
 ## Developing
 
-To develop this package, you will need node version 16 or greater, and the `yarn` package manager.  Once you have these prerequisites, install project dependencies with:
+To develop this package, you will need node version 16 or greater, and the `yarn` package manager. Once you have these prerequisites, install project dependencies with:
 
 ```
 yarn install
@@ -257,7 +253,7 @@ yarn install
 
 ### Building
 
-This project is developed with TypeScript.  You can compile the TypeScript source files to JavaScript with:
+This project is developed with TypeScript. You can compile the TypeScript source files to JavaScript with:
 
 ```
 $ yarn build
@@ -288,7 +284,6 @@ $ yarn test:unit // runs jest unit tests
 $ yarn test:e2e // runs playwright tests (requires yarn build to have been run)
 ```
 
-
 #### Testing with Playwright
 
 Before running any playwright tests, you will need to install the default set of browsers:
@@ -310,4 +305,4 @@ To manually test pages, start the test server.
 $ yarn express
 ```
 
-You can launch tests in the browser by opening http://localhost:3000/test/[test-folder].  e.g. http://localhost:3000/test/ajax1/
+You can launch tests in the browser by opening http://localhost:3000/test/[test-folder]. e.g. http://localhost:3000/test/ajax1/

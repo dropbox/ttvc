@@ -8,6 +8,7 @@ parserOptions:
     - './tsconfig.json'
 extends:
   - 'eslint:recommended'
+  - 'prettier'
 rules:
   # Dropbox standard rules
   'prefer-const':
