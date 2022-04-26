@@ -1,6 +1,8 @@
 {
   "compilerOptions": {
     "outDir": "/dev/null",
+    "strict": true,
+    "strictNullChecks": true,
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "node",
     "target": "es2017",
@@ -9,7 +11,7 @@
     "checkJs": true,
     "paths": {
       "/dist/*": ["./dist/*"]
-    },
+    }
   },
   "exclude": ["lib", "dist"]
 }

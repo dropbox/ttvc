@@ -60,7 +60,7 @@ class VisuallyCompleteCalculator {
 
     this.inViewportMutationObserver = new InViewportMutationObserver(
       (mutation) =>
-        (this.lastMutationTimestamp = Math.max(this.lastMutationTimestamp, mutation.timestamp))
+        (this.lastMutationTimestamp = Math.max(this.lastMutationTimestamp, mutation.timestamp ?? 0))
     );
     this.inViewportImageObserver = new InViewportImageObserver(
       (timestamp) =>

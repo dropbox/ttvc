@@ -1,7 +1,7 @@
 import {Logger} from './util/logger';
 
 export type InViewportMutationObserverCallback = (mutation: TimestampedMutationRecord) => void;
-export type TimestampedMutationRecord = MutationRecord & {timestamp: number};
+export type TimestampedMutationRecord = MutationRecord & {timestamp?: number};
 
 /**
  * Instantiate this class to monitor mutation events that occur *within the
@@ -59,11 +59,15 @@ export class InViewportMutationObserver {
       mutations
     );
     mutations.forEach((mutation: TimestampedMutationRecord) => {
-      mutation.timestamp = performance.now();
+      mutation.timestamp = performance.now()
 
       let target: Element | null = null;
       if (mutation.target instanceof Element) target = mutation.target;
       if (mutation.target instanceof Text) target = mutation.target.parentElement;
+
+      if (!target) {
+        return
+      }
 
       switch (mutation.type) {
         case 'childList':
@@ -94,8 +98,8 @@ export class InViewportMutationObserver {
       entries
     );
     entries.forEach((entry) => {
-      if (entry.isIntersecting && this.mutations.has(entry.target)) {
-        const mutation = this.mutations.get(entry.target);
+      const mutation = this.mutations.get(entry.target);
+      if (entry.isIntersecting && mutation != null) {
         Logger.info('InViewportMutationObserver.callback()', '::', 'mutation =', mutation);
         this.callback(mutation);
       }
