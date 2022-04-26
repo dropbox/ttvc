@@ -14,7 +14,7 @@ export function requestAllIdleCallback(callback: (didNetworkTimeOut: boolean) =>
 
   // state
   let networkIdle = networkIdleObservable.isIdle();
-  let timeout: number | null = null;
+  let timeout: number | undefined = undefined;
 
   const handleNetworkChange = (message: Message) => {
     networkIdle = message === 'IDLE';
@@ -23,7 +23,7 @@ export function requestAllIdleCallback(callback: (didNetworkTimeOut: boolean) =>
       requestIdleCallback(handleCpuIdle);
     } else {
       window.clearTimeout(timeout);
-      timeout = null;
+      timeout = undefined;
     }
   };
 
