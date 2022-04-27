@@ -19,3 +19,5 @@ jobs:
         run: yarn test:lint
       - name: Typecheck
         run: yarn test:typecheck
+      - name: Run Prettier
+        run: yarn prettier check .
