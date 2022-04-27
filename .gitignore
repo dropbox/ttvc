@@ -112,6 +112,3 @@ lib
 # Playwright
 test-results/
 playwright-report/
-
-# Package-lock
-package-lock.json
