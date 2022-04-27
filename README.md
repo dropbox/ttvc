@@ -1,10 +1,10 @@
 `ttvc`
 ======
-<img src="https://img.shields.io/npm/v/@dropbox-performance/ttvc"/>
-<img src="https://img.shields.io/npm/dt/@dropbox-performance/ttvc"/>
-<img src="https://img.shields.io/bundlephobia/min/@dropbox-performance/ttvc"/>
-
-<br />
+<p>
+  <img src="https://img.shields.io/npm/v/@dropbox-performance/ttvc"/>
+  <img src="https://img.shields.io/npm/dt/@dropbox-performance/ttvc"/>
+  <img src="https://img.shields.io/bundlephobia/min/@dropbox-performance/ttvc"/>
+</p>
 
 - [Overview](#overview)
 - [Get started](#get-started)
