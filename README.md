@@ -1,4 +1,13 @@
 # `ttvc`
+=======
+
+<p>
+  <img src="https://img.shields.io/npm/v/@dropbox-performance/ttvc"/>
+  <img src="https://img.shields.io/npm/dt/@dropbox-performance/ttvc"/>
+  <img src="https://img.shields.io/bundlephobia/minzip/@dropbox-performance/ttvc"/>
+  <img src="https://img.shields.io/bundlephobia/min/@dropbox-performance/ttvc"/>
+</p>
+
 
 - [Overview](#overview)
 - [Get started](#get-started)
@@ -241,7 +250,19 @@ window.fetch = (...args) => {
 
 ## Browser Support
 
-TBC
+`@dropbox-performance/ttvc` relies on the following browser features.
+
+- [ES6 syntax](https://262.ecma-international.org/6.0/)
+- [async/await syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
+- [window.MutationObserver](https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver)
+- [window.IntersectionObserver](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
+- [performance.now()](https://developer.mozilla.org/en-US/docs/Web/API/Performance/now)
+
+See browsers that support all above features on caniuse.com:
+
+https://caniuse.com/mutationobserver,async-functions,mdn-api_intersectionobserver,es6,high-resolution-time
+
+If you would like to use this library and support a browser that does not support one of these features, you will be responsible for supplying polyfills and/or recompiling the library to remove unsupported syntax.
 
 ## Developing
 
