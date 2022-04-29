@@ -3,7 +3,7 @@ import {Logger} from './util/logger';
 /**
  * Modeled after IntersectionObserver and MutationObserver, this Image observer
  * reports image load times for images that are visible within the viewport.
- * 
+ *
  * Note: ImageObserver treats iframes as images to give accurate times
  *
  * @example

@@ -3,7 +3,11 @@ import {Logger} from './util/logger';
 
 export type Message = 'IDLE' | 'BUSY';
 type Subscriber = (message: Message) => void;
-type ResourceLoadingElement = HTMLScriptElement | HTMLLinkElement | HTMLImageElement | HTMLIFrameElement;
+type ResourceLoadingElement =
+  | HTMLScriptElement
+  | HTMLLinkElement
+  | HTMLImageElement
+  | HTMLIFrameElement;
 
 /**
  * Alerts subscribers to the presence or absence of pending AJAX requests

@@ -59,14 +59,14 @@ export class InViewportMutationObserver {
       mutations
     );
     mutations.forEach((mutation: TimestampedMutationRecord) => {
-      mutation.timestamp = performance.now()
+      mutation.timestamp = performance.now();
 
       let target: Element | null = null;
       if (mutation.target instanceof Element) target = mutation.target;
       if (mutation.target instanceof Text) target = mutation.target.parentElement;
 
       if (!target) {
-        return
+        return;
       }
 
       switch (mutation.type) {
