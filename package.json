@@ -25,7 +25,8 @@
     "test:unit": "jest",
     "test:e2e": "playwright test",
     "express": "node test/server/server.mjs",
-    "release": "np"
+    "release": "np",
+    "pretty": "prettier --write ."
   },
   "engines": {
     "node": ">=16.0.0"
