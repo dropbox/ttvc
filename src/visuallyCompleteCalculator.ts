@@ -96,7 +96,7 @@ class VisuallyCompleteCalculator {
 
     if (!shouldCancel) {
       // identify timestamp of last visible change
-      const end = Math.max(this.lastImageLoadTimestamp, this.lastMutationTimestamp);
+      const end = Math.max(start, this.lastImageLoadTimestamp, this.lastMutationTimestamp);
 
       // report result to subscribers
       this.next({
