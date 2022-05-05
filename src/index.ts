@@ -39,5 +39,24 @@ export const init = (options?: TtvcOptions) => {
  */
 export const getTTVC = (callback: MetricSubscriber) => calculator?.getTTVC(callback);
 
+/**
+ * Call this to notify ttvc that an AJAX request has just begun.
+ *
+ * Instrument your site's AJAX requests with `incrementAjaxCount` and
+ * `decrementAjaxCount` to ensure that ttvc is not reported early.
+ *
+ * For the most accurate results, `decrementAjaxCount` should be called
+ * **exactly once** for each `incrementAjaxCount`.
+ */
 export const incrementAjaxCount = getNetworkIdleObservable().incrementAjaxCount;
+
+/**
+ * Call this to notify ttvc that an AJAX request has just resolved.
+ *
+ * Instrument your site's AJAX requests with `incrementAjaxCount` and
+ * `decrementAjaxCount` to ensure that ttvc is not reported early.
+ *
+ * For the most accurate results, `decrementAjaxCount` should be called
+ * **exactly once** for each `incrementAjaxCount`.
+ */
 export const decrementAjaxCount = getNetworkIdleObservable().decrementAjaxCount;

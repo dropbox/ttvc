@@ -268,20 +268,8 @@ export class NetworkIdleObservable {
     this.subscribers.forEach((subscriber) => subscriber(message));
   };
 
-  /**
-   * Call this to notify ttvc that an AJAX request has just begun.
-   *
-   * Instrument your site's AJAX requests with `incrementAjaxCount` and
-   * `decrementAjaxCount` to ensure that ttvc is not reported early.
-   */
   incrementAjaxCount = () => this.ajaxIdleObservable.increment();
 
-  /**
-   * Call this to notify ttvc that an AJAX request has just resolved.
-   *
-   * Instrument your site's AJAX requests with `incrementAjaxCount` and
-   * `decrementAjaxCount` to ensure that ttvc is not reported early.
-   */
   decrementAjaxCount = () => this.ajaxIdleObservable.decrement();
 
   isIdle = () => {
