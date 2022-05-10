@@ -1,10 +1,10 @@
 # `ttvc`
 
 <p>
-  <img src="https://img.shields.io/npm/v/@dropbox-performance/ttvc"/>
-  <img src="https://img.shields.io/npm/dt/@dropbox-performance/ttvc"/>
-  <img src="https://img.shields.io/bundlephobia/minzip/@dropbox-performance/ttvc"/>
-  <img src="https://img.shields.io/bundlephobia/min/@dropbox-performance/ttvc"/>
+  <img src="https://img.shields.io/npm/v/@dropbox/ttvc"/>
+  <img src="https://img.shields.io/npm/dt/@dropbox/ttvc"/>
+  <img src="https://img.shields.io/bundlephobia/minzip/@dropbox/ttvc"/>
+  <img src="https://img.shields.io/bundlephobia/min/@dropbox/ttvc"/>
 </p>
 
 - [Overview](#overview)
@@ -35,11 +35,11 @@ Visually Complete measures the moment in time when users perceive that all the v
 This library is available from npm. Add it to your project using the `npm` or `yarn` package managers.
 
 ```
-$ npm install @dropbox-performance/ttvc
+$ npm install @dropbox/ttvc
 ```
 
 ```
-$ yarn add @dropbox-performance/ttvc
+$ yarn add @dropbox/ttvc
 ```
 
 ## Usage
@@ -47,7 +47,7 @@ $ yarn add @dropbox-performance/ttvc
 ### Basic usage
 
 ```js
-import {init, getTTVC} from '@dropbox-performance/ttvc';
+import {init, getTTVC} from '@dropbox/ttvc';
 
 // Call this as early in pageload as possible to setup instrumentation.
 init({
@@ -66,7 +66,7 @@ const unsubscribe = getTTVC((measurement) => {
 ### Report metrics to a collection endpoint
 
 ```js
-import {init, getTTVC} from '@dropbox-performance/ttvc';
+import {init, getTTVC} from '@dropbox/ttvc';
 
 init();
 
@@ -93,7 +93,7 @@ Capture a span using the [Performance Timeline](https://developer.mozilla.org/en
 NOTE: Setting arbitrary start and end times with `performance.measure` relies on the [User Timing Level 3](https://w3c.github.io/user-timing/) specification. This is not yet adopted by all major browsers.
 
 ```js
-import {init, getTTVC} from '@dropbox-performance/ttvc';
+import {init, getTTVC} from '@dropbox/ttvc';
 
 init();
 
@@ -109,7 +109,7 @@ getTTVC(({start, end, duration, detail}: Metric) => {
 
 ### Client-side navigation with React Router
 
-@dropbox-performance/ttvc supports measuring client-side navigations!
+@dropbox/ttvc supports measuring client-side navigations!
 
 What counts as navigation may be different in each application, but as long as you signal that a navigation has begun, this library can figure out the rest.
 
@@ -117,7 +117,7 @@ To trigger a new navigation measurement, simply dispatch a "locationchange" even
 
 ```js
 // analytics.js
-import {init, getTTVC} from '@dropbox-performance/ttvc';
+import {init, getTTVC} from '@dropbox/ttvc';
 
 init();
 
@@ -248,7 +248,7 @@ window.fetch = (...args) => {
 
 ## Browser Support
 
-`@dropbox-performance/ttvc` relies on the following browser features.
+`@dropbox/ttvc` relies on the following browser features.
 
 - [ES6 syntax](https://262.ecma-international.org/6.0/)
 - [async/await syntax](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function)
