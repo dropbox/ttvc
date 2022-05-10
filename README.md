@@ -227,7 +227,7 @@ type start = () -> void;
 
 Start a new TTVC measurement.
 
-You _do not_ need to call this for the initial page load.  Use this to notify `@dropbox/ttvc` that a new client-side navigation is about to take place.
+You _do not_ need to call this for the initial page load. Use this to notify `@dropbox/ttvc` that a new client-side navigation is about to take place.
 
 #### `getTTVC()`
 
