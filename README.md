@@ -113,7 +113,7 @@ getTTVC(({start, end, duration, detail}: Metric) => {
 
 What counts as navigation may be different in each application, but as long as you signal that a navigation has begun, this library can figure out the rest.
 
-To trigger a new navigation measurement, simply dispatch a "locationchange" event on the window object.
+To trigger a new navigation measurement, call `start()` or dispatch a "locationchange" event on the window object.
 
 ```js
 // analytics.js
@@ -128,6 +128,7 @@ getTTVC((measurement) => {
 
 ```js
 // app.js
+import {start} from '@dropbox/ttvc';
 import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter, useLocation} from 'react-router-dom';
@@ -143,7 +144,12 @@ const App = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // This event signals to ttvc that a new navigation has begun.
+    // Option 1: If you have access to the ttvc library, import it and
+    // call start().
+    start();
+
+    // Option 2: Dispatch a custom 'locationchange' event. TTVC subscribes to
+    // this and will call start() for you.
     window.dispatchEvent(new Event('locationchange'));
   }, [location]);
 
@@ -212,6 +218,16 @@ type init = (options?: TtvcOptions) -> void;
 Sets up instrumentation for the current page and begins monitoring. For the most accurate results, call this as early in pageload as possible.
 
 Accepts an optional options argument (see above).
+
+#### `start()`
+
+```typescript
+type start = () -> void;
+```
+
+Start a new TTVC measurement.
+
+You _do not_ need to call this for the initial page load.  Use this to notify `@dropbox/ttvc` that a new client-side navigation is about to take place.
 
 #### `getTTVC()`
 
