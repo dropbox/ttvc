@@ -44,6 +44,8 @@ export const getTTVC = (callback: MetricSubscriber) => calculator?.getTTVC(callb
  *
  * Call this method to notify ttvc that a new client-side navigation has begun.
  *
+ * *DO NOT* call `start()` on initial pageload.
+ *
  * If you don't have access to the TTVC library in your product code, you can
  * trigger the same behaviour by dispatching a custom 'locationchange' event
  * (See README.md for an example of usage).
