@@ -40,6 +40,19 @@ export const init = (options?: TtvcOptions) => {
 export const getTTVC = (callback: MetricSubscriber) => calculator?.getTTVC(callback);
 
 /**
+ * Begin measuring a new navigation.
+ *
+ * Call this method to notify ttvc that a new client-side navigation has begun.
+ *
+ * *DO NOT* call `start()` on initial pageload.
+ *
+ * If you don't have access to the TTVC library in your product code, you can
+ * trigger the same behaviour by dispatching a custom 'locationchange' event
+ * (See README.md for an example of usage).
+ */
+export const start = () => calculator?.start(performance.now());
+
+/**
  * Call this to notify ttvc that an AJAX request has just begun.
  *
  * Instrument your site's AJAX requests with `incrementAjaxCount` and
