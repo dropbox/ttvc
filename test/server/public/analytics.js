@@ -10,7 +10,7 @@ window.fetch = (...args) => {
 
 TTVC.init({debug: true, networkTimeout: window.NETWORK_TIMEOUT ?? 3000});
 
-TTVC.getTTVC((measurement) => {
+TTVC.onTTVC((measurement) => {
   console.log('TTVC:', measurement);
   window.entries.push(measurement);
 });

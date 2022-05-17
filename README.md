@@ -47,7 +47,7 @@ $ yarn add @dropbox/ttvc
 ### Basic usage
 
 ```js
-import {init, getTTVC} from '@dropbox/ttvc';
+import {init, onTTVC} from '@dropbox/ttvc';
 
 // Call this as early in pageload as possible to setup instrumentation.
 init({
@@ -58,7 +58,7 @@ init({
 
 // Reports the last visible change for each navigation that
 // occurs during the life of this document.
-const unsubscribe = getTTVC((measurement) => {
+const unsubscribe = onTTVC((measurement) => {
   console.log('TTVC:', measurement.duration);
 });
 ```
@@ -66,14 +66,14 @@ const unsubscribe = getTTVC((measurement) => {
 ### Report metrics to a collection endpoint
 
 ```js
-import {init, getTTVC} from '@dropbox/ttvc';
+import {init, onTTVC} from '@dropbox/ttvc';
 
 init();
 
 let measurements = [];
 
 // capture measurements in client
-getTTVC((measurement) => {
+onTTVC((measurement) => {
   measurements.append(measurement);
 });
 
@@ -93,11 +93,11 @@ Capture a span using the [Performance Timeline](https://developer.mozilla.org/en
 NOTE: Setting arbitrary start and end times with `performance.measure` relies on the [User Timing Level 3](https://w3c.github.io/user-timing/) specification. This is not yet adopted by all major browsers.
 
 ```js
-import {init, getTTVC} from '@dropbox/ttvc';
+import {init, onTTVC} from '@dropbox/ttvc';
 
 init();
 
-getTTVC(({start, end, duration, detail}: Metric) => {
+onTTVC(({start, end, duration, detail}: Metric) => {
   window.performance.measure('TTVC', {
     start,
     end,
@@ -117,11 +117,11 @@ To trigger a new navigation measurement, call `start()` or dispatch a "locationc
 
 ```js
 // analytics.js
-import {init, getTTVC} from '@dropbox/ttvc';
+import {init, onTTVC} from '@dropbox/ttvc';
 
 init();
 
-getTTVC((measurement) => {
+onTTVC((measurement) => {
   console.log('TTVC:', measurement.duration);
 });
 ```
@@ -229,17 +229,17 @@ Start a new TTVC measurement.
 
 You _do not_ need to call this for the initial page load. Use this to notify `@dropbox/ttvc` that a new client-side navigation is about to take place.
 
-#### `getTTVC()`
+#### `onTTVC()`
 
 ```typescript
-type getTTVC = (subscriber: (metric: Metric) -> void) -> () => void;
+type onTTVC = (subscriber: (metric: Metric) -> void) -> () => void;
 ```
 
 Register a callback function as a subscriber to new TTVC metric measurements. Returns an "unsubscribe" function which may be called to unregister the subscribed callback function.
 
 The callback function may be called more than once if in-page navigation occurs.
 
-`getTTVC` may be called more than once to register more than one subscriber.
+`onTTVC` may be called more than once to register more than one subscriber.
 
 #### `incrementAjaxCount() & decrementAjaxCount()`
 

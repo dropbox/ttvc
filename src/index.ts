@@ -32,12 +32,12 @@ export const init = (options?: TtvcOptions) => {
  * NOTE: init() must be called before registering a TTVC subscriber.
  *
  * @example
- * const unsubscribe = getTTVC(ms => console.log(ms));
+ * const unsubscribe = onTTVC(ms => console.log(ms));
  *
  * @param callback Triggered once for each navigation instance.
  * @returns A function that unsubscribes the callback from this metric.
  */
-export const getTTVC = (callback: MetricSubscriber) => calculator?.getTTVC(callback);
+export const onTTVC = (callback: MetricSubscriber) => calculator?.onTTVC(callback);
 
 /**
  * Begin measuring a new navigation.
