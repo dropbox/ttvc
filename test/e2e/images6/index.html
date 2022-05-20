@@ -1,0 +1,22 @@
+<head>
+  <!-- <script>window.NETWORK_TIMEOUT = 10000</script> -->
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
+</head>
+
+<body>
+  <img />
+
+  <script>
+    // Remove and re-append an image that has no source.
+    // Chromium seems to get confused and report `img.complete = false` in this scenario.
+    window.addEventListener('load', () => {
+      const img = document.querySelector('img');
+      console.log('img.complete =', img.complete);
+
+      img.remove();
+      document.body.appendChild(img);
+      console.log('img.complete =', img.complete);
+    });
+  </script>
+</body>
