@@ -180,9 +180,9 @@ class ResourceLoadingIdleObservable {
   };
 
   private add = (element: ResourceLoadingElement) => {
-    this.startCleanupTimeout();
     // ignore elements without resources to load
     if (
+      (element instanceof HTMLImageElement && !element.src) ||
       (element instanceof HTMLImageElement && element.complete) ||
       (element instanceof HTMLLinkElement && !element.href) ||
       (element instanceof HTMLScriptElement && !element.src) ||
@@ -191,6 +191,7 @@ class ResourceLoadingIdleObservable {
       return;
     }
 
+    this.startCleanupTimeout();
     if (this.pendingResources.size === 0) {
       this.next('BUSY');
     }
