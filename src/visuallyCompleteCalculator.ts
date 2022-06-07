@@ -121,6 +121,17 @@ class VisuallyCompleteCalculator {
   }
 
   private next(measurement: Metric) {
+    if (measurement.end > Number.MAX_SAFE_INTEGER) {
+      Logger.warn(
+        'VisuallyCompleteCalculator.next()',
+        '::',
+        'This browser reported a time larger than MAX_SAFE_INTEGER. We are ignoring it.',
+        '::',
+        measurement
+      );
+      return;
+    }
+
     Logger.debug(
       'VisuallyCompleteCalculator.next()',
       '::',
