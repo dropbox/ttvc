@@ -5,6 +5,7 @@
   <img src="https://img.shields.io/npm/dt/@dropbox/ttvc"/>
   <img src="https://img.shields.io/bundlephobia/minzip/@dropbox/ttvc"/>
   <img src="https://img.shields.io/bundlephobia/min/@dropbox/ttvc"/>
+  <img src="https://img.shields.io/github/checks-status/dropbox/ttvc/main"/>
 </p>
 
 - [Overview](#overview)
