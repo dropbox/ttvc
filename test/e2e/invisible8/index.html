@@ -5,6 +5,16 @@
 </head>
 
 <body>
+  <!--
+    Rendering a child into a zero-width node is still considered a visible
+    mutation.
+
+    This might be surprising, but is probably desirable.  This new child can
+    change the height of the containing node, which could push other visible
+    content on the page around.
+
+    (Load this page in a browser for an example of this.)
+   -->
   <div id="collapsed" style="width: 0; overflow: hidden"></div>
 
   <script>
