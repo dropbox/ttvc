@@ -64,20 +64,6 @@ const config: PlaywrightTestConfig = {
       },
     },
 
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: {
-    //     ...devices['Pixel 5'],
-    //   },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: {
-    //     ...devices['iPhone 12'],
-    //   },
-    // },
-
     /* Test against branded browsers. */
     // {
     //   name: 'Microsoft Edge',
@@ -102,5 +88,23 @@ const config: PlaywrightTestConfig = {
     port: 3001,
   },
 };
+
+if (process.env.CI) {
+  config.projects?.push(
+    /* Test against mobile viewports (CI only). */
+    {
+      name: 'Mobile Chrome',
+      use: {
+        ...devices['Pixel 5'],
+      },
+    },
+    {
+      name: 'Mobile Safari',
+      use: {
+        ...devices['iPhone 12'],
+      },
+    }
+  );
+}
 
 export default config;
