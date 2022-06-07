@@ -6,7 +6,9 @@ import {getEntries, entryCountIs} from '../../util/entries';
 const PAGELOAD_DELAY = 500;
 
 test.describe('TTVC', () => {
-  test('an user scrolls', async ({page}) => {
+  test('an user scrolls', async ({page, isMobile}) => {
+    test.skip(Boolean(isMobile), 'wheel events are not defined for mobile devices');
+
     await page.goto(`/test/interaction3?delay=${PAGELOAD_DELAY}`, {});
 
     await page.mouse.wheel(0, 2000);
