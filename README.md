@@ -1,12 +1,10 @@
 # `ttvc`
 
-<p>
-  <img src="https://img.shields.io/npm/v/@dropbox/ttvc"/>
-  <img src="https://img.shields.io/npm/dt/@dropbox/ttvc"/>
-  <img src="https://img.shields.io/bundlephobia/minzip/@dropbox/ttvc"/>
-  <img src="https://img.shields.io/bundlephobia/min/@dropbox/ttvc"/>
-  <img src="https://img.shields.io/github/checks-status/dropbox/ttvc/main"/>
-</p>
+![version](https://img.shields.io/npm/v/@dropbox/ttvc)
+![downloads](https://img.shields.io/npm/dt/@dropbox/ttvc)
+![minzip size](https://img.shields.io/bundlephobia/minzip/@dropbox/ttvc)
+![min size](https://img.shields.io/bundlephobia/min/@dropbox/ttvc)
+![checks](https://img.shields.io/github/checks-status/dropbox/ttvc/main)
 
 - [Overview](#overview)
 - [Get started](#get-started)
