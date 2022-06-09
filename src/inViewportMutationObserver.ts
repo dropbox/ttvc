@@ -98,6 +98,10 @@ export class InViewportMutationObserver {
       entries
     );
     entries.forEach((entry) => {
+      if (entry.intersectionRect.width === 0) {
+        return;
+      }
+
       const mutation = this.mutations.get(entry.target);
       if (entry.isIntersecting && mutation != null) {
         Logger.info('InViewportMutationObserver.callback()', '::', 'mutation =', mutation);
