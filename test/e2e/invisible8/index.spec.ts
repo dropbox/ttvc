@@ -4,7 +4,7 @@ import {FUDGE} from '../../util/constants';
 import {getEntries} from '../../util/entries';
 
 const PAGELOAD_DELAY = 200;
-const MUTATION_DELAY = 500;
+const MUTATION_DELAY = 250;
 
 test.describe('TTVC', () => {
   test('a visible mutation + a mutation with invisible parent', async ({page}) => {
