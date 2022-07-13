@@ -81,7 +81,6 @@ class VisuallyCompleteCalculator {
     this.inViewportMutationObserver.observe(document.documentElement);
     window.addEventListener('pagehide', cancel);
     window.addEventListener('visibilitychange', cancel);
-    window.addEventListener('locationchange', cancel);
     // attach user interaction listeners next tick (we don't want to pick up the SPA navigation click)
     window.setTimeout(() => {
       window.addEventListener('click', cancel);
@@ -93,6 +92,11 @@ class VisuallyCompleteCalculator {
     await waitForPageLoad();
     // - wait for simultaneous network and CPU idle
     const didNetworkTimeOut = await new Promise<boolean>(requestAllIdleCallback);
+
+    // if this isn't the most recent navigation, abort
+    if (navigationIndex !== this.navigationCount) {
+      cancel();
+    }
 
     if (!shouldCancel) {
       // identify timestamp of last visible change
@@ -110,7 +114,6 @@ class VisuallyCompleteCalculator {
     // cleanup
     window.removeEventListener('pagehide', cancel);
     window.removeEventListener('visibilitychange', cancel);
-    window.removeEventListener('locationchange', cancel);
     window.removeEventListener('click', cancel);
     window.removeEventListener('keydown', cancel);
     // only disconnect observers if this is the most recent navigation
