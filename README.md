@@ -1,7 +1,6 @@
 # `ttvc`
 
 ![version](https://img.shields.io/npm/v/@dropbox/ttvc)
-![downloads](https://img.shields.io/npm/dt/@dropbox/ttvc)
 ![minzip size](https://img.shields.io/bundlephobia/minzip/@dropbox/ttvc)
 
 ![lint](https://img.shields.io/github/workflow/status/dropbox/ttvc/Lint/main?label=lint)
