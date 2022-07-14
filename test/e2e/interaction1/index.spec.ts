@@ -2,6 +2,8 @@ import {test, expect} from '@playwright/test';
 
 import {entryCountIs, getEntries} from '../../util/entries';
 
+const MUTATION_DELAY = 500;
+
 test.describe('TTVC', () => {
   test('user clicks before page completes loading', async ({page}) => {
     await page.goto(`/test/interaction1`, {
@@ -9,7 +11,7 @@ test.describe('TTVC', () => {
     });
 
     // user interaction should abort calculation
-    await page.click('body');
+    await page.click('body', {delay: MUTATION_DELAY / 2});
 
     // wait long enough to ensure ttvc would have been logged
     try {
