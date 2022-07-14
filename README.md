@@ -1,10 +1,11 @@
 # `ttvc`
 
 ![version](https://img.shields.io/npm/v/@dropbox/ttvc)
-![downloads](https://img.shields.io/npm/dt/@dropbox/ttvc)
 ![minzip size](https://img.shields.io/bundlephobia/minzip/@dropbox/ttvc)
-![min size](https://img.shields.io/bundlephobia/min/@dropbox/ttvc)
-![checks](https://img.shields.io/github/checks-status/dropbox/ttvc/main)
+
+![lint](https://img.shields.io/github/workflow/status/dropbox/ttvc/Lint/main?label=lint)
+![unit](https://img.shields.io/github/workflow/status/dropbox/ttvc/Unit%20Tests/main?label=unit)
+![playwright](https://img.shields.io/github/workflow/status/dropbox/ttvc/Playwright%20Tests/main?label=playwright)
 
 - [Overview](#overview)
 - [Get started](#get-started)
