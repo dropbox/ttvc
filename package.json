@@ -25,7 +25,6 @@
     "test:unit": "jest",
     "test:e2e": "playwright test",
     "express": "node test/server/server.mjs",
-    "preinstall": "node scripts/ensure-yarn.js",
     "release": "np",
     "pretty": "prettier --write ."
   },
