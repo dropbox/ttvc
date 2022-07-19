@@ -148,7 +148,7 @@ class VisuallyCompleteCalculator {
   }
 
   /** subscribe to Visually Complete metrics */
-  getTTVC = (subscriber: MetricSubscriber) => {
+  onTTVC = (subscriber: MetricSubscriber) => {
     // register subscriber callback
     this.subscribers.add(subscriber);
 
