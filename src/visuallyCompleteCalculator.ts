@@ -63,7 +63,7 @@ class VisuallyCompleteCalculator {
     }
 
     this.inViewportMutationObserver = new InViewportMutationObserver((mutation) => {
-      if (mutation.timestamp ?? 0 >= (this.lastMutation?.timestamp ?? 0)) {
+      if ((mutation.timestamp ?? 0) >= (this.lastMutation?.timestamp ?? 0)) {
         this.lastMutation = mutation;
       }
     });
