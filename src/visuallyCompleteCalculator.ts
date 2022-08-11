@@ -1,4 +1,4 @@
-import {InViewportMutationObserver} from './inViewportMutationObserver';
+import {InViewportMutationObserver, TimestampedMutationRecord} from './inViewportMutationObserver';
 import {waitForPageLoad} from './util';
 import {requestAllIdleCallback} from './requestAllIdleCallback';
 import {InViewportImageObserver} from './inViewportImageObserver';
@@ -19,6 +19,9 @@ export type Metric = {
   detail: {
     // if ttvc ignored a stalled network request, this value will be true
     didNetworkTimeOut: boolean;
+    lastImageLoadTimestamp: number;
+    lastImageLoadTarget?: HTMLElement;
+    lastMutation?: TimestampedMutationRecord;
   };
 };
 
@@ -35,8 +38,9 @@ class VisuallyCompleteCalculator {
   private inViewportImageObserver: InViewportImageObserver;
 
   // measurement state
-  private lastMutationTimestamp = 0;
-  private lastImageLoadTimestamp = 0;
+  private lastMutation?: TimestampedMutationRecord;
+  private lastImageLoadTimestamp = -1;
+  private lastImageLoadTarget?: HTMLElement;
   private subscribers = new Set<MetricSubscriber>();
   private navigationCount = 0;
 
@@ -58,14 +62,17 @@ class VisuallyCompleteCalculator {
       throw new Error('VisuallyCompleteCalculator: This browser/runtime is not supported.');
     }
 
-    this.inViewportMutationObserver = new InViewportMutationObserver(
-      (mutation) =>
-        (this.lastMutationTimestamp = Math.max(this.lastMutationTimestamp, mutation.timestamp ?? 0))
-    );
-    this.inViewportImageObserver = new InViewportImageObserver(
-      (timestamp) =>
-        (this.lastImageLoadTimestamp = Math.max(this.lastImageLoadTimestamp, timestamp))
-    );
+    this.inViewportMutationObserver = new InViewportMutationObserver((mutation) => {
+      if (mutation.timestamp ?? 0 >= (this.lastMutation?.timestamp ?? 0)) {
+        this.lastMutation = mutation;
+      }
+    });
+    this.inViewportImageObserver = new InViewportImageObserver((timestamp, img) => {
+      if (timestamp >= this.lastImageLoadTimestamp) {
+        this.lastImageLoadTimestamp = timestamp;
+        this.lastImageLoadTarget = img;
+      }
+    });
   }
 
   /** begin measuring a new navigation */
@@ -100,14 +107,19 @@ class VisuallyCompleteCalculator {
 
     if (!shouldCancel) {
       // identify timestamp of last visible change
-      const end = Math.max(start, this.lastImageLoadTimestamp, this.lastMutationTimestamp);
+      const end = Math.max(start, this.lastImageLoadTimestamp, this.lastMutation?.timestamp ?? 0);
 
       // report result to subscribers
       this.next({
         start,
         end,
         duration: end - start,
-        detail: {didNetworkTimeOut},
+        detail: {
+          didNetworkTimeOut,
+          lastImageLoadTimestamp: this.lastImageLoadTimestamp,
+          lastImageLoadTarget: this.lastImageLoadTarget,
+          lastMutation: this.lastMutation,
+        },
       });
     }
 
@@ -141,7 +153,7 @@ class VisuallyCompleteCalculator {
       'lastImageLoadTimestamp =',
       this.lastImageLoadTimestamp,
       'lastMutationTimestamp =',
-      this.lastMutationTimestamp
+      this.lastMutation?.timestamp ?? 0
     );
     Logger.info('TTVC:', measurement);
     this.subscribers.forEach((subscriber) => subscriber(measurement));

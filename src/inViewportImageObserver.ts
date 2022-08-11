@@ -21,11 +21,11 @@ import {Logger} from './util/logger';
 export class InViewportImageObserver {
   private intersectionObserver: IntersectionObserver;
   private imageLoadTimes = new Map<HTMLImageElement | HTMLIFrameElement, number>();
-  private callback: (timestamp: number) => void;
+  private callback: (timestamp: number, img: HTMLImageElement | HTMLIFrameElement) => void;
 
   public lastImageLoadTimestamp = 0;
 
-  constructor(callback: (timestamp: number) => void) {
+  constructor(callback: (timestamp: number, img: HTMLElement) => void) {
     this.callback = callback;
     this.intersectionObserver = new IntersectionObserver(this.intersectionObserverCallback);
   }
@@ -36,7 +36,7 @@ export class InViewportImageObserver {
       const timestamp = this.imageLoadTimes.get(img);
       if (entry.isIntersecting && timestamp != null) {
         Logger.info('InViewportImageObserver.callback()', '::', 'timestamp =', timestamp);
-        this.callback(timestamp);
+        this.callback(timestamp, img);
       }
       this.intersectionObserver.unobserve(img);
       this.imageLoadTimes.delete(img);
