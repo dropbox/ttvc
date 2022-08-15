@@ -32,7 +32,7 @@ test.describe('TTVC', () => {
     expect(entries[0].detail).toBeDefined();
     expect(entries[0].detail.didNetworkTimeOut).toBe(false);
     const isImageElement = await page.evaluate(() => {
-      return window.entries[0].detail.lastVisualUpdate instanceof HTMLImageElement;
+      return window.entries[0].detail.lastVisibleChange instanceof HTMLImageElement;
     });
     expect(isImageElement).toBe(true);
   });

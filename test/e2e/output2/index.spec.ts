@@ -32,7 +32,7 @@ test.describe('TTVC', () => {
     expect(entries[0].detail.didNetworkTimeOut).toBe(false);
 
     const isMutationRecord = await page.evaluate(() => {
-      return window.entries[0].detail.lastVisualUpdate instanceof MutationRecord;
+      return window.entries[0].detail.lastVisibleChange instanceof MutationRecord;
     });
     expect(isMutationRecord).toBe(true);
   });

@@ -21,7 +21,7 @@ export type Metric = {
     didNetworkTimeOut: boolean;
 
     // the most recent visual update; this can be either a mutation or a load event target
-    lastVisualUpdate?: HTMLElement | TimestampedMutationRecord;
+    lastVisibleChange?: HTMLElement | TimestampedMutationRecord;
   };
 };
 
@@ -116,7 +116,7 @@ class VisuallyCompleteCalculator {
         duration: end - start,
         detail: {
           didNetworkTimeOut,
-          lastVisualUpdate:
+          lastVisibleChange:
             this.lastImageLoadTimestamp > (this.lastMutation?.timestamp ?? 0)
               ? this.lastImageLoadTarget
               : this.lastMutation,
