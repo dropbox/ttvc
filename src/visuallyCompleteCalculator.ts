@@ -19,9 +19,9 @@ export type Metric = {
   detail: {
     // if ttvc ignored a stalled network request, this value will be true
     didNetworkTimeOut: boolean;
-    lastImageLoadTimestamp: number;
-    lastImageLoadTarget?: HTMLElement;
-    lastMutation?: TimestampedMutationRecord;
+
+    // the most recent visual update; this can be either a mutation or a load event target
+    lastVisualUpdate?: HTMLElement | TimestampedMutationRecord;
   };
 };
 
@@ -116,9 +116,10 @@ class VisuallyCompleteCalculator {
         duration: end - start,
         detail: {
           didNetworkTimeOut,
-          lastImageLoadTimestamp: this.lastImageLoadTimestamp,
-          lastImageLoadTarget: this.lastImageLoadTarget,
-          lastMutation: this.lastMutation,
+          lastVisualUpdate:
+            this.lastImageLoadTimestamp > (this.lastMutation?.timestamp ?? 0)
+              ? this.lastImageLoadTarget
+              : this.lastMutation,
         },
       });
     }
