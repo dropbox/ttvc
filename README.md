@@ -187,6 +187,11 @@ export type Metric = {
   detail: {
     // if ttvc ignored a stalled network request, this value will be true
     didNetworkTimeOut: boolean;
+
+    // the most recent visible update
+    // (this can be either a mutation or a load event target, whichever
+    // occurred last)
+    lastVisibleChange?: HTMLElement | TimestampedMutationRecord;
   };
 };
 ```
