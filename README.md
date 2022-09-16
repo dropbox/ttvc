@@ -24,8 +24,6 @@
 
 ## Overview
 
-> ⚠️ **This library is an experimental early-stage project. Use at your own risk.**
-
 `ttvc` provides an in-browser implementation of the VisuallyComplete metric suitable for field data collection (real-user monitoring).
 
 Visually Complete measures the moment in time when users perceive that all the visual elements of a page have completely loaded. Once the page has reached visually complete, nothing else should change in the viewport without the user’s input.
