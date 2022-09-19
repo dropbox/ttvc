@@ -244,6 +244,16 @@ The callback function may be called more than once if in-page navigation occurs.
 
 `getTTVC` may be called more than once to register more than one subscriber.
 
+#### `cancel()`
+
+```typescript
+type cancel = () => void;
+```
+
+Abort the current TTVC measurement.
+
+This method is provided as an escape hatch. Consider using `cancel` to notify @dropbox/ttvc that a user interaction has occurred and continuing the measurement may produce an invalid result.
+
 #### `incrementAjaxCount() & decrementAjaxCount()`
 
 ```typescript

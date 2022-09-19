@@ -43,6 +43,7 @@ class VisuallyCompleteCalculator {
   private lastImageLoadTarget?: HTMLElement;
   private subscribers = new Set<MetricSubscriber>();
   private navigationCount = 0;
+  private activeMeasurementIndex?: number; // only one measurement should be active at a time
 
   /**
    * Determine whether the calculator should run in the current environment
@@ -75,14 +76,23 @@ class VisuallyCompleteCalculator {
     });
   }
 
+  /** abort the current TTVC measurement */
+  cancel() {
+    this.activeMeasurementIndex = undefined;
+  }
+
   /** begin measuring a new navigation */
   async start(start = 0) {
     const navigationIndex = (this.navigationCount += 1);
+    this.activeMeasurementIndex = navigationIndex;
     Logger.info('VisuallyCompleteCalculator.start()');
 
     // setup
-    let shouldCancel = false;
-    const cancel = () => (shouldCancel = true);
+    const cancel = () => {
+      if (this.activeMeasurementIndex === navigationIndex) {
+        this.activeMeasurementIndex = undefined;
+      }
+    };
 
     this.inViewportImageObserver.observe();
     this.inViewportMutationObserver.observe(document.documentElement);
@@ -100,12 +110,8 @@ class VisuallyCompleteCalculator {
     // - wait for simultaneous network and CPU idle
     const didNetworkTimeOut = await new Promise<boolean>(requestAllIdleCallback);
 
-    // if this isn't the most recent navigation, abort
-    if (navigationIndex !== this.navigationCount) {
-      cancel();
-    }
-
-    if (!shouldCancel) {
+    // if this navigation's measurment hasn't been cancelled, record it.
+    if (navigationIndex === this.activeMeasurementIndex) {
       // identify timestamp of last visible change
       const end = Math.max(start, this.lastImageLoadTimestamp, this.lastMutation?.timestamp ?? 0);
 
