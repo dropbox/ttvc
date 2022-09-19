@@ -53,6 +53,15 @@ export const getTTVC = (callback: MetricSubscriber) => calculator?.getTTVC(callb
 export const start = () => calculator?.start(performance.now());
 
 /**
+ * Abort the current TTVC measurement.
+ *
+ * This method is provided as an escape hatch. Consider using it to notify
+ * @dropbox/ttvc that a user interaction has occurred and continuing the
+ * measurement may produce an invalid result.
+ */
+export const cancel = () => calculator?.cancel();
+
+/**
  * Call this to notify ttvc that an AJAX request has just begun.
  *
  * Instrument your site's AJAX requests with `incrementAjaxCount` and
