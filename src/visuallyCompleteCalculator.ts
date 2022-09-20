@@ -25,6 +25,12 @@ export type Metric = {
   };
 };
 
+export type Cancellation = {
+  start: number;
+  cancelled: number;
+  reason: CancellationReason;
+};
+
 export const enum CancellationReason {
   NEW_NAVIGATION = 'NEW_NAVIGATION',
   PAGE_BACKGROUNDED = 'PAGE_BACKGROUNDED',
@@ -32,7 +38,7 @@ export const enum CancellationReason {
 }
 
 export type MetricSubscriber = (measurement: Metric) => void;
-export type CancellationSubscriber = (reason: CancellationReason) => void;
+export type CancellationSubscriber = (cancellation: Cancellation) => void;
 
 /**
  * TODO: Document
@@ -51,8 +57,8 @@ class VisuallyCompleteCalculator {
   private lastMutation?: TimestampedMutationRecord;
   private lastImageLoadTimestamp = -1;
   private lastImageLoadTarget?: HTMLElement;
-  private navigationCount = 0;
-  private cancellations = new Map<number, CancellationReason>();
+  private navigationStart = 0;
+  private cancellations = new Map<number, Cancellation>();
 
   /**
    * Determine whether the calculator should run in the current environment
@@ -88,20 +94,28 @@ class VisuallyCompleteCalculator {
   /** abort the current TTVC measurement */
   cancel(reason: CancellationReason) {
     Logger.debug('VisuallyCompleteCalculator.cancel()');
-    if (!this.cancellations.get(this.navigationCount)) {
-      this.cancellations.set(this.navigationCount, reason);
+    if (!this.cancellations.get(this.navigationStart)) {
+      this.cancellations.set(this.navigationStart, {
+        start: this.navigationStart,
+        cancelled: performance.now(),
+        reason,
+      });
     }
   }
 
   /** begin measuring a new navigation */
   async start(start = 0) {
-    const navigationIndex = (this.navigationCount += 1);
+    this.navigationStart = start;
     Logger.info('VisuallyCompleteCalculator.start()');
 
     // setup
     const cancel = (reason: CancellationReason) => {
-      if (!this.cancellations.has(navigationIndex)) {
-        this.cancellations.set(navigationIndex, reason);
+      if (!this.cancellations.has(start)) {
+        this.cancellations.set(start, {
+          start,
+          cancelled: performance.now(),
+          reason,
+        });
       }
     };
 
@@ -125,12 +139,16 @@ class VisuallyCompleteCalculator {
     const didNetworkTimeOut = await new Promise<boolean>(requestAllIdleCallback);
 
     // if this navigation's measurement hasn't been cancelled, record it.
-    const cancellationReason = this.cancellations.get(navigationIndex);
-    this.cancellations.delete(navigationIndex);
-    if (navigationIndex !== this.navigationCount) {
-      this.nextCancellation(CancellationReason.NEW_NAVIGATION);
-    } else if (cancellationReason) {
-      this.nextCancellation(cancellationReason);
+    const cancellation = this.cancellations.get(start);
+    this.cancellations.delete(start);
+    if (start !== this.navigationStart) {
+      this.nextCancellation({
+        start,
+        cancelled: performance.now(),
+        reason: CancellationReason.NEW_NAVIGATION,
+      });
+    } else if (cancellation) {
+      this.nextCancellation(cancellation);
     } else {
       // identify timestamp of last visible change
       const end = Math.max(start, this.lastImageLoadTimestamp, this.lastMutation?.timestamp ?? 0);
@@ -157,7 +175,7 @@ class VisuallyCompleteCalculator {
     window.removeEventListener('keydown', cancelInteraction);
 
     // only disconnect observers if this is the most recent navigation
-    if (navigationIndex === this.navigationCount) {
+    if (start === this.navigationStart) {
       this.inViewportImageObserver.disconnect();
       this.inViewportMutationObserver.disconnect();
     }
@@ -187,14 +205,14 @@ class VisuallyCompleteCalculator {
     this.subscribers.forEach((subscriber) => subscriber(measurement));
   }
 
-  private nextCancellation(reason: CancellationReason) {
+  private nextCancellation(cancellation: Cancellation) {
     Logger.debug(
       'VisuallyCompleteCalculator.nextCancellation()',
       '::',
       'cancellationreason =',
-      reason
+      cancellation.reason
     );
-    this.cancellationSubscribers.forEach((subscriber) => subscriber(reason));
+    this.cancellationSubscribers.forEach((subscriber) => subscriber(cancellation));
   }
 
   /** subscribe to Visually Complete metrics */
