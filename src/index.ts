@@ -2,13 +2,14 @@ import {getNetworkIdleObservable} from './networkIdleObservable';
 import {TtvcOptions, setConfig} from './util/constants';
 import {Logger} from './util/logger';
 import {
+  CancellationReason,
   getVisuallyCompleteCalculator,
   MetricSubscriber,
   VisuallyCompleteCalculator,
 } from './visuallyCompleteCalculator.js';
 
 export type {TtvcOptions};
-export type {Metric, MetricSubscriber} from './visuallyCompleteCalculator';
+export type {CancellationReason, Metric, MetricSubscriber} from './visuallyCompleteCalculator';
 
 let calculator: VisuallyCompleteCalculator;
 
@@ -59,7 +60,8 @@ export const start = () => calculator?.start(performance.now());
  * @dropbox/ttvc that a user interaction has occurred and continuing the
  * measurement may produce an invalid result.
  */
-export const cancel = () => calculator?.cancel();
+export const cancel = (reason: CancellationReason = CancellationReason.USER_INTERACTION) =>
+  calculator?.cancel(reason);
 
 /**
  * Call this to notify ttvc that an AJAX request has just begun.
