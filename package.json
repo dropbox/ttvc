@@ -1,6 +1,6 @@
 {
   "name": "@dropbox/ttvc",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Measure Visually Complete metrics in real time",
   "repository": "https://github.com/dropbox/ttvc",
   "license": "Apache-2.0",
