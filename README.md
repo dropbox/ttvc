@@ -18,6 +18,7 @@
   - [Types](#types)
   - [Functions](#functions)
 - [Browser Support](#browser-support)
+- [How does it work?](#how-does-it-work)
 - [Developing](#developing)
   - [Building](#building)
   - [Testing](#testing)
