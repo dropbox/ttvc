@@ -294,7 +294,7 @@ If you would like to use this library and support a browser that does not suppor
 
 ## How does it work?
 
-Browsers today don't automatically report much about their paint cycles.  It would definitely be an improvement if browser developers decided to report this value for us.
+Browsers today don't automatically report much about their paint cycles. It would definitely be an improvement if browser developers decided to report this value for us.
 
 In the meantime, we approximate TTVC using a heuristic based on a combination of observing mutations and "load" events.
 
