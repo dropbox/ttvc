@@ -18,6 +18,7 @@
   - [Types](#types)
   - [Functions](#functions)
 - [Browser Support](#browser-support)
+- [How does it work?](#how-does-it-work)
 - [Developing](#developing)
   - [Building](#building)
   - [Testing](#testing)
@@ -290,6 +291,18 @@ See browsers that support all above features on caniuse.com:
 https://caniuse.com/mutationobserver,async-functions,mdn-api_intersectionobserver,es6,high-resolution-time
 
 If you would like to use this library and support a browser that does not support one of these features, you will be responsible for supplying polyfills and/or recompiling the library to remove unsupported syntax.
+
+## How does it work?
+
+Browsers today don't automatically report much about their paint cycles. It would definitely be an improvement if browser developers decided to report this value for us.
+
+In the meantime, we approximate TTVC using a heuristic based on a combination of observing mutations and "load" events.
+
+![The TTVC Algorithm](https://user-images.githubusercontent.com/11449340/217963862-617c379c-2efd-4cc3-9c74-aa58afe7b1da.png)
+
+For a more detailed write-up of the architecture, check out our announcement blog post!
+
+https://dropbox.tech/frontend/measuring-ttvc-web-performance-metric-open-source-library
 
 ## Developing
 
