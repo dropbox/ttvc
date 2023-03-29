@@ -8,9 +8,11 @@ const PORT = process.env.PORT ?? 3000;
 const app = express();
 
 // disable browser cache
-app.use((req, res, next) => {
+app.use(({query}, res, next) => {
+  if (!query?.cache) {
   res.header('Cache-Control', 'no-cache');
   res.header('Vary', '*'); // macOS safari doesn't respect Cache-Control
+  }
   next();
 });
 
