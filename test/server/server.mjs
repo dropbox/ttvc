@@ -10,8 +10,8 @@ const app = express();
 // disable browser cache
 app.use(({query}, res, next) => {
   if (!query?.cache) {
-  res.header('Cache-Control', 'no-cache');
-  res.header('Vary', '*'); // macOS safari doesn't respect Cache-Control
+    res.header('Cache-Control', 'no-cache');
+    res.header('Vary', '*'); // macOS safari doesn't respect Cache-Control
   }
   next();
 });
@@ -49,9 +49,10 @@ app.post('/api', (req, res) => {
   res.json(req.body);
 });
 
-app.get('/test/:view', ({params}, res) => {
+app.get('/test/:view/:route?', ({params}, res) => {
   const view = params.view;
-  res.sendFile(`test/e2e/${view}/index.html`, {root: '.'});
+  const route = params.route ?? 'index';
+  res.sendFile(`test/e2e/${view}/${route}.html`, {root: '.'});
 });
 
 app.listen(PORT, () => {
