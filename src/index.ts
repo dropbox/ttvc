@@ -23,7 +23,16 @@ export const init = (options?: TtvcOptions) => {
 
   calculator = getVisuallyCompleteCalculator();
   void calculator.start();
-  window.addEventListener('locationchange', () => void calculator.start(performance.now()));
+
+  // restart measurement for SPA navigation
+  window.addEventListener('locationchange', (event) => void calculator.start(event.timeStamp));
+
+  // restart measurement on back/forward cache page restoration
+  window.addEventListener('pageshow', (event) => {
+    // abort if this is the initial pageload
+    if (!event.persisted) return;
+    void calculator.start(event.timeStamp);
+  });
 };
 
 /**
