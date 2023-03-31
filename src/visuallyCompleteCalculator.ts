@@ -4,6 +4,18 @@ import {requestAllIdleCallback} from './requestAllIdleCallback';
 import {InViewportImageObserver} from './inViewportImageObserver';
 import {Logger} from './util/logger';
 
+export type NavigationType =
+  // Navigation started by clicking a link, entering the URL in the browser's address bar or form submission.
+  | 'navigate'
+  // Navigation is through the browser's reload operation.
+  | 'reload'
+  // Navigation is through the browser's history traversal operation.
+  | 'back_forward'
+  // Navigation is initiated by a prerender hint.
+  | 'prerender'
+  // Navigation was triggered with a script operation, e.g. in a single page application.
+  | 'script';
+
 export type Metric = {
   // time since timeOrigin that the navigation was triggered
   // (this will be 0 for the initial pageload)
@@ -22,6 +34,8 @@ export type Metric = {
 
     // the most recent visual update; this can be either a mutation or a load event target
     lastVisibleChange?: HTMLElement | TimestampedMutationRecord;
+
+    navigationType: NavigationType;
   };
 };
 
@@ -82,7 +96,7 @@ class VisuallyCompleteCalculator {
   }
 
   /** begin measuring a new navigation */
-  async start(start = 0) {
+  async start(start = 0, isBfCacheRestore = false) {
     const navigationIndex = (this.navigationCount += 1);
     this.activeMeasurementIndex = navigationIndex;
     Logger.info('VisuallyCompleteCalculator.start()');
@@ -115,12 +129,22 @@ class VisuallyCompleteCalculator {
       // identify timestamp of last visible change
       const end = Math.max(start, this.lastImageLoadTimestamp, this.lastMutation?.timestamp ?? 0);
 
+      const navigationEntries = performance.getEntriesByType(
+        'navigation'
+      ) as PerformanceNavigationTiming[];
+      const navigationType = isBfCacheRestore
+        ? 'back_forward'
+        : start !== 0
+        ? 'script'
+        : navigationEntries[navigationEntries.length - 1].type;
+
       // report result to subscribers
       this.next({
         start,
         end,
         duration: end - start,
         detail: {
+          navigationType,
           didNetworkTimeOut,
           lastVisibleChange:
             this.lastImageLoadTimestamp > (this.lastMutation?.timestamp ?? 0)

@@ -191,6 +191,18 @@ export type Metric = {
     // (this can be either a mutation or a load event target, whichever
     // occurred last)
     lastVisibleChange?: HTMLElement | TimestampedMutationRecord;
+
+    // describes how the navigation being measured was initiated
+    navigationType: // Navigation started by clicking a link, entering the URL in the browser's address bar or form submission.
+    | 'navigate'
+      // Navigation is through the browser's reload operation.
+      | 'reload'
+      // Navigation is through the browser's history traversal operation.
+      | 'back_forward'
+      // Navigation is initiated by a prerender hint.
+      | 'prerender'
+      // Navigation was triggered with a script operation, e.g. in a single page application.
+      | 'script';
   };
 };
 ```

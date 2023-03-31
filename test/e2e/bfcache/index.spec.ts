@@ -16,6 +16,7 @@ test.describe('TTVC', () => {
     expect(entries.length).toBe(1);
     expect(entries[0].duration).toBeGreaterThanOrEqual(PAGELOAD_DELAY);
     expect(entries[0].duration).toBeLessThanOrEqual(PAGELOAD_DELAY + FUDGE);
+    expect(entries[0].detail.navigationType).toBe('navigate');
 
     await page.goto(`/test/bfcache/about?delay=${PAGELOAD_DELAY}&cache=true`, {
       waitUntil: 'networkidle',
@@ -26,6 +27,7 @@ test.describe('TTVC', () => {
     expect(entries.length).toBe(1);
     expect(entries[0].duration).toBeGreaterThanOrEqual(PAGELOAD_DELAY);
     expect(entries[0].duration).toBeLessThanOrEqual(PAGELOAD_DELAY + FUDGE);
+    expect(entries[0].detail.navigationType).toBe('navigate');
 
     await page.goBack({waitUntil: 'networkidle'});
 
@@ -34,5 +36,6 @@ test.describe('TTVC', () => {
     // note: webkit clears previous values from this list on page restore
     expect(entries[entries.length - 1].duration).toBeGreaterThanOrEqual(0);
     expect(entries[entries.length - 1].duration).toBeLessThanOrEqual(FUDGE);
+    expect(entries[entries.length - 1].detail.navigationType).toBe('back_forward');
   });
 });

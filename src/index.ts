@@ -31,7 +31,7 @@ export const init = (options?: TtvcOptions) => {
   window.addEventListener('pageshow', (event) => {
     // abort if this is the initial pageload
     if (!event.persisted) return;
-    void calculator.start(event.timeStamp);
+    void calculator.start(event.timeStamp, true);
   });
 };
 
