@@ -78,6 +78,12 @@ class VisuallyCompleteCalculator {
 
   /** abort the current TTVC measurement */
   cancel() {
+    Logger.info(
+      'VisuallyCompleteCalculator.cancel()',
+      '::',
+      'index =',
+      this.activeMeasurementIndex
+    );
     this.activeMeasurementIndex = undefined;
   }
 
@@ -85,7 +91,7 @@ class VisuallyCompleteCalculator {
   async start(start = 0) {
     const navigationIndex = (this.navigationCount += 1);
     this.activeMeasurementIndex = navigationIndex;
-    Logger.info('VisuallyCompleteCalculator.start()');
+    Logger.info('VisuallyCompleteCalculator.start()', '::', 'index =', navigationIndex);
 
     // setup
     const cancel = () => {
@@ -128,6 +134,13 @@ class VisuallyCompleteCalculator {
               : this.lastMutation,
         },
       });
+    } else {
+      Logger.debug(
+        'VisuallyCompleteCalculator: Measurement discarded',
+        '::',
+        'index =',
+        navigationIndex
+      );
     }
 
     // cleanup
@@ -160,9 +173,12 @@ class VisuallyCompleteCalculator {
       'lastImageLoadTimestamp =',
       this.lastImageLoadTimestamp,
       'lastMutationTimestamp =',
-      this.lastMutation?.timestamp ?? 0
+      this.lastMutation?.timestamp ?? 0,
+      '::',
+      'index =',
+      this.activeMeasurementIndex
     );
-    Logger.info('TTVC:', measurement);
+    Logger.info('TTVC:', measurement, '::', 'index =', this.activeMeasurementIndex);
     this.subscribers.forEach((subscriber) => subscriber(measurement));
   }
 
