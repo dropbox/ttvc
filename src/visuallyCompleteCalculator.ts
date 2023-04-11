@@ -5,14 +5,7 @@ import {InViewportImageObserver} from './inViewportImageObserver';
 import {Logger} from './util/logger';
 
 export type NavigationType =
-  // Navigation started by clicking a link, entering the URL in the browser's address bar or form submission.
-  | 'navigate'
-  // Navigation is through the browser's reload operation.
-  | 'reload'
-  // Navigation is through the browser's history traversal operation.
-  | 'back_forward'
-  // Navigation is initiated by a prerender hint.
-  | 'prerender'
+  | NavigationTimingType
   // Navigation was triggered with a script operation, e.g. in a single page application.
   | 'script';
 
