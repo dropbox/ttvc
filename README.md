@@ -193,7 +193,12 @@ export type Metric = {
     lastVisibleChange?: HTMLElement | TimestampedMutationRecord;
 
     // describes how the navigation being measured was initiated
-    navigationType: // Navigation started by clicking a link, entering the URL in the browser's address bar or form submission.
+    // NOTE: this extends the navigation type values defined in the W3 spec;
+    // "script" is usually reported as "navigation" by the browser, but we
+    // report that distinctly
+    // @see https://developer.mozilla.org/en-US/docs/Web/API/PerformanceNavigationTiming/type
+    navigationType: // Navigation started by clicking a link, by entering the
+    // URL in the browser's address bar, or by form submission.
     | 'navigate'
       // Navigation is through the browser's reload operation.
       | 'reload'
@@ -201,7 +206,7 @@ export type Metric = {
       | 'back_forward'
       // Navigation is initiated by a prerender hint.
       | 'prerender'
-      // Navigation was triggered with a script operation, e.g. in a single page application.
+      // Navigation is triggered with a script operation, e.g. in a single page application.
       | 'script';
   };
 };
