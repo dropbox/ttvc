@@ -3,9 +3,9 @@
 ![version](https://img.shields.io/npm/v/@dropbox/ttvc)
 ![minzip size](https://img.shields.io/bundlephobia/minzip/@dropbox/ttvc)
 
-![lint](https://img.shields.io/github/workflow/status/dropbox/ttvc/Lint/main?label=lint)
-![unit](https://img.shields.io/github/workflow/status/dropbox/ttvc/Unit%20Tests/main?label=unit)
-![playwright](https://img.shields.io/github/workflow/status/dropbox/ttvc/Playwright%20Tests/main?label=playwright)
+![lint](https://img.shields.io/github/actions/workflow/status/dropbox/ttvc/lint.yml?branch=main&label=lint)
+![unit](https://img.shields.io/github/actions/workflow/status/dropbox/ttvc/unit.yml?branch=main&label=unit)
+![playwright](https://img.shields.io/github/actions/workflow/status/dropbox/ttvc/playwright.yml?branch=main&label=playwright)
 
 - [Overview](#overview)
 - [Get started](#get-started)
