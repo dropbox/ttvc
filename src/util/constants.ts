@@ -1,5 +1,6 @@
 export type TtvcOptions = {
   debug?: boolean;
+  documentRoot?: HTMLElement;
   idleTimeout?: number;
   networkTimeout?: number;
 };
@@ -8,6 +9,9 @@ export type TtvcOptions = {
 export const CONFIG = {
   /** Decide whether to log debug messages. */
   DEBUG: false,
+
+  /** The root of the document to observe for visual completeness. */
+  DOCUMENT_ROOT: document.documentElement,
 
   /** A duration in ms to wait before declaring the page completely idle. */
   IDLE_TIMEOUT: 200,
@@ -23,6 +27,7 @@ export const CONFIG = {
 
 export const setConfig = (options?: TtvcOptions) => {
   if (options?.debug) CONFIG.DEBUG = options.debug;
+  if (options?.documentRoot) CONFIG.DOCUMENT_ROOT = options.documentRoot;
   if (options?.idleTimeout) CONFIG.IDLE_TIMEOUT = options.idleTimeout;
   if (options?.networkTimeout) CONFIG.NETWORK_TIMEOUT = options.networkTimeout;
 };

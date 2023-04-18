@@ -2,6 +2,7 @@ import {InViewportMutationObserver, TimestampedMutationRecord} from './inViewpor
 import {waitForPageLoad} from './util';
 import {requestAllIdleCallback} from './requestAllIdleCallback';
 import {InViewportImageObserver} from './inViewportImageObserver';
+import {CONFIG} from './util/constants';
 import {Logger} from './util/logger';
 
 export type NavigationType =
@@ -108,7 +109,7 @@ class VisuallyCompleteCalculator {
     };
 
     this.inViewportImageObserver.observe();
-    this.inViewportMutationObserver.observe(document.documentElement);
+    this.inViewportMutationObserver.observe(CONFIG.DOCUMENT_ROOT);
     window.addEventListener('pagehide', cancel);
     window.addEventListener('visibilitychange', cancel);
     // attach user interaction listeners next tick (we don't want to pick up the SPA navigation click)
