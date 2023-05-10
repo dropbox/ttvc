@@ -12,6 +12,9 @@ export type {Metric, MetricSubscriber} from './visuallyCompleteCalculator';
 
 let calculator: VisuallyCompleteCalculator;
 
+// @ts-ignore
+const startTime = performance?.getEntriesByType?.('navigation')[0]?.activationStart > 0 ? performance?.getEntriesByType?.('navigation')[0]?.activationStart : performance.now()
+
 /**
  *  Start ttvc and begin monitoring network activity and visual changes.
  */
@@ -59,7 +62,7 @@ export const onTTVC = (callback: MetricSubscriber) => calculator?.onTTVC(callbac
  * trigger the same behaviour by dispatching a custom 'locationchange' event
  * (See README.md for an example of usage).
  */
-export const start = () => calculator?.start(performance.now());
+export const start = () => calculator?.start(startTime);
 
 /**
  * Abort the current TTVC measurement.
