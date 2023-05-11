@@ -101,9 +101,11 @@ class VisuallyCompleteCalculator {
     Logger.info('VisuallyCompleteCalculator.start()', '::', 'index =', navigationIndex);
 
     // @ts-ignore
-    const activationStart = performance?.getEntriesByType?.('navigation')[0]?.activationStart || 0
+    const activationStart: number = performance?.getEntriesByType?.('navigation')[0]?.activationStart || 0
 
-    start = activationStart > 0 ? activationStart : start
+    if(activationStart > 0) {
+      start = activationStart
+    }
 
     // setup
     const cancel = () => {
