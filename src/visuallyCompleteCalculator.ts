@@ -100,11 +100,12 @@ class VisuallyCompleteCalculator {
     this.activeMeasurementIndex = navigationIndex;
     Logger.info('VisuallyCompleteCalculator.start()', '::', 'index =', navigationIndex);
 
-    // @ts-ignore
-    const activationStart: number = performance?.getEntriesByType?.('navigation')[0]?.activationStart as number || 0
+    const activationStart: number =
+      // @ts-ignore
+      (performance?.getEntriesByType?.('navigation')[0]?.activationStart as number) || 0;
 
-    if(activationStart > 0) {
-      start = activationStart
+    if (activationStart > 0) {
+      start = activationStart;
     }
 
     // setup
