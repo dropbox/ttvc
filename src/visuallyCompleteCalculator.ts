@@ -104,7 +104,7 @@ class VisuallyCompleteCalculator {
       // @ts-ignore
       (performance?.getEntriesByType?.('navigation')[0]?.activationStart as number) || 0;
 
-    if (activationStart > 0) {
+    if (activationStart > start) {
       start = activationStart;
     }
 

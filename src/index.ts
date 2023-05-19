@@ -33,6 +33,16 @@ export const init = (options?: TtvcOptions) => {
     if (!event.persisted) return;
     void calculator.start(event.timeStamp, true);
   });
+
+  // restart measurement when a prerendered page is navigated to
+  //@ts-ignore prerendering is an experimental feature
+  if (document.prerendering) {
+    window.addEventListener(
+      'prerenderingchange',
+      (event) => void calculator.start(event.timeStamp),
+      true
+    );
+  }
 };
 
 /**
