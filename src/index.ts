@@ -35,7 +35,6 @@ export const init = (options?: TtvcOptions) => {
   });
 
   // restart measurement when a prerendered page is navigated to
-  //@ts-ignore prerendering is an experimental feature
   if (document.prerendering) {
     window.addEventListener(
       'prerenderingchange',
