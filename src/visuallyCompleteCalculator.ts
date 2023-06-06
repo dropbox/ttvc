@@ -136,7 +136,9 @@ class VisuallyCompleteCalculator {
 
       const navigationType = isBfCacheRestore
         ? 'back_forward'
-        : start !== 0
+        : activationStart > 0
+        ? 'prerender'
+        : start > 0
         ? 'script'
         : getNavigationType();
 
