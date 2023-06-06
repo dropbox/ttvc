@@ -20,6 +20,7 @@ test.describe('TTVC', () => {
       expect(entries.length).toBe(1);
       expect(entries[0].duration).toBeGreaterThanOrEqual(PAGELOAD_DELAY + AJAX_DELAY);
       expect(entries[0].duration).toBeLessThanOrEqual(PAGELOAD_DELAY + AJAX_DELAY + FUDGE);
+      expect(entries[0].detail.navigationType).toBe('navigate');
     });
 
     test('SPA navigation', async ({page}) => {
@@ -31,6 +32,7 @@ test.describe('TTVC', () => {
 
       expect(entries[1].duration).toBeGreaterThanOrEqual(AJAX_DELAY);
       expect(entries[1].duration).toBeLessThanOrEqual(AJAX_DELAY + FUDGE);
+      expect(entries[1].detail.navigationType).toBe('script');
     });
 
     test('two overlapping SPA navigations', async ({page, browserName}) => {
@@ -55,6 +57,7 @@ test.describe('TTVC', () => {
       expect(entries.length).toBe(2);
       expect(entries[1].duration).toBeGreaterThanOrEqual(AJAX_DELAY);
       expect(entries[1].duration).toBeLessThanOrEqual(AJAX_DELAY + FUDGE);
+      expect(entries[1].detail.navigationType).toBe('script');
     });
   });
 });

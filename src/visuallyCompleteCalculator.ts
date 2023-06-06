@@ -3,6 +3,7 @@ import {waitForPageLoad} from './util';
 import {requestAllIdleCallback} from './requestAllIdleCallback';
 import {InViewportImageObserver} from './inViewportImageObserver';
 import {Logger} from './util/logger';
+import {getActivationStart, getNavigationType} from './navigationEntry';
 
 export type NavigationType =
   | NavigationTimingType
@@ -100,10 +101,7 @@ class VisuallyCompleteCalculator {
     this.activeMeasurementIndex = navigationIndex;
     Logger.info('VisuallyCompleteCalculator.start()', '::', 'index =', navigationIndex);
 
-    const activationStart: number =
-      // @ts-ignore
-      (performance?.getEntriesByType?.('navigation')[0]?.activationStart as number) || 0;
-
+    const activationStart = getActivationStart();
     if (activationStart > start) {
       start = activationStart;
     }
@@ -136,14 +134,11 @@ class VisuallyCompleteCalculator {
       // identify timestamp of last visible change
       const end = Math.max(start, this.lastImageLoadTimestamp, this.lastMutation?.timestamp ?? 0);
 
-      const navigationEntries = performance.getEntriesByType(
-        'navigation'
-      ) as PerformanceNavigationTiming[];
       const navigationType = isBfCacheRestore
         ? 'back_forward'
         : start !== 0
         ? 'script'
-        : navigationEntries[navigationEntries.length - 1].type;
+        : getNavigationType();
 
       // report result to subscribers
       this.next({
