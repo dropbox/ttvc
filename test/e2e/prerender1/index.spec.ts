@@ -33,6 +33,7 @@ test.describe('TTVC', () => {
 
     expect(entries[0].duration).toBeGreaterThanOrEqual(1000);
     expect(entries[0].duration).toBeLessThanOrEqual(1000 + FUDGE);
+    expect(entries[0].detail.navigationType).toBe('prerender');
   });
 
   // NOTE: At time of writing, there is a bug in chromium which prevents
@@ -57,5 +58,6 @@ test.describe('TTVC', () => {
 
     expect(entries[0].duration).toBeGreaterThanOrEqual(0);
     expect(entries[0].duration).toBeLessThanOrEqual(0 + FUDGE);
+    expect(entries[0].detail.navigationType).toBe('prerender');
   });
 });
