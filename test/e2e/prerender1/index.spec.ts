@@ -17,8 +17,8 @@ test.describe('TTVC', () => {
   // These tests should be re-enabled once this issue is resolved.
   // https://github.com/microsoft/playwright/issues/22733
   test.skip('navigation to a partially prerendered route', async ({browserName, page}) => {
-    // neither safari nor firefox do not support page prerendering
-    test.fail(['safari', 'firefox'].includes(browserName));
+    // only chromium supports page prerendering now
+    test.skip(browserName !== 'chromium');
 
     await page.goto(`/test/prerender1`, {
       waitUntil: 'networkidle',
@@ -42,8 +42,8 @@ test.describe('TTVC', () => {
   // These tests should be re-enabled once this issue is resolved.
   // https://github.com/microsoft/playwright/issues/22733
   test.skip('navigation to a fully prerendered route', async ({browserName, page}) => {
-    // neither safari nor firefox do not support page prerendering
-    test.fail(['safari', 'firefox'].includes(browserName));
+    // only chromium supports page prerendering now
+    test.skip(browserName !== 'chromium');
 
     await page.goto(`/test/prerender1`, {
       waitUntil: 'networkidle',
@@ -59,5 +59,42 @@ test.describe('TTVC', () => {
     expect(entries[0].duration).toBeGreaterThanOrEqual(0);
     expect(entries[0].duration).toBeLessThanOrEqual(0 + FUDGE);
     expect(entries[0].detail.navigationType).toBe('prerender');
+  });
+
+  // NOTE: At time of writing, there is a bug in chromium which prevents
+  // playwright from accessing the correct frame to run assertions after a
+  // prerendered page has been activated.
+  // These tests should be re-enabled once this issue is resolved.
+  // https://github.com/microsoft/playwright/issues/22733
+  test.skip('navigation to a prerendered page, then trigger a soft navigation', async ({
+    browserName,
+    page,
+  }) => {
+    // only chromium supports page prerendering now
+    test.skip(browserName !== 'chromium');
+
+    await page.goto(`/test/prerender1`, {
+      waitUntil: 'networkidle',
+    });
+
+    await page.waitForTimeout(5000);
+
+    await page.click('a');
+
+    await entryCountIs(page, 1);
+    let entries = await getEntries(page);
+
+    expect(entries[0].duration).toBeGreaterThanOrEqual(0);
+    expect(entries[0].duration).toBeLessThanOrEqual(0 + FUDGE);
+    expect(entries[0].detail.navigationType).toBe('prerender');
+
+    // trigger a navigation
+    await page.click('[data-goto="/about"]');
+
+    await entryCountIs(page, 2);
+    entries = await getEntries(page);
+
+    expect(entries[1].duration).toBe(0);
+    expect(entries[1].detail.navigationType).toBe('script');
   });
 });
