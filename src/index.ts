@@ -12,6 +12,14 @@ export type {Metric, MetricSubscriber} from './visuallyCompleteCalculator';
 
 let calculator: VisuallyCompleteCalculator;
 
+const whenActivated = (callback: () => void) => {
+  if (document.prerendering) {
+    window.addEventListener('prerenderingchange', callback, true);
+  } else {
+    callback();
+  }
+};
+
 /**
  *  Start ttvc and begin monitoring network activity and visual changes.
  */
@@ -22,26 +30,19 @@ export const init = (options?: TtvcOptions) => {
   Logger.info('init()');
 
   calculator = getVisuallyCompleteCalculator();
-  void calculator.start();
+  whenActivated(() => {
+    void calculator.start();
 
-  // restart measurement for SPA navigation
-  window.addEventListener('locationchange', (event) => void calculator.start(event.timeStamp));
+    // restart measurement for SPA navigation
+    window.addEventListener('locationchange', (event) => void calculator.start(event.timeStamp));
 
-  // restart measurement on back/forward cache page restoration
-  window.addEventListener('pageshow', (event) => {
-    // abort if this is the initial pageload
-    if (!event.persisted) return;
-    void calculator.start(event.timeStamp, true);
+    // restart measurement on back/forward cache page restoration
+    window.addEventListener('pageshow', (event) => {
+      // abort if this is the initial pageload
+      if (!event.persisted) return;
+      void calculator.start(event.timeStamp, true);
+    });
   });
-
-  // restart measurement when a prerendered page is navigated to
-  if (document.prerendering) {
-    window.addEventListener(
-      'prerenderingchange',
-      (event) => void calculator.start(event.timeStamp),
-      true
-    );
-  }
 };
 
 /**

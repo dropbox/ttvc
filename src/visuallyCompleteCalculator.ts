@@ -101,9 +101,16 @@ class VisuallyCompleteCalculator {
     this.activeMeasurementIndex = navigationIndex;
     Logger.info('VisuallyCompleteCalculator.start()', '::', 'index =', navigationIndex);
 
+    let navigationType: NavigationType = isBfCacheRestore
+      ? 'back_forward'
+      : start > 0
+      ? 'script'
+      : getNavigationType();
+
     const activationStart = getActivationStart();
     if (activationStart > start) {
       start = activationStart;
+      navigationType = 'prerender';
     }
 
     // setup
@@ -133,14 +140,6 @@ class VisuallyCompleteCalculator {
     if (navigationIndex === this.activeMeasurementIndex) {
       // identify timestamp of last visible change
       const end = Math.max(start, this.lastImageLoadTimestamp, this.lastMutation?.timestamp ?? 0);
-
-      const navigationType = isBfCacheRestore
-        ? 'back_forward'
-        : activationStart > 0
-        ? 'prerender'
-        : start > 0
-        ? 'script'
-        : getNavigationType();
 
       // report result to subscribers
       this.next({
