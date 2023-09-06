@@ -89,7 +89,7 @@ export const cancel = () => calculator?.cancel();
  * For the most accurate results, `decrementAjaxCount` should be called
  * **exactly once** for each `incrementAjaxCount`.
  */
-export const incrementAjaxCount = getNetworkIdleObservable().incrementAjaxCount;
+export const incrementAjaxCount = () => getNetworkIdleObservable().incrementAjaxCount();
 
 /**
  * Call this to notify ttvc that an AJAX request has just resolved.
@@ -100,4 +100,4 @@ export const incrementAjaxCount = getNetworkIdleObservable().incrementAjaxCount;
  * For the most accurate results, `decrementAjaxCount` should be called
  * **exactly once** for each `incrementAjaxCount`.
  */
-export const decrementAjaxCount = getNetworkIdleObservable().decrementAjaxCount;
+export const decrementAjaxCount = () => getNetworkIdleObservable().decrementAjaxCount();
