@@ -101,7 +101,7 @@ class ResourceLoadingIdleObservable {
 
   constructor() {
     // watch out for SSR
-    if (window?.MutationObserver) {
+    if (typeof window !== 'undefined' && window?.MutationObserver) {
       window.addEventListener('load', () => {
         // watch for added or updated script tags
         const o = new MutationObserver((mutations) => {
