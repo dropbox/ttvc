@@ -10,21 +10,18 @@ export type NavigationType =
   // Navigation was triggered with a script operation, e.g. in a single page application.
   | 'script';
 
-export type Metric = {
+type CommonMetadata = {
   // time since timeOrigin that the navigation was triggered
   // (this will be 0 for the initial pageload)
   start: number;
 
-  // time since timeOrigin that ttvc was marked for the current navigation
+  // time since timeOrigin that ttvc was marked for the current navigation or error occurred
   end: number;
-
-  // the difference between start and end; this is the value of "TTVC"
-  duration: number;
 
   // additional metadata related to the current navigation
   detail: {
     // if ttvc ignored a stalled network request, this value will be true
-    didNetworkTimeOut: boolean;
+    didNetworkTimeOut?: boolean;
 
     // the most recent visual update; this can be either a mutation or a load event target
     lastVisibleChange?: HTMLElement | TimestampedMutationRecord;
@@ -33,15 +30,51 @@ export type Metric = {
   };
 };
 
-export type MetricSubscriber = (measurement: Metric) => void;
+export type Metric = CommonMetadata & {
+  // value of "TTVC"
+  duration: number;
+};
+
+// currently, the only source of error is cancellation
+export type CancellationError = CommonMetadata & {
+  // reason for cancellation
+  cancellationReason: CancellationReason;
+
+  // Optional type of event that triggered cancellation
+  eventType?: string;
+
+  // Optional target of event that triggered cancellation
+  eventTarget?: EventTarget;
+};
+
+export const enum CancellationReason {
+  // navigation has occurred
+  NEW_NAVIGATION = 'NEW_NAVIGATION',
+
+  // page was put in background
+  VISIBILITY_CHANGE = 'VISIBILITY_CHANGE',
+
+  // user interaction occurred
+  USER_INTERACTION = 'USER_INTERACTION',
+
+  // manual cancellation via API happened
+  MANUAL_CANCELLATION = 'MANUAL_CANCELLATION',
+}
+
+export type MetricSuccessSubscriber = (measurement: Metric) => void;
+export type MetricErrorSubscriber = (error: CancellationError) => void;
 
 /**
- * TODO: Document
+ * Core of the TTVC calculation that ties viewport observers and network monitoring
+ * into a singleton that facilitates communication of TTVC metric measurement and error
+ * information to subscribers.
  */
 class VisuallyCompleteCalculator {
+  // configuration
   public debug = false;
   public idleTimeout = 200;
 
+  // observers
   private inViewportMutationObserver: InViewportMutationObserver;
   private inViewportImageObserver: InViewportImageObserver;
 
@@ -49,9 +82,12 @@ class VisuallyCompleteCalculator {
   private lastMutation?: TimestampedMutationRecord;
   private lastImageLoadTimestamp = -1;
   private lastImageLoadTarget?: HTMLElement;
-  private subscribers = new Set<MetricSubscriber>();
   private navigationCount = 0;
   private activeMeasurementIndex?: number; // only one measurement should be active at a time
+
+  // subscribers
+  private successSubscribers = new Set<MetricSuccessSubscriber>();
+  private errorSubscribers = new Set<MetricErrorSubscriber>();
 
   /**
    * Determine whether the calculator should run in the current environment
@@ -84,8 +120,11 @@ class VisuallyCompleteCalculator {
     });
   }
 
-  /** abort the current TTVC measurement */
-  cancel() {
+  /**
+   * expose a method to abort the current TTVC measurement
+   * @param eventType - type of event that triggered cancellation (note that cancellationReason will be set to "manual" regardless of this value).
+   */
+  cancel(eventType?: string) {
     Logger.info(
       'VisuallyCompleteCalculator.cancel()',
       '::',
@@ -93,6 +132,17 @@ class VisuallyCompleteCalculator {
       this.activeMeasurementIndex
     );
     this.activeMeasurementIndex = undefined;
+
+    this.error({
+      start: getActivationStart(),
+      end: performance.now(),
+      cancellationReason: CancellationReason.MANUAL_CANCELLATION,
+      eventType: eventType,
+      detail: {
+        navigationType: getNavigationType(),
+        lastVisibleChange: this.getLastVisibleChange(),
+      },
+    });
   }
 
   /** begin measuring a new navigation */
@@ -114,20 +164,36 @@ class VisuallyCompleteCalculator {
     }
 
     // setup
-    const cancel = () => {
+    const cancel = (e: Event, cancellationReason: CancellationReason) => {
       if (this.activeMeasurementIndex === navigationIndex) {
         this.activeMeasurementIndex = undefined;
+
+        this.error({
+          start,
+          end: performance.now(),
+          cancellationReason,
+          eventType: e.type,
+          eventTarget: e.target || undefined,
+          detail: {
+            navigationType,
+            lastVisibleChange: this.getLastVisibleChange(),
+          },
+        });
       }
     };
 
+    const cancelOnInteraction = (e: Event) => cancel(e, CancellationReason.USER_INTERACTION);
+    const cancelOnNavigation = (e: Event) => cancel(e, CancellationReason.NEW_NAVIGATION);
+    const cancelOnVisibilityChange = (e: Event) => cancel(e, CancellationReason.VISIBILITY_CHANGE);
+
     this.inViewportImageObserver.observe();
     this.inViewportMutationObserver.observe(document.documentElement);
-    window.addEventListener('pagehide', cancel);
-    window.addEventListener('visibilitychange', cancel);
+    window.addEventListener('pagehide', cancelOnNavigation);
+    window.addEventListener('visibilitychange', cancelOnVisibilityChange);
     // attach user interaction listeners next tick (we don't want to pick up the SPA navigation click)
     window.setTimeout(() => {
-      window.addEventListener('click', cancel);
-      window.addEventListener('keydown', cancel);
+      window.addEventListener('click', cancelOnInteraction);
+      window.addEventListener('keydown', cancelOnInteraction);
     }, 0);
 
     // wait for page to be definitely DONE
@@ -136,7 +202,7 @@ class VisuallyCompleteCalculator {
     // - wait for simultaneous network and CPU idle
     const didNetworkTimeOut = await new Promise<boolean>(requestAllIdleCallback);
 
-    // if this navigation's measurment hasn't been cancelled, record it.
+    // if this navigation's measurement hasn't been cancelled, record it.
     if (navigationIndex === this.activeMeasurementIndex) {
       // identify timestamp of last visible change
       const end = Math.max(start, this.lastImageLoadTimestamp, this.lastMutation?.timestamp ?? 0);
@@ -149,10 +215,7 @@ class VisuallyCompleteCalculator {
         detail: {
           navigationType,
           didNetworkTimeOut,
-          lastVisibleChange:
-            this.lastImageLoadTimestamp > (this.lastMutation?.timestamp ?? 0)
-              ? this.lastImageLoadTarget
-              : this.lastMutation,
+          lastVisibleChange: this.getLastVisibleChange(),
         },
       });
     } else {
@@ -162,13 +225,26 @@ class VisuallyCompleteCalculator {
         'index =',
         navigationIndex
       );
+
+      if (this.activeMeasurementIndex) {
+        this.error({
+          start,
+          end: performance.now(),
+          cancellationReason: CancellationReason.NEW_NAVIGATION,
+          detail: {
+            navigationType,
+            didNetworkTimeOut,
+            lastVisibleChange: this.getLastVisibleChange(),
+          },
+        });
+      }
     }
 
     // cleanup
-    window.removeEventListener('pagehide', cancel);
-    window.removeEventListener('visibilitychange', cancel);
-    window.removeEventListener('click', cancel);
-    window.removeEventListener('keydown', cancel);
+    window.removeEventListener('pagehide', cancelOnNavigation);
+    window.removeEventListener('visibilitychange', cancelOnVisibilityChange);
+    window.removeEventListener('click', cancelOnInteraction);
+    window.removeEventListener('keydown', cancelOnInteraction);
     // only disconnect observers if this is the most recent navigation
     if (navigationIndex === this.navigationCount) {
       this.inViewportImageObserver.disconnect();
@@ -200,16 +276,51 @@ class VisuallyCompleteCalculator {
       this.activeMeasurementIndex
     );
     Logger.info('TTVC:', measurement, '::', 'index =', this.activeMeasurementIndex);
-    this.subscribers.forEach((subscriber) => subscriber(measurement));
+    this.successSubscribers.forEach((subscriber) => subscriber(measurement));
+  }
+
+  private error(error: CancellationError) {
+    Logger.debug(
+      'VisuallyCompleteCalculator.error()',
+      '::',
+      'cancellationReason =',
+      error.cancellationReason,
+      '::',
+      'eventType =',
+      error.eventType || 'none',
+      '::',
+      'index =',
+      this.activeMeasurementIndex
+    );
+    this.errorSubscribers.forEach((subscriber) => subscriber(error));
+  }
+
+  private getLastVisibleChange() {
+    return this.lastImageLoadTimestamp > (this.lastMutation?.timestamp ?? 0)
+      ? this.lastImageLoadTarget
+      : this.lastMutation;
   }
 
   /** subscribe to Visually Complete metrics */
-  onTTVC = (subscriber: MetricSubscriber) => {
-    // register subscriber callback
-    this.subscribers.add(subscriber);
+  onTTVC = (
+    successSubscriber: MetricSuccessSubscriber,
+    errorSubscriber?: MetricErrorSubscriber
+  ) => {
+    // register subscriber callbacks
+    this.successSubscribers.add(successSubscriber);
+
+    if (errorSubscriber) {
+      this.errorSubscribers.add(errorSubscriber);
+    }
 
     // return an unsubscribe function
-    return () => this.subscribers.delete(subscriber);
+    return () => {
+      this.successSubscribers.delete(successSubscriber);
+
+      if (errorSubscriber) {
+        this.errorSubscribers.delete(errorSubscriber);
+      }
+    };
   };
 }
 

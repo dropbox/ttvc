@@ -109,6 +109,9 @@ lib
 # VS Code settings
 .vscode
 
+# IntelliJ Settings
+.idea
+
 # Playwright
 test-results/
 playwright-report/

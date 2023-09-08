@@ -14,6 +14,7 @@
   - [Report metrics to a collection endpoint](#report-metrics-to-a-collection-endpoint)
   - [Record a PerformanceTimeline entry](#record-a-performancetimeline-entry)
   - [Client-side navigation with React Router](#client-side-navigation-with-react-router)
+  - [Attributing TTVC measurement cancellations](#attributing-ttvc-measurement-cancellations)
 - [API](#api)
   - [Types](#types)
   - [Functions](#functions)
@@ -164,6 +165,31 @@ const App = () => {
 };
 ```
 
+### Attributing TTVC measurement cancellations
+
+In certain cases, @dropbox/ttvc might discard the measurement before it is captured.
+
+This can happen if a user interacts with or navigates away from the page, or the page is put in the background before it has reached a state ot visual completeness.
+
+This is done to obtain a higher confidence of the measurement's accuracy, as interaction with a page can cause it to change in ways that invalidate the measurement.
+
+However, @dropbox/ttvc provides a way to monitor these cancellations and attribute them to a specific cause. A second callback function provided to `onTTVC` will be called when the measurement is cancelled.
+
+```js
+import {init, onTTVC} from '@dropbox/ttvc';
+
+init();
+
+onTTVC(
+  (measurement) => {
+    console.log('TTVC measurement captured:', measurement.duration);
+  },
+  (error) => {
+    console.log('TTVC measurement cancelled:', error.cancellationReason);
+  }
+);
+```
+
 ## API
 
 ### Types
@@ -210,6 +236,46 @@ export type Metric = {
       | 'script';
   };
 };
+```
+
+#### `CancellationError`
+
+```typescript
+export type CancellationError = {
+  // time since timeOrigin that the navigation was triggered
+  // (this will be 0 for the initial pageload)
+  start: number;
+
+  // time since timeOrigin that a cancellation event occurred
+  end: number;
+
+  // reason for cancellation
+  cancellationReason: CancellationReason;
+
+  // Optional type of event that triggered cancellation
+  eventType?: string;
+
+  // Optional target of event that triggered cancellation
+  eventTarget?: EventTarget;
+
+  detail: {
+    // ... identical to `detail` property of Metric type ...
+  };
+};
+
+export enum CancellationReason {
+  // navigation has occurred
+  NEW_NAVIGATION = 'NEW_NAVIGATION',
+
+  // page was put in background
+  VISIBILITY_CHANGE = 'VISIBILITY_CHANGE',
+
+  // user interaction occurred
+  USER_INTERACTION = 'USER_INTERACTION',
+
+  // manual cancellation via API happened
+  MANUAL_CANCELLATION = 'MANUAL_CANCELLATION',
+}
 ```
 
 #### `TtvcOptions`

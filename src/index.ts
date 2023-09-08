@@ -3,12 +3,18 @@ import {TtvcOptions, setConfig} from './util/constants';
 import {Logger} from './util/logger';
 import {
   getVisuallyCompleteCalculator,
-  MetricSubscriber,
+  MetricSuccessSubscriber,
+  MetricErrorSubscriber,
   VisuallyCompleteCalculator,
 } from './visuallyCompleteCalculator.js';
 
 export type {TtvcOptions};
-export type {Metric, MetricSubscriber} from './visuallyCompleteCalculator';
+export type {
+  Metric,
+  CancellationError,
+  MetricSuccessSubscriber,
+  MetricErrorSubscriber,
+} from './visuallyCompleteCalculator';
 
 let calculator: VisuallyCompleteCalculator;
 
@@ -53,10 +59,14 @@ export const init = (options?: TtvcOptions) => {
  * @example
  * const unsubscribe = onTTVC(ms => console.log(ms));
  *
- * @param callback Triggered once for each navigation instance.
+ * @param successCallback Triggered once for each navigation instance when TTVC was successfully captured.
+ * @param [errorCallback] Triggered when TTVC failed to capture
  * @returns A function that unsubscribes the callback from this metric.
  */
-export const onTTVC = (callback: MetricSubscriber) => calculator?.onTTVC(callback);
+export const onTTVC = (
+  successCallback: MetricSuccessSubscriber,
+  errorCallback?: MetricErrorSubscriber
+) => calculator?.onTTVC(successCallback, errorCallback);
 
 /**
  * Begin measuring a new navigation.
