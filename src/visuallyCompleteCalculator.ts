@@ -10,18 +10,25 @@ export type NavigationType =
   // Navigation was triggered with a script operation, e.g. in a single page application.
   | 'script';
 
-type CommonMetadata = {
+/**
+ * TTVC `Metric` type uses `PerformanceMeasure` type as it's guideline
+ * https://developer.mozilla.org/en-US/docs/Web/API/PerformanceMeasure
+ */
+export type Metric = {
   // time since timeOrigin that the navigation was triggered
   // (this will be 0 for the initial pageload)
   start: number;
 
-  // time since timeOrigin that ttvc was marked for the current navigation or error occurred
+  // time since timeOrigin that ttvc was marked for the current navigation
   end: number;
+
+  // the difference between start and end; this is the value of "TTVC"
+  duration: number;
 
   // additional metadata related to the current navigation
   detail: {
     // if ttvc ignored a stalled network request, this value will be true
-    didNetworkTimeOut?: boolean;
+    didNetworkTimeOut: boolean;
 
     // the most recent visual update; this can be either a mutation or a load event target
     lastVisibleChange?: HTMLElement | TimestampedMutationRecord;
@@ -30,13 +37,16 @@ type CommonMetadata = {
   };
 };
 
-export type Metric = CommonMetadata & {
-  // value of "TTVC"
-  duration: number;
-};
+/**
+ * At the moment, the only error that can occur is measurement cancellation
+ */
+export type CancellationError = {
+  // time since timeOrigin that the navigation was triggered
+  start: number;
 
-// currently, the only source of error is cancellation
-export type CancellationError = CommonMetadata & {
+  // time since timeOrigin that cancellation occurred
+  end: number;
+
   // reason for cancellation
   cancellationReason: CancellationReason;
 
@@ -45,6 +55,11 @@ export type CancellationError = CommonMetadata & {
 
   // Optional target of event that triggered cancellation
   eventTarget?: EventTarget;
+
+  // the most recent visual update; this can be either a mutation or a load event target
+  lastVisibleChange?: HTMLElement | TimestampedMutationRecord;
+
+  navigationType: NavigationType;
 };
 
 export const enum CancellationReason {
@@ -138,10 +153,8 @@ class VisuallyCompleteCalculator {
       end: performance.now(),
       cancellationReason: CancellationReason.MANUAL_CANCELLATION,
       eventType: eventType,
-      detail: {
-        navigationType: getNavigationType(),
-        lastVisibleChange: this.getLastVisibleChange(),
-      },
+      navigationType: getNavigationType(),
+      lastVisibleChange: this.getLastVisibleChange(),
     });
   }
 
@@ -174,10 +187,8 @@ class VisuallyCompleteCalculator {
           cancellationReason,
           eventType: e.type,
           eventTarget: e.target || undefined,
-          detail: {
-            navigationType,
-            lastVisibleChange: this.getLastVisibleChange(),
-          },
+          navigationType,
+          lastVisibleChange: this.getLastVisibleChange(),
         });
       }
     };
@@ -231,11 +242,8 @@ class VisuallyCompleteCalculator {
           start,
           end: performance.now(),
           cancellationReason: CancellationReason.NEW_NAVIGATION,
-          detail: {
-            navigationType,
-            didNetworkTimeOut,
-            lastVisibleChange: this.getLastVisibleChange(),
-          },
+          navigationType,
+          lastVisibleChange: this.getLastVisibleChange(),
         });
       }
     }
