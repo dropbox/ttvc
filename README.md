@@ -243,10 +243,9 @@ export type Metric = {
 ```typescript
 export type CancellationError = {
   // time since timeOrigin that the navigation was triggered
-  // (this will be 0 for the initial pageload)
   start: number;
 
-  // time since timeOrigin that a cancellation event occurred
+  // time since timeOrigin that cancellation occurred
   end: number;
 
   // reason for cancellation
@@ -258,9 +257,10 @@ export type CancellationError = {
   // Optional target of event that triggered cancellation
   eventTarget?: EventTarget;
 
-  detail: {
-    // ... identical to `detail` property of Metric type ...
-  };
+  // the most recent visual update; this can be either a mutation or a load event target
+  lastVisibleChange?: HTMLElement | TimestampedMutationRecord;
+
+  navigationType: NavigationType;
 };
 
 export enum CancellationReason {
