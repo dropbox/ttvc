@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test';
 
-import {entryCountIs, getEntries} from '../../util/entries';
+import {entryCountIs, getEntriesAndErrors} from '../../util/entries';
 
 test.describe('TTVC', () => {
   test('tab is backgrounded before page completes loading', async ({page}) => {
@@ -18,15 +18,19 @@ test.describe('TTVC', () => {
       document.dispatchEvent(new Event('visibilitychange', {bubbles: true}));
     });
 
+    // assert that no metric has been reported
+    const {entries, errors} = await getEntriesAndErrors(page);
+    expect(entries.length).toBe(0);
+
+    expect(errors.length).toBe(1);
+    expect(errors[0].cancellationReason).toBe('VISIBILITY_CHANGE');
+    expect(errors[0].eventType).toBe('visibilitychange');
+
     // wait long enough to ensure ttvc would have been logged
     try {
       await entryCountIs(page, 1, 3000);
     } catch (e) {
       // pass
     }
-
-    // assert that no metric has been reported
-    const entries = await getEntries(page);
-    expect(entries.length).toBe(0);
   });
 });
