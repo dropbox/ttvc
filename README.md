@@ -23,6 +23,7 @@
 - [Developing](#developing)
   - [Building](#building)
   - [Testing](#testing)
+  - [Releasing](#releasing)
 
 ## Overview
 
@@ -450,3 +451,29 @@ $ yarn express
 ```
 
 You can launch tests in the browser by opening http://localhost:3000/test/[test-folder]. e.g. http://localhost:3000/test/ajax1/
+
+### Releasing
+
+This package is configured to publish new releases using [`np`](https://github.com/sindresorhus/np#readme).
+
+To cut a new release, switch to the `main` branch and run `npm run release`.
+
+> NOTE: Despite the fact that this package is managed with yarn, there is currently a bug in np preventing `yarn np` from running correctly.
+
+This should automate the process of releasing by doing the following:
+
+- prompt you to select a new version
+- install all dependencies
+- run tests
+- build a new compiled artifact
+- bump the version in package.json
+- push the new version to npm
+- create a new tag and associated "release" on github.com
+
+`np` supports a number of cli flags which may also be useful for you:
+
+- `npm run np -- --preview` Do a dry run to test that your release will behave as expected
+- `npm run np -- patch|minor|major` bump the version to the next patch/minor/major increment
+- `npm run np -- prerelease --tag=beta` create an "prerelease" version which will _not_ automatically be marked as `latest`
+
+See the [full documentation](https://github.com/sindresorhus/np#readme) for all `np` CLI options.
