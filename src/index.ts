@@ -87,8 +87,10 @@ export const start = () => calculator?.start(performance.now());
  * This method is provided as an escape hatch. Consider using it to notify
  * @dropbox/ttvc that a user interaction has occurred and continuing the
  * measurement may produce an invalid result.
+ *
+ * @param eventType The type of event that triggered the cancellation. This will be logged to the error callback.
  */
-export const cancel = () => calculator?.cancel();
+export const cancel = (eventType?: string) => calculator?.cancel(eventType);
 
 /**
  * Call this to notify ttvc that an AJAX request has just begun.

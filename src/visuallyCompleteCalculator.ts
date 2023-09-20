@@ -137,7 +137,7 @@ class VisuallyCompleteCalculator {
 
   /**
    * expose a method to abort the current TTVC measurement
-   * @param eventType - type of event that triggered cancellation (note that cancellationReason will be set to "manual" regardless of this value).
+   * @param eventType - type of event that triggered cancellation (note that cancellationReason will be set to "MANUAL_CANCELLATION" regardless of this value).
    */
   cancel(eventType?: string) {
     Logger.info(
@@ -146,16 +146,19 @@ class VisuallyCompleteCalculator {
       'index =',
       this.activeMeasurementIndex
     );
-    this.activeMeasurementIndex = undefined;
 
-    this.error({
-      start: getActivationStart(),
-      end: performance.now(),
-      cancellationReason: CancellationReason.MANUAL_CANCELLATION,
-      eventType: eventType,
-      navigationType: getNavigationType(),
-      lastVisibleChange: this.getLastVisibleChange(),
-    });
+    if (this.activeMeasurementIndex) {
+      this.error({
+        start: getActivationStart(),
+        end: performance.now(),
+        cancellationReason: CancellationReason.MANUAL_CANCELLATION,
+        eventType: eventType,
+        navigationType: getNavigationType(),
+        lastVisibleChange: this.getLastVisibleChange(),
+      });
+    }
+
+    this.activeMeasurementIndex = undefined;
   }
 
   /** begin measuring a new navigation */
