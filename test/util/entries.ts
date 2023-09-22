@@ -9,9 +9,6 @@ declare global {
   }
 }
 
-/** Get the list of performance entries that have been recorded from the browser */
-export const getEntries = (page: Page) => page.evaluate(() => window.entries);
-
 /** Get the list of performance entries and errors that have been recorded from the browser */
 export const getEntriesAndErrors = (page: Page) =>
   page.evaluate(() => {

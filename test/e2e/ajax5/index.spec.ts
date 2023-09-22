@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test';
 
-import {entryCountIs, getEntries} from '../../util/entries';
+import {entryCountIs, getEntriesAndErrors} from '../../util/entries';
 
 const PAGELOAD_DELAY = 200;
 
@@ -17,7 +17,7 @@ test.describe('TTVC', () => {
       // pass
     }
 
-    const entries = await getEntries(page);
+    const {entries} = await getEntriesAndErrors(page);
 
     // ttvc should never be reported
     expect(entries.length).toBe(0);
