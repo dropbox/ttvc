@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 
 import {FUDGE} from '../../util/constants';
-import {entryCountIs, getEntries} from '../../util/entries';
+import {entryCountIs, getEntriesAndErrors} from '../../util/entries';
 
 const PAGELOAD_DELAY = 200;
 
@@ -14,7 +14,7 @@ test.describe('TTVC', () => {
     });
 
     test('initial pageload', async ({page}) => {
-      const entries = await getEntries(page);
+      const {entries} = await getEntriesAndErrors(page);
 
       expect(entries.length).toBe(1);
       expect(entries[0].duration).toBeGreaterThanOrEqual(PAGELOAD_DELAY);
@@ -27,7 +27,7 @@ test.describe('TTVC', () => {
       await page.click('[data-goto="/about"]');
 
       await entryCountIs(page, 2);
-      const entries = await getEntries(page);
+      const {entries} = await getEntriesAndErrors(page);
 
       expect(entries[1].duration).toBe(0);
       expect(entries[1].detail.navigationType).toBe('script');

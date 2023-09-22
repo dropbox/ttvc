@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 
 import {FUDGE} from '../../util/constants';
-import {entryCountIs, getEntries} from '../../util/entries';
+import {entryCountIs, getEntriesAndErrors} from '../../util/entries';
 
 test.use({
   // If you run this test headless, you must run with --headless=new to enable prerender2.
@@ -29,7 +29,7 @@ test.describe('TTVC', () => {
     await page.click('a');
 
     await entryCountIs(page, 1);
-    const entries = await getEntries(page);
+    const {entries} = await getEntriesAndErrors(page);
 
     expect(entries[0].duration).toBeGreaterThanOrEqual(1000);
     expect(entries[0].duration).toBeLessThanOrEqual(1000 + FUDGE);
@@ -54,7 +54,7 @@ test.describe('TTVC', () => {
     await page.click('a');
 
     await entryCountIs(page, 1);
-    const entries = await getEntries(page);
+    const {entries} = await getEntriesAndErrors(page);
 
     expect(entries[0].duration).toBeGreaterThanOrEqual(0);
     expect(entries[0].duration).toBeLessThanOrEqual(0 + FUDGE);
@@ -82,7 +82,7 @@ test.describe('TTVC', () => {
     await page.click('a');
 
     await entryCountIs(page, 1);
-    let entries = await getEntries(page);
+    let {entries} = await getEntriesAndErrors(page);
 
     expect(entries[0].duration).toBeGreaterThanOrEqual(0);
     expect(entries[0].duration).toBeLessThanOrEqual(0 + FUDGE);
@@ -92,7 +92,7 @@ test.describe('TTVC', () => {
     await page.click('[data-goto="/about"]');
 
     await entryCountIs(page, 2);
-    entries = await getEntries(page);
+    ({entries} = await getEntriesAndErrors(page));
 
     expect(entries[1].duration).toBe(0);
     expect(entries[1].detail.navigationType).toBe('script');
