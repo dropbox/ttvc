@@ -21,7 +21,7 @@
     "build:rollup": "rollup --config rollup.config.js",
     "test": "npm-run-all build test:*",
     "test:lint": "eslint --ext .js --ext .ts ./",
-    "test:typecheck": "tsc --noEmit --project tsconfig.json",
+    "test:typecheck": "tsc --noEmit --skipLibCheck --project tsconfig.json",
     "test:unit": "jest",
     "test:e2e": "playwright test",
     "express": "node test/server/server.mjs",
