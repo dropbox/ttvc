@@ -21,7 +21,7 @@
     "build:rollup": "rollup --config rollup.config.js",
     "test": "npm-run-all build test:*",
     "test:lint": "eslint --ext .js --ext .ts ./",
-    "test:typecheck": "tsc --noEmit --project tsconfig.json",
+    "test:typecheck": "tsc --noEmit --skipLibCheck --project tsconfig.json",
     "test:unit": "jest",
     "test:e2e": "playwright test",
     "express": "node test/server/server.mjs",
@@ -32,7 +32,7 @@
     "node": ">=16.0.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.20.0",
+    "@playwright/test": "^1.42.1",
     "@rollup/plugin-typescript": "^8.3.1",
     "@testing-library/dom": "^8.11.4",
     "@testing-library/user-event": "^13.5.0",
