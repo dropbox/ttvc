@@ -186,7 +186,7 @@ class ResourceLoadingIdleObservable {
       (element instanceof HTMLImageElement && element.complete) ||
       (element instanceof HTMLLinkElement && !element.href) ||
       (element instanceof HTMLScriptElement && !element.src) ||
-      (element instanceof HTMLIFrameElement && !element.src)
+      (element instanceof HTMLIFrameElement && (!element.src || element.src === 'about:blank'))
     ) {
       return;
     }
