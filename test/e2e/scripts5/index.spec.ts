@@ -1,6 +1,6 @@
 import {test, expect} from '@playwright/test';
 
-import {entryCountIs, getEntries} from '../../util/entries';
+import {entryCountIs, getEntriesAndErrors} from '../../util/entries';
 
 const PAGELOAD_DELAY = 200;
 
@@ -11,7 +11,7 @@ test.describe('TTVC', () => {
     });
 
     await entryCountIs(page, 1);
-    const entries = await getEntries(page);
+    const {entries} = await getEntriesAndErrors(page);
 
     // assert that this malformed resource doesn't cause ttvc to get stuck
     expect(entries.length).toBe(1);

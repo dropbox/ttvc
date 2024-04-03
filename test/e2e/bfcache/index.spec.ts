@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 
 import {FUDGE} from '../../util/constants';
-import {getEntries} from '../../util/entries';
+import {getEntriesAndErrors} from '../../util/entries';
 
 const PAGELOAD_DELAY = 1000;
 
@@ -11,7 +11,7 @@ test.describe('TTVC', () => {
       waitUntil: 'networkidle',
     });
 
-    let entries = await getEntries(page);
+    let {entries} = await getEntriesAndErrors(page);
 
     expect(entries.length).toBe(1);
     expect(entries[0].duration).toBeGreaterThanOrEqual(PAGELOAD_DELAY);
@@ -22,7 +22,7 @@ test.describe('TTVC', () => {
       waitUntil: 'networkidle',
     });
 
-    entries = await getEntries(page);
+    ({entries} = await getEntriesAndErrors(page));
 
     expect(entries.length).toBe(1);
     expect(entries[0].duration).toBeGreaterThanOrEqual(PAGELOAD_DELAY);
@@ -31,7 +31,7 @@ test.describe('TTVC', () => {
 
     await page.goBack({waitUntil: 'networkidle'});
 
-    entries = await getEntries(page);
+    ({entries} = await getEntriesAndErrors(page));
 
     // note: webkit clears previous values from this list on page restore
     expect(entries[entries.length - 1].duration).toBeGreaterThanOrEqual(0);

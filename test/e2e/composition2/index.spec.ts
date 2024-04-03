@@ -1,7 +1,7 @@
 import {test, expect} from '@playwright/test';
 
 import {FUDGE} from '../../util/constants';
-import {getEntries} from '../../util/entries';
+import {getEntriesAndErrors} from '../../util/entries';
 
 const PAGELOAD_DELAY = 200;
 const AJAX_DELAY = 500;
@@ -16,7 +16,7 @@ test.describe('TTVC', () => {
       waitUntil: 'networkidle',
     });
 
-    const entries = await getEntries(page);
+    const {entries} = await getEntriesAndErrors(page);
     expect(entries.length).toBe(1);
 
     const expectedTtvc = PAGELOAD_DELAY + SCRIPT_DELAY + AJAX_DELAY + CPU_DELAY + SCRIPT_DELAY;
