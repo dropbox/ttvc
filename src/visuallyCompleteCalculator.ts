@@ -47,6 +47,9 @@ export type CancellationError = {
   // time since timeOrigin that cancellation occurred
   end: number;
 
+  // the difference between start and end
+  duration: number;
+
   // reason for cancellation
   cancellationReason: CancellationReason;
 
@@ -98,7 +101,12 @@ class VisuallyCompleteCalculator {
   private lastImageLoadTimestamp = -1;
   private lastImageLoadTarget?: HTMLElement;
   private navigationCount = 0;
-  private activeMeasurementIndex?: number; // only one measurement should be active at a time
+
+  // only one measurement should be active at a time.
+  // - this index points to the active, most recent measurement
+  private activeMeasurementIndex?: number;
+  // - this maps indexes of measurements to their cancellation functions
+  private measurements = new Map<number, () => void>();
 
   // subscribers
   private successSubscribers = new Set<MetricSuccessSubscriber>();
@@ -148,9 +156,12 @@ class VisuallyCompleteCalculator {
     );
 
     if (this.activeMeasurementIndex) {
+      const start = getActivationStart();
+      const end = performance.now();
       this.error({
-        start: getActivationStart(),
-        end: performance.now(),
+        start,
+        end,
+        duration: end - start,
         cancellationReason: CancellationReason.MANUAL_CANCELLATION,
         eventType: eventType,
         navigationType: getNavigationType(),
@@ -167,6 +178,20 @@ class VisuallyCompleteCalculator {
     this.activeMeasurementIndex = navigationIndex;
     Logger.info('VisuallyCompleteCalculator.start()', '::', 'index =', navigationIndex);
 
+    const previousMeasurement = this.measurements.get(navigationIndex - 1);
+    if (previousMeasurement) {
+      previousMeasurement();
+      this.measurements.delete(navigationIndex - 1);
+      Logger.info(
+        'VisuallyCompleteCalculator.start()',
+        '::',
+        'Unfinished previous measurement cancelled',
+        '::',
+        'index =',
+        navigationIndex - 1
+      );
+    }
+
     let navigationType: NavigationType = isBfCacheRestore
       ? 'back_forward'
       : start > 0
@@ -180,25 +205,41 @@ class VisuallyCompleteCalculator {
     }
 
     // setup
-    const cancel = (e: Event, cancellationReason: CancellationReason) => {
+    const cancel = (cancellationReason: CancellationReason, e?: Event) => {
       if (this.activeMeasurementIndex === navigationIndex) {
         this.activeMeasurementIndex = undefined;
 
+        const end = performance.now();
         this.error({
           start,
-          end: performance.now(),
+          end,
+          duration: end - start,
           cancellationReason,
-          eventType: e.type,
-          eventTarget: e.target || undefined,
           navigationType,
           lastVisibleChange: this.getLastVisibleChange(),
+          ...(e && {
+            eventType: e.type,
+            eventTarget: e.target || undefined,
+          }),
         });
       }
     };
 
-    const cancelOnInteraction = (e: Event) => cancel(e, CancellationReason.USER_INTERACTION);
-    const cancelOnNavigation = (e: Event) => cancel(e, CancellationReason.NEW_NAVIGATION);
-    const cancelOnVisibilityChange = (e: Event) => cancel(e, CancellationReason.VISIBILITY_CHANGE);
+    this.measurements.set(navigationIndex, () => {
+      const end = performance.now();
+      this.error({
+        start,
+        end,
+        duration: end - start,
+        cancellationReason: CancellationReason.NEW_NAVIGATION,
+        navigationType,
+        lastVisibleChange: this.getLastVisibleChange(),
+      });
+    });
+
+    const cancelOnInteraction = (e: Event) => cancel(CancellationReason.USER_INTERACTION, e);
+    const cancelOnNavigation = (e: Event) => cancel(CancellationReason.NEW_NAVIGATION, e);
+    const cancelOnVisibilityChange = (e: Event) => cancel(CancellationReason.VISIBILITY_CHANGE, e);
 
     this.inViewportImageObserver.observe();
     this.inViewportMutationObserver.observe(document.documentElement);
@@ -239,19 +280,10 @@ class VisuallyCompleteCalculator {
         'index =',
         navigationIndex
       );
-
-      if (this.activeMeasurementIndex) {
-        this.error({
-          start,
-          end: performance.now(),
-          cancellationReason: CancellationReason.NEW_NAVIGATION,
-          navigationType,
-          lastVisibleChange: this.getLastVisibleChange(),
-        });
-      }
     }
 
     // cleanup
+    this.measurements.delete(navigationIndex);
     window.removeEventListener('pagehide', cancelOnNavigation);
     window.removeEventListener('visibilitychange', cancelOnVisibilityChange);
     window.removeEventListener('click', cancelOnInteraction);
