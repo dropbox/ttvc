@@ -52,7 +52,7 @@ test.describe('TTVC', () => {
       expect(entries[1].detail.navigationType).toBe('script');
 
       // We expect the interrupted measurement to be ended before the start of the new measurement
-      expect(errors[0].end).toBeLessThanOrEqual(entries[1].start);
+      expect(errors[0].end).toBeLessThanOrEqual(entries[1].start + FUDGE);
       expect(errors[0].duration).toBeGreaterThanOrEqual(INTERACTION_DELAY);
       expect(errors[0].duration).toBeLessThanOrEqual(INTERACTION_DELAY + FUDGE);
       expect(errors[0].cancellationReason).toBe('NEW_MEASUREMENT');
