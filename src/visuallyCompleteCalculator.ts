@@ -47,6 +47,9 @@ export type CancellationError = {
   // time since timeOrigin that cancellation occurred
   end: number;
 
+  // the difference between start and end
+  duration: number;
+
   // reason for cancellation
   cancellationReason: CancellationReason;
 
@@ -72,12 +75,32 @@ export const enum CancellationReason {
   // user interaction occurred
   USER_INTERACTION = 'USER_INTERACTION',
 
+  // new TTVC measurement started, overwriting an unfinished one
+  NEW_MEASUREMENT = 'NEW_MEASUREMENT',
+
   // manual cancellation via API happened
   MANUAL_CANCELLATION = 'MANUAL_CANCELLATION',
 }
 
 export type MetricSuccessSubscriber = (measurement: Metric) => void;
 export type MetricErrorSubscriber = (error: CancellationError) => void;
+
+/**
+ * Represents a single observation of TTVC measurement, along with its index
+ * in a session, it's state and a method to cancel the measurement
+ *
+ * Observation might result in a successful measurement of TTVC or a failure to capture it
+ */
+export type Observation = {
+  index: number;
+  state: ObservationState;
+  cancel: (cancellationReason: CancellationReason, e?: Event) => void;
+};
+const enum ObservationState {
+  ACTIVE = 'ACTIVE',
+  CANCELLED = 'CANCELLED',
+  COMPLETED = 'COMPLETED',
+}
 
 /**
  * Core of the TTVC calculation that ties viewport observers and network monitoring
@@ -98,7 +121,9 @@ class VisuallyCompleteCalculator {
   private lastImageLoadTimestamp = -1;
   private lastImageLoadTarget?: HTMLElement;
   private navigationCount = 0;
-  private activeMeasurementIndex?: number; // only one measurement should be active at a time
+
+  // map of TTVC observations
+  private observations = new Map<number, Observation>();
 
   // subscribers
   private successSubscribers = new Set<MetricSuccessSubscriber>();
@@ -137,35 +162,33 @@ class VisuallyCompleteCalculator {
 
   /**
    * expose a method to abort the current TTVC measurement
-   * @param eventType - type of event that triggered cancellation (note that cancellationReason will be set to "MANUAL_CANCELLATION" regardless of this value).
+   * @param e - optionally, an event that triggered cancellation
    */
-  cancel(eventType?: string) {
-    Logger.info(
-      'VisuallyCompleteCalculator.cancel()',
-      '::',
-      'index =',
-      this.activeMeasurementIndex
-    );
-
-    if (this.activeMeasurementIndex) {
-      this.error({
-        start: getActivationStart(),
-        end: performance.now(),
-        cancellationReason: CancellationReason.MANUAL_CANCELLATION,
-        eventType: eventType,
-        navigationType: getNavigationType(),
-        lastVisibleChange: this.getLastVisibleChange(),
-      });
+  cancel(e?: Event) {
+    const mostRecentMeasurement = this.observations.get(this.observations.size);
+    if (mostRecentMeasurement && mostRecentMeasurement.state === ObservationState.ACTIVE) {
+      mostRecentMeasurement.cancel(CancellationReason.MANUAL_CANCELLATION, e);
+      mostRecentMeasurement.state = ObservationState.CANCELLED;
     }
-
-    this.activeMeasurementIndex = undefined;
   }
 
-  /** begin measuring a new navigation */
+  /**
+   * Begin measuring a new navigation
+   *
+   * This async function encompasses an entire TTVC measurement, from the time it is triggered
+   * to the moment it is finished or cancelled
+   *
+   * @param start
+   * @param isBfCacheRestore
+   */
   async start(start = 0, isBfCacheRestore = false) {
     const navigationIndex = (this.navigationCount += 1);
-    this.activeMeasurementIndex = navigationIndex;
     Logger.info('VisuallyCompleteCalculator.start()', '::', 'index =', navigationIndex);
+
+    const previousMeasurement = this.observations.get(navigationIndex - 1);
+    if (previousMeasurement && previousMeasurement.state === ObservationState.ACTIVE) {
+      previousMeasurement.cancel(CancellationReason.NEW_MEASUREMENT);
+    }
 
     let navigationType: NavigationType = isBfCacheRestore
       ? 'back_forward'
@@ -179,26 +202,43 @@ class VisuallyCompleteCalculator {
       navigationType = 'prerender';
     }
 
-    // setup
-    const cancel = (e: Event, cancellationReason: CancellationReason) => {
-      if (this.activeMeasurementIndex === navigationIndex) {
-        this.activeMeasurementIndex = undefined;
+    /**
+     * Set up a cancellation function for the current TTVC observation
+     */
+    const cancel = (cancellationReason: CancellationReason, e?: Event) => {
+      const observation = this.observations.get(navigationIndex);
 
-        this.error({
+      if (!observation || observation.state !== ObservationState.ACTIVE) return;
+      observation.state = ObservationState.CANCELLED;
+
+      const end = performance.now();
+      this.error(
+        {
           start,
-          end: performance.now(),
+          end,
+          duration: end - start,
           cancellationReason,
-          eventType: e.type,
-          eventTarget: e.target || undefined,
           navigationType,
           lastVisibleChange: this.getLastVisibleChange(),
-        });
-      }
+          ...(e && {
+            eventType: e.type,
+            eventTarget: e.target || undefined,
+          }),
+        },
+        observation
+      );
     };
 
-    const cancelOnInteraction = (e: Event) => cancel(e, CancellationReason.USER_INTERACTION);
-    const cancelOnNavigation = (e: Event) => cancel(e, CancellationReason.NEW_NAVIGATION);
-    const cancelOnVisibilityChange = (e: Event) => cancel(e, CancellationReason.VISIBILITY_CHANGE);
+    const observation: Observation = {
+      index: navigationIndex,
+      state: ObservationState.ACTIVE,
+      cancel,
+    };
+    this.observations.set(navigationIndex, observation);
+
+    const cancelOnInteraction = (e: Event) => cancel(CancellationReason.USER_INTERACTION, e);
+    const cancelOnNavigation = (e: Event) => cancel(CancellationReason.NEW_NAVIGATION, e);
+    const cancelOnVisibilityChange = (e: Event) => cancel(CancellationReason.VISIBILITY_CHANGE, e);
 
     this.inViewportImageObserver.observe();
     this.inViewportMutationObserver.observe(document.documentElement);
@@ -216,22 +256,27 @@ class VisuallyCompleteCalculator {
     // - wait for simultaneous network and CPU idle
     const didNetworkTimeOut = await new Promise<boolean>(requestAllIdleCallback);
 
-    // if this navigation's measurement hasn't been cancelled, record it.
-    if (navigationIndex === this.activeMeasurementIndex) {
+    // if current TTVC observation is still active (was not cancelled), record it
+    if (observation.state === ObservationState.ACTIVE) {
+      observation.state = ObservationState.COMPLETED;
+
       // identify timestamp of last visible change
       const end = Math.max(start, this.lastImageLoadTimestamp, this.lastMutation?.timestamp ?? 0);
 
       // report result to subscribers
-      this.next({
-        start,
-        end,
-        duration: end - start,
-        detail: {
-          navigationType,
-          didNetworkTimeOut,
-          lastVisibleChange: this.getLastVisibleChange(),
+      this.next(
+        {
+          start,
+          end,
+          duration: end - start,
+          detail: {
+            navigationType,
+            didNetworkTimeOut,
+            lastVisibleChange: this.getLastVisibleChange(),
+          },
         },
-      });
+        observation
+      );
     } else {
       Logger.debug(
         'VisuallyCompleteCalculator: Measurement discarded',
@@ -239,16 +284,6 @@ class VisuallyCompleteCalculator {
         'index =',
         navigationIndex
       );
-
-      if (this.activeMeasurementIndex) {
-        this.error({
-          start,
-          end: performance.now(),
-          cancellationReason: CancellationReason.NEW_NAVIGATION,
-          navigationType,
-          lastVisibleChange: this.getLastVisibleChange(),
-        });
-      }
     }
 
     // cleanup
@@ -263,7 +298,7 @@ class VisuallyCompleteCalculator {
     }
   }
 
-  private next(measurement: Metric) {
+  private next(measurement: Metric, observation: Observation) {
     if (measurement.end > Number.MAX_SAFE_INTEGER) {
       Logger.warn(
         'VisuallyCompleteCalculator.next()',
@@ -284,13 +319,13 @@ class VisuallyCompleteCalculator {
       this.lastMutation?.timestamp ?? 0,
       '::',
       'index =',
-      this.activeMeasurementIndex
+      observation.index
     );
-    Logger.info('TTVC:', measurement, '::', 'index =', this.activeMeasurementIndex);
+    Logger.info('TTVC:', measurement, '::', 'index =', observation.index);
     this.successSubscribers.forEach((subscriber) => subscriber(measurement));
   }
 
-  private error(error: CancellationError) {
+  private error(error: CancellationError, observation: Observation) {
     Logger.debug(
       'VisuallyCompleteCalculator.error()',
       '::',
@@ -301,7 +336,7 @@ class VisuallyCompleteCalculator {
       error.eventType || 'none',
       '::',
       'index =',
-      this.activeMeasurementIndex
+      observation.index
     );
     this.errorSubscribers.forEach((subscriber) => subscriber(error));
   }

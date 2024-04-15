@@ -10,9 +10,9 @@
   <script async src="/stub.js?delay=750"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      TTVC.cancel('test_event_type_1');
+      TTVC.cancel(new Event('test_event_type_1'));
       setTimeout(() => {
-        TTVC.cancel('test_event_type_2');
+        TTVC.cancel(new Event('test_event_type_2'));
       }, 0);
     });
   </script>

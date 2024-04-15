@@ -88,9 +88,9 @@ export const start = () => calculator?.start(performance.now());
  * @dropbox/ttvc that a user interaction has occurred and continuing the
  * measurement may produce an invalid result.
  *
- * @param eventType The type of event that triggered the cancellation. This will be logged to the error callback.
+ * @param e The event that triggered the cancellation. This will be logged to the error callback.
  */
-export const cancel = (eventType?: string) => calculator?.cancel(eventType);
+export const cancel = (e?: Event) => calculator?.cancel(e);
 
 /**
  * Call this to notify ttvc that an AJAX request has just begun.

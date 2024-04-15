@@ -1,0 +1,51 @@
+<head>
+  <script src="/dist/index.min.js"></script>
+</head>
+
+<body>
+  <h1 id="title"></h1>
+  <ul id="nav">
+    <li><a data-goto="/home" href="#">Home</a></li>
+    <li><a data-goto="/about" href="#">About</a></li>
+  </ul>
+
+  <script src="/analytics.js"></script>
+  <script type="module">
+    import {createHashHistory} from '/node_modules/history/history.production.min.js';
+    const history = createHashHistory();
+
+    // render the title based on current location
+    const render = async () => {
+      const title = document.getElementById('title');
+
+      // simulate data fetching required for route
+      title.innerText = 'Loading...';
+      await fetch('/api?delay=1000');
+
+      title.innerText = {
+        '/home': 'Home',
+        '/about': 'About',
+      }[history.location.pathname];
+    };
+
+    // set initial path to /home
+    history.push('/home');
+    render();
+
+    // set up link click handlers
+    const anchors = document.querySelectorAll('a');
+    anchors.forEach((anchor) => {
+      const url = anchor.dataset.goto;
+      anchor.addEventListener('click', (event) => {
+        event.preventDefault(0);
+        history.push(url);
+      });
+    });
+
+    // handle navigation
+    history.listen(() => {
+      document.documentElement.dispatchEvent(new Event('locationchange', {bubbles: true}));
+      render();
+    });
+  </script>
+</body>
