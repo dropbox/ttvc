@@ -249,6 +249,9 @@ export type CancellationError = {
   // time since timeOrigin that cancellation occurred
   end: number;
 
+  // the difference between start and end
+  duration: number;
+
   // reason for cancellation
   cancellationReason: CancellationReason;
 
@@ -273,6 +276,9 @@ export enum CancellationReason {
 
   // user interaction occurred
   USER_INTERACTION = 'USER_INTERACTION',
+
+  // measurement was cancelled because a new one was started
+  NEW_MEASUREMENT = 'NEW_MEASUREMENT',
 
   // manual cancellation via API happened
   MANUAL_CANCELLATION = 'MANUAL_CANCELLATION',
@@ -339,7 +345,7 @@ Abort the current TTVC measurement.
 
 This method is provided as an escape hatch. Consider using `cancel` to notify @dropbox/ttvc that a user interaction has occurred and continuing the measurement may produce an invalid result.
 
-An optional argument can be passed specifying the type of event that triggered the cancellation. This will be logged to the error callback, and so is used only for diagnostics.
+An optional argument can be passed specifying the event that triggered the cancellation. Type of that event will be logged along with the cancellation to the error callback.
 
 #### `incrementAjaxCount() & decrementAjaxCount()`
 
