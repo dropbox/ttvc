@@ -1,4 +1,5 @@
 import {Logger} from './util/logger';
+import {CONFIG} from './util/constants';
 
 export type InViewportMutationObserverCallback = (mutation: TimestampedMutationRecord) => void;
 export type TimestampedMutationRecord = MutationRecord & {timestamp?: number};
@@ -66,6 +67,10 @@ export class InViewportMutationObserver {
       if (mutation.target instanceof Text) target = mutation.target.parentElement;
 
       if (!target) {
+        return;
+      }
+
+      if (CONFIG.EXCLUDE_IFRAME && target instanceof HTMLIFrameElement) {
         return;
       }
 
