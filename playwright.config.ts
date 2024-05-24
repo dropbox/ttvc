@@ -29,7 +29,9 @@ const config: PlaywrightTestConfig = {
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : 3,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: 'list',
+  // 'github' for GitHub Actions CI to generate annotations, plus a concise 'dot'
+  // default 'list' when running locally
+  reporter: process.env.CI ? 'github' : 'list',
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Maximum time each action such as `click()` can take. Defaults to 0 (no limit). */
