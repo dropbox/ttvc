@@ -1,4 +1,5 @@
 import {Logger} from './util/logger';
+import {CONFIG} from './util/constants';
 
 /**
  * Modeled after IntersectionObserver and MutationObserver, this Image observer
@@ -33,6 +34,9 @@ export class InViewportImageObserver {
   private intersectionObserverCallback = (entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry) => {
       const img = entry.target as HTMLImageElement | HTMLIFrameElement;
+      if (CONFIG.EXCLUDE_IFRAME && entry.target instanceof HTMLIFrameElement) {
+        return;
+      }
       const timestamp = this.imageLoadTimes.get(img);
       if (entry.isIntersecting && timestamp != null) {
         Logger.info('InViewportImageObserver.callback()', '::', 'timestamp =', timestamp);
@@ -44,7 +48,7 @@ export class InViewportImageObserver {
   };
 
   private handleLoadOrErrorEvent = (event: Event) => {
-    if (event.target instanceof HTMLImageElement || event.target instanceof HTMLIFrameElement) {
+    if (event.target instanceof HTMLImageElement || (!CONFIG.EXCLUDE_IFRAME && event.target instanceof HTMLIFrameElement)) {
       Logger.debug('InViewportImageObserver.handleLoadOrErrorEvent()', '::', 'event =', event);
       this.imageLoadTimes.set(event.target, event.timeStamp);
       this.intersectionObserver.observe(event.target);
