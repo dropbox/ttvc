@@ -35,6 +35,9 @@ export const init = (options?: TtvcOptions) => {
 
   Logger.info('init()');
 
+  // initialize network monitoring
+  getNetworkIdleObservable();
+
   calculator = getVisuallyCompleteCalculator();
   whenActivated(() => {
     void calculator.start();
