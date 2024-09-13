@@ -462,6 +462,8 @@ You can launch tests in the browser by opening http://localhost:3000/test/[test-
 
 ### Releasing
 
+> NOTE: This package should be released by a repository administrator.  New versions are expected to be pushed directly to `main`.
+
 This package is configured to publish new releases using [`np`](https://github.com/sindresorhus/np#readme).
 
 To cut a new release, switch to the `main` branch and run `npm run release`.
