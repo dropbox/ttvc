@@ -24,13 +24,24 @@ describe('ResourceLoadingIdleObservable - link rel ignore behavior', () => {
   });
 
   it.each([
+    'alternate',
+    'author',
     'canonical',
-    'preconnect',
     'dns-prefetch',
-    'preload',
-    'modulepreload',
+    'help',
+    'license',
+    'me',
+    'next',
+    'pingback',
+    'preconnect',
     'prefetch',
+    'preload',
     'prerender',
+    'preload',
+    'prev',
+    'privacy-policy',
+    'tag',
+    'terms-of-service',
   ])('ignores <link rel="%s"> when tracking network idleness', async (rel) => {
     const link = document.createElement('link');
     link.rel = rel;

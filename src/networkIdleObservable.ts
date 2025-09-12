@@ -12,14 +12,24 @@ type ResourceLoadingElement =
 // Not all link rels result in a resource download
 // so we keep a set of link rels that we ignore
 const linkRelIgnoreSet: Set<string> = new Set<string>([
+  'alternate',
+  'author',
   'canonical',
-  'preconnect',
   'dns-prefetch',
-  'preload',
-  'modulepreload',
+  'help',
+  'license',
+  'me',
+  'next',
+  'pingback',
+  'preconnect',
   'prefetch',
+  'preload',
   'prerender',
   'preload',
+  'prev',
+  'privacy-policy',
+  'tag',
+  'terms-of-service',
 ]);
 /**
  * Alerts subscribers to the presence or absence of pending AJAX requests
