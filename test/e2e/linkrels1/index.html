@@ -1,0 +1,18 @@
+<head>
+  <script src="/dist/index.min.js"></script>
+  <script src="/analytics.js"></script>
+  <!-- Ignored rels should not affect TTVC -->
+  <link rel="preconnect" href="https://example.com">
+  <link rel="dns-prefetch" href="//example.com">
+  <link rel="prefetch" href="/styles.css?delay=1000">
+  <link rel="preload" href="/styles.css?delay=1000" as="style">
+  <link rel="modulepreload" href="/busy.js?delay=1000">
+  <link rel="prerender" href="/stub.html?delay=1000">
+  <link rel="canonical" href="/">
+</head>
+
+<body>
+  <h1 id="h1">Ignored link rels</h1>
+</body>
+
+
