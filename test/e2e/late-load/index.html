@@ -5,20 +5,24 @@
     window.addEventListener('load', function () {
       // small delay so load has definitely finished
       setTimeout(() => {
-        const ttvc = document.createElement('script');
-        ttvc.src = '/dist/index.min.js';
-        document.head.appendChild(ttvc);
-
         const analytics = document.createElement('script');
         analytics.src = '/analytics.js';
         // when analytics is ready, add a resource that should be tracked
         analytics.onload = () => {
           // add an image that loads with a delay so it would normally be observed
+          console.log('Analytics script loaded');
           const img = document.createElement('img');
           img.src = '/150.png?delay=500';
           document.body.appendChild(img);
         };
-        document.head.appendChild(analytics);
+
+        const ttvc = document.createElement('script');
+        ttvc.src = '/dist/index.min.js';
+        document.head.appendChild(ttvc);
+        ttvc.onload = () => {
+          console.log('TTVC script loaded');
+          document.head.appendChild(analytics);
+        };
       }, 50);
     });
   </script>

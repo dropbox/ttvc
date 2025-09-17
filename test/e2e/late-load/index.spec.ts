@@ -1,21 +1,24 @@
 import {expect, test} from '@playwright/test';
 
-import {getEntriesAndErrors} from '../../util/entries';
+import {entryCountIs, getEntriesAndErrors} from '../../util/entries';
+
+const IMG_DELAY = 500;
 
 test.describe('TTVC late load', () => {
-  test('library loaded after window.load should miss resource tracking', async ({page}) => {
-    // navigate and wait for the page load to fire (our page appends TTVC after load)
+  test('library loaded after window.load should not miss resource tracking', async ({page}) => {
+    // Navigate to the page and wait for window load.
+    // On window load the page will dynamically import and initialize TTVC
+    // And after TTVC is initialized will add an img resource
+    // This tests that for SPAs where ttvc is loaded after window.load, resource tracking still works
     await page.goto(`/test/late-load`, {waitUntil: 'load'});
 
-    // wait long enough for scripts to be appended and the delayed image to load
-    await page.waitForTimeout(1200);
+    // Wait for ttvc
+    await entryCountIs(page, 1, 3000);
 
     const {entries, errors} = await getEntriesAndErrors(page);
-
-    // We expect TTVC to track resource downloads even when loaded late. This
-    // assertion is intentionally strict so the test fails today and will pass
-    // once the underlying library is fixed to handle late initialisation.
     expect(entries.length).toBe(1);
     expect(errors.length).toBe(0);
+
+    expect(entries[0].duration).toBeGreaterThan(IMG_DELAY);
   });
 });
