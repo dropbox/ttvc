@@ -99,51 +99,57 @@ class ResourceLoadingIdleObservable {
   public didNetworkTimeOut = false;
   private cleanupTimeout?: number; // time out if resource never resolves
 
+  private initMutationObserver = () => {
+    // watch for added or updated script tags
+    const o = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        mutation.addedNodes.forEach((node) => {
+          if (
+            node instanceof HTMLScriptElement ||
+            node instanceof HTMLLinkElement ||
+            node instanceof HTMLImageElement ||
+            node instanceof HTMLIFrameElement
+          ) {
+            this.add(node);
+          } else if (node.hasChildNodes() && node instanceof HTMLElement) {
+            // images may be mounted within large subtrees, this is less
+            // common with link/script elements
+            node.querySelectorAll('img').forEach(this.add);
+          }
+        });
+      });
+    });
+
+    // watch for new tags added anywhere in the document
+    o.observe(window.document.documentElement, {childList: true, subtree: true});
+
+    // as resources load, remove them from pendingResources
+    ['load', 'error'].forEach((eventType) => {
+      window.document.addEventListener(
+        eventType,
+        (event) => {
+          if (
+            event.target instanceof HTMLScriptElement ||
+            event.target instanceof HTMLLinkElement ||
+            event.target instanceof HTMLImageElement ||
+            event.target instanceof HTMLIFrameElement
+          ) {
+            this.remove(event.target);
+          }
+        },
+        {capture: true}
+      );
+    });
+  };
+
   constructor() {
     // watch out for SSR
     if (typeof window !== 'undefined' && window?.MutationObserver) {
-      window.addEventListener('load', () => {
-        // watch for added or updated script tags
-        const o = new MutationObserver((mutations) => {
-          mutations.forEach((mutation) => {
-            mutation.addedNodes.forEach((node) => {
-              if (
-                node instanceof HTMLScriptElement ||
-                node instanceof HTMLLinkElement ||
-                node instanceof HTMLImageElement ||
-                node instanceof HTMLIFrameElement
-              ) {
-                this.add(node);
-              } else if (node.hasChildNodes() && node instanceof HTMLElement) {
-                // images may be mounted within large subtrees, this is less
-                // common with link/script elements
-                node.querySelectorAll('img').forEach(this.add);
-              }
-            });
-          });
-        });
-
-        // watch for new tags added anywhere in the document
-        o.observe(window.document.documentElement, {childList: true, subtree: true});
-
-        // as resources load, remove them from pendingResources
-        ['load', 'error'].forEach((eventType) => {
-          window.document.addEventListener(
-            eventType,
-            (event) => {
-              if (
-                event.target instanceof HTMLScriptElement ||
-                event.target instanceof HTMLLinkElement ||
-                event.target instanceof HTMLImageElement ||
-                event.target instanceof HTMLIFrameElement
-              ) {
-                this.remove(event.target);
-              }
-            },
-            {capture: true}
-          );
-        });
-      });
+      if (document.readyState === 'loading') {
+        window.addEventListener('load', this.initMutationObserver, {once: true});
+      } else {
+        this.initMutationObserver();
+      }
     }
   }
 
